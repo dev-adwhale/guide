@@ -20,7 +20,7 @@ allprojects {
             url = uri("https://maven.pkg.github.com/dev-adwhale/AdWhaleAndroid/SDK")
             credentials {
                 username = 'dev-adwhale'
-                password = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/adwhale-mediation-sdk-android-1)'
+                password = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)'
             }
         }
         
@@ -28,8 +28,8 @@ allprojects {
         maven {
             url "s3://repo.cauly.net/releases"
             credentials(AwsCredentials) {
-                accessKey "SDK 부록페이지 참고(https://adwhale.gitbook.io/adwhale-mediation-sdk-android-1)"
-                secretKey "SDK 부록페이지 참고(https://adwhale.gitbook.io/adwhale-mediation-sdk-android-1)"
+                accessKey "SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)"
+                secretKey "SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)"
             }
         }
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
