@@ -246,7 +246,7 @@ void _createBannerWithSize(int width, int height) {
         },
       ),
       // AdInfo에 배너 사이즈 정보를 전달합니다.
-      adInfo: AdInfo("AU1718694072940", BannerHeightEnum.adaptive, width, height),
+      adInfo: AdInfo("배너 광고 코드 입력", BannerHeightEnum.adaptive, width, height),
     )..load();
     debugPrint('BannerAd.load() called for size ${width}x${height}');
   }
