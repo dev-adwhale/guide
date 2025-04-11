@@ -315,13 +315,13 @@ public class FlutterRewardAdLoader {
 }
 ```
 
-### dart main 파일에서 보상형 구현
+### dart main 파일에서 보상형 전면 구현
 
 ```dart
 void _createReward() {
     debugPrint('_createReward()');
     _rewardAd = RewardAd(
-      appCode: "보상형 광고 코드 입력",
+      appCode: "보상형 전면 광고 코드 입력",
       adRewardLoadCallback: RewardAdLoadCallback(
         onRewardAdLoaded: () {
           debugPrint('RewardAd onRewardAdLoaded');

@@ -49,7 +49,7 @@ public void onAdDismissed() // 미디에이션 보상형 전면 광고닫기 시
 ```
 
 ```java
-public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형광고표시 실패 시
+public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 전면 광고표시 실패 시
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>초기화 결과 메시지</td></tr></tbody></table>
