@@ -1,6 +1,6 @@
-# 보상형
+# 보상형 전면
 
-보상형 생성
+보상형 전면 생성
 
 {% tabs %}
 {% tab title="Java" %}
@@ -18,19 +18,19 @@ public AdWhaleMediationRewardAd(String placementUid)
 public void setAdWhaleMediationFullScreenContentCallback(AdWhaleMediationFullScreenContentCallback listener)
 ```
 
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationFullScreenContentCallback</p></td><td>보상형 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationFullScreenContentCallback</p></td><td>보상형 전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
 
 ```java
-public void loadAd(AdWhaleMediationRewardAdLoadCallback listener) // 미디에이션 보상형광고로드 시 호출
+public void loadAd(AdWhaleMediationRewardAdLoadCallback listener) // 미디에이션 보상형 전면 광고로드 시 호출
 ```
 
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationRewardAdLoadCallback</p></td><td>보상형 미디에이션 광고 로드 콜백 리스너</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationRewardAdLoadCallback</p></td><td>보상형 전면 미디에이션 광고 로드 콜백 리스너</td></tr></tbody></table>
 
 ```java
-public void showAd(AdWhaleMediationUserEarnedRewardListener listener) // 미디에이션 보상형광고로드 후 표시할 때 호출
+public void showAd(AdWhaleMediationUserEarnedRewardListener listener) // 미디에이션 보상형 전면 광고로드 후 표시할 때 호출
 ```
 
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationUserEarnedRewardListener</p></td><td>보상형 미디에이션 광고 리워드 지급 콜백 리스너</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationUserEarnedRewardListener</p></td><td>보상형 전면 미디에이션 광고 리워드 지급 콜백 리스너</td></tr></tbody></table>
 
 ```java
 public void destroy() // onDestroy() 시 호출
@@ -41,11 +41,11 @@ public void destroy() // onDestroy() 시 호출
 **AdWhaleMediationFullScreenContentCallback 클래스 API 설명**
 
 ```java
-public void onAdClicked() // 미디에이션 보상형광고클릭 시
+public void onAdClicked() // 미디에이션 보상형 전면 광고클릭 시
 ```
 
 ```java
-public void onAdDismissed() // 미디에이션 보상형광고닫기 시
+public void onAdDismissed() // 미디에이션 보상형 전면 광고닫기 시
 ```
 
 ```java
@@ -55,7 +55,7 @@ public void onFailedToShow(int statusCode, String message) // 미디에이션 �
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>초기화 결과 메시지</td></tr></tbody></table>
 
 ```java
-public void onAdShowed() // 미디에이션 보상형광고표시 후
+public void onAdShowed() // 미디에이션 보상형 전면 광고표시 후
 ```
 
 
@@ -63,13 +63,13 @@ public void onAdShowed() // 미디에이션 보상형광고표시 후
 **AdWhaleMediationRewardAdLoadCallback 클래스 API 설명**
 
 ```java
-public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String message) // 미디에이션 보상형광고로드 성공 시
+public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String message) // 미디에이션 보상형 전면 광고로드 성공 시
 ```
 
 <table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
 
 ```java
-public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형광고로드 실패 시
+public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 전면 광고로드 실패 시
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>광고표시 결과 메시지</td></tr></tbody></table>
@@ -79,14 +79,14 @@ public void onFailedToShow(int statusCode, String message) // 미디에이션 �
 **AdWhaleMediationUserEarnedRewardListener 클래스 API 설명**
 
 ```java
-public void onUserRewarded(AdWhaleMediationRewardItem rewardItem) // 미디에이션 보상형리워드지급 성공 시
+public void onUserRewarded(AdWhaleMediationRewardItem rewardItem) // 미디에이션 보상형 전면 리워드지급 성공 시
 ```
 
 <table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardtem</td><td>리워드 타입, 리워드 금액 값을 지니는 객체</td></tr></tbody></table>
 
 
 
-**보상형 구현 샘플은 아래와 같습니다.**&#x20;
+**보상형 전면 구현 샘플은 아래와 같습니다.**&#x20;
 
 ```java
 import android.os.Bundle;
