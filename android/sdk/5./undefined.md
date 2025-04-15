@@ -103,13 +103,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         root = (ConstraintLayout) findViewById(R.id.root);      
-        
-        // 배너 뷰 생성
+    
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
+            
+        // 배너광고 뷰 생성
         adWhaleMediationAdView = new AdWhaleMediationAdView(this);
         adWhaleMediationAdView.setPlacementUid("발급받은 placement uid 값");
         adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.BANNER320x50);
-
-        // 배너 뷰 콜백 리스너 등록
+        
+        // 배너광고 뷰 콜백 리스너 등록
         adWhaleMediationAdView.setAdWhaleMediationAdViewListener(new AdWhaleMediationAdViewListener() {
             @Override
             public void onAdLoaded() {
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             public void onInitComplete(int statusCode, String message) {
                 Log.i(MainActivity.class.getSimpleName(), ".onInitComplete(" + statusCode + ", " + message + ");");
                 if(adWhaleMediationAdView != null) {
-                    // 배너 뷰 로드
+                    // 배너광고 뷰 로드
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
                         adWhaleMediationAdView.loadAd();
                     },0);                    
@@ -385,13 +388,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         root = findViewById<View>(R.id.root) as ConstraintLayout
-                
-        // 배너 뷰 생성
+               
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+         
+        // 배너광고 뷰 생성
         adWhaleMediationAdView = AdWhaleMediationAdView(this)
         adWhaleMediationAdView.setPlacementUid("발급받은 placement uid 값")
         adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.BANNER320x50)
          
-        // 배너 뷰 콜백 리스너 등록        
+        // 배너광고 뷰 콜백 리스너 등록        
         adWhaleMediationAdView!!.adWhaleMediationAdViewListener =
             object : AdWhaleMediationAdViewListener {
                 override fun onAdLoaded() {

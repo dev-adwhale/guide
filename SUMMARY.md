@@ -16,9 +16,9 @@
     * [네트워크 보안 구성](android/sdk/7.-option/undefined.md)
     * [난독화(proguard) 설정](android/sdk/7.-option/proguard.md)
     * [액티비티 Orientation 설정](android/sdk/7.-option/orientation.md)
+    * [로거 설정](android/sdk/7.-option/undefined-1.md)
   * [8. Changelog](android/sdk/8.-changelog.md)
   * [9. ETC](android/sdk/9.-etc/README.md)
-    * [사용하는 Dependencies 목록](android/sdk/9.-etc/dependencies.md)
     * [Error code](android/sdk/9.-etc/error-code.md)
 
 ## REACT NATIVE
@@ -52,7 +52,6 @@
     * [expo 환경 설정](react-native/sdk/option/expo-setting.md)
   * [8. ChangeLog](react-native/sdk/changelog.md)
   * [9. ETC](react-native/sdk/etc/README.md)
-    * [사용하는 Dependencies 목록](react-native/sdk/etc/dependencies.md)
     * [Error Code](react-native/sdk/etc/error-code.md)
 
 ## FLUTTER
@@ -99,5 +98,4 @@
     * [액티비티 Orientation 설정](flutter/sdk/9.-option/orientation.md)
   * [10. ChangeLog](flutter/sdk/10.-changelog.md)
   * [11. ETC](flutter/sdk/11.-etc/README.md)
-    * [사용하는 Dependencies 목록](flutter/sdk/11.-etc/dependencies.md)
     * [Error Code](flutter/sdk/11.-etc/error-code.md)

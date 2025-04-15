@@ -13,8 +13,14 @@
 
 -keep interface net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener {*;}
 
+-keepclasseswithmembers class net.adwhale.sdk.utils.AdWhaleLog {
+    public static *** setLogLevel(***);
+    public static *** getLogLevel();
+}
+
 -keep class net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE {*;}
 -keep class net.adwhale.sdk.mediation.ads.ADWHALE_RESULT_CODE {*;}
+-keep class net.adwhale.sdk.utils.AdWhaleLog$LogLevel{*;}
 -keep class net.adwhale.sdk.impl.mediation.ReqMediationAdConfig {*;}
 -keep class net.adwhale.sdk.impl.mediation.ResMediationAdConfig {*;}
 -keep class net.adwhale.sdk.impl.mediation.ResMediation {*;}
@@ -41,6 +47,19 @@
 -keep interface net.adwhale.sdk.mediation.ads.AdWhaleMediationFullScreenContentCallback {*;}
 -keep interface net.adwhale.sdk.mediation.ads.AdWhaleMediationRewardedAdLoadCallback {*;}
 -keep interface net.adwhale.sdk.mediation.ads.AdWhaleMediationUserEarnedRewardListener {*;}
+
+-keepclasseswithmembers class net.adwhale.sdk.mediation.ads.AdWhaleMediationNativeAdView {
+    public <init>(...);
+    public *** loadAd();
+    public *** destroy();
+    public *** setAdWhaleMediationNativeAdViewListener(***);
+    public *** setNativeAdSize(***, ***);
+    public *** setPlacementUid(***);
+    public *** resume();
+    public *** pause();
+}
+
+-keep interface net.adwhale.sdk.mediation.ads.AdWhaleMediationNativeAdViewListener {*;}
 
 -keepclasseswithmembers class net.adwhale.sdk.mediation.ads.AdWhaleMediationAdView {
     public <init>(...);
@@ -106,6 +125,8 @@
 
 -keep class net.adwhale.sdk.admob.adapter.AdManagerAdInterstitialLoader {*;}
 
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdNativeLoader {*;}
+
 -keep class net.adwhale.sdk.admob.adapter.AdManagerAdRewardedInterstitialLoader {*;}
 
 #================== AdWhale AdManager Adapter SDK Proguard for Release 적용 코드 끝 ==================
@@ -118,7 +139,21 @@
 
 -keep class net.adwhale.sdk.admob.adapter.AdmobAdInterstitialLoader {*;}
 
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdNativeLoader {*;}
+
 -keep class net.adwhale.sdk.admob.adapter.AdmobAdRewardedInterstitialLoader {*;}
 
 #================== AdWhale Admob Adapter SDK Proguard for Release 적용 코드 끝 ==================
+
+#================== AdWhale LevelPlay Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdBannerPreLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdRewardLoader {*;}
+
+#================== AdWhale LevelPlay Adapter SDK Proguard for Release 적용 코드 끝 ==================
 ```

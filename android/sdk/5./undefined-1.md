@@ -85,7 +85,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
+        
+        // 초기화 코드
         AdWhaleMediationAds.init(this, new AdWhaleMediationOnInitCompleteListener() {
             @Override
             public void onInitComplete(int statusCode, String message) {
@@ -93,11 +97,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 전면광고 생성
         adWhaleMediationInterstitialAd = new AdWhaleMediationInterstitialAd("발급받은 placement uid 값");
+        
+        // 전면광고 콜백 리스너 등록
         adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
             @Override
             public void onAdLoaded() {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded();");
+                // 전면광고 표시
                 adWhaleMediationInterstitialAd.showAd();
             }
 
@@ -127,10 +135,12 @@ public class MainActivity extends AppCompatActivity {
             }            
         });
 
+        // 전면광고 로드
         adWhaleMediationInterstitialAd.loadAd();
 
     }
     
+    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -226,18 +236,26 @@ public class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+        
+        // 초기화 코드
         AdWhaleMediationAds.init(this, AdWhaleMediationOnInitCompleteListener {
             statusCode, message ->
                 Log.i(MainActivity::class.simpleName, ".onInitComplete($statusCode, $message)")
         })
 
+        // 전면광고 생성
         adWhaleMediationInterstitialAd = AdWhaleMediationInterstitialAd("발급받은 placement uid 값")
+
+        // 전면광고 콜백 리스너 등록
         adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(
         
             object : AdWhaleMediationInterstitialAdListener {
             
             override fun onAdLoaded() {
                 Log.i(MainActivity::class.simpleName, ".onAdLoaded()")
+                // 전면광고 표시
                 adWhaleMediationInterstitialAd.showAd()
             }
 
@@ -262,10 +280,12 @@ public class MainActivity : AppCompatActivity() {
             }                        
         });
 
+        // 전면광고 로드
         adWhaleMediationInterstitialAd.loadAd()
 
     }
     
+    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
     override fun onDestroy() {
         super.onDestroy()
         adWhaleMediationInterstitialAd.destroy()

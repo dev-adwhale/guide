@@ -111,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
+        
+        // 초기화 코드
         AdWhaleMediationAds.init(this, new AdWhaleMediationOnInitCompleteListener() {
             @Override
             public void onInitComplete(int statusCode, String message) {
@@ -118,7 +122,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 보상형전면광고 생성
         adWhaleMediationRewardAd = new AdWhaleMediationRewardAd("발급받은 placement uid 값");
+        
+        // 보상형전면광고 콜백 리스너 등록
         adWhaleMediationRewardAd.setAdWhaleMediationFullScreenContentCallback(new AdWhaleMediationFullScreenContentCallback() {
         
             @Override
@@ -142,12 +149,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 보상형전면광고 로드
         adWhaleMediationRewardAd.loadAd(new AdWhaleMediationRewardedAdLoadCallback() {
             @Override
             public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String message) {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded(" + message + ")");
                 
                 if(adWhaleMediationRewardAd != null) {
+                    // 보상형전면광고 표시
                     adWhaleMediationRewardAd.showAd(adWhaleMediationRewardItem -> {
                         Log.i(MainActivity.class.getSimpleName(), ".onUserRewarded(" + adWhaleMediationRewardItem.toString() + ")");
                     });                
@@ -162,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     
+    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -278,12 +288,19 @@ public class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+        
+        // 초기화 코드
         AdWhaleMediationAds.init(this, AdWhaleMediationOnInitCompleteListener {
             statusCode, message ->
                 Log.i(MainActivity::class.simpleName, ".onInitComplete($statusCode, $message)")
         })
 
+        // 보상형전면광고 생성
         adWhaleMediationRewardAd = AdWhaleMediationRewardAd("발급받은 placement uid 값")
+        
+        // 보상형전면광고 콜백 리스너 등록
         adWhaleMediationRewardAd.setAdWhaleMediationFullScreenContentCallback(
         
             object : AdWhaleMediationFullScreenContentCallback {
@@ -305,10 +322,12 @@ public class MainActivity : AppCompatActivity() {
             }
         })
         
+        // 보상형전면광고 로드
         adWhaleMediationRewardAd.loadAd(object : AdWhaleMediationRewardedAdLoadCallback {
             
             override fun onAdLoaded(adWhaleMediationRewardAd : AdWhaleMediationRewardAd, message : String) {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded(${message})");
+                // 보상형전면광고 표시
                 adWhaleMediationRewardAd.showAd(adWhaleMediationRewardItem -> {
                     Log.i(MainActivity.class.getSimpleName(), ".onUserRewarded(${adWhaleMediationRewardItem.toString()})");
                 });                 
@@ -321,6 +340,7 @@ public class MainActivity : AppCompatActivity() {
 
     }
     
+    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
     override fun onDestroy() {
         super.onDestroy()
         adWhaleMediationRewardAd.destroy()
