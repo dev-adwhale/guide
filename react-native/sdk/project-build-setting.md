@@ -50,7 +50,7 @@ allprojects {
 }
 ```
 
-### 최신 SDK version : 2.5.2
+### 최신 SDK version : 2.5.4
 
 ### dependencies 설정
 
@@ -69,19 +69,22 @@ android {
 dependencies {
     ...
     // 기본 디펜던시: ADwhale Mediation SDK Repository
-    implementation 'net.adwhale.sdk.mediation:adwhale-mediation-sdk:2.5.2'
+    implementation 'net.adwhale.sdk.mediation:adwhale-mediation-sdk:2.5.4'
 
     // 옵션 디펜던시(제외가능): Cauly Adapter SDK Repository
     implementation 'net.adwhale.sdk.cauly.adapter:cauly-sdk:3.5.35'
 
     // 옵션 디펜던시(제외가능): Admize Adapter SDK Repository
-    implementation 'net.adwhale.sdk.admize.adapter:admize-sdk:1.0.3'
+    implementation 'net.adwhale.sdk.admize.adapter:admize-sdk:1.0.5'
 
     // 옵션 디펜던시(제외가능): AdFit Adapter SDK Repository
     implementation 'net.adwhale.sdk.adfit.adapter:adfit-sdk:3.17.2'
 
     // 옵션 디펜던시(제외가능): Admob Adapter SDK Repository
     implementation 'net.adwhale.sdk.admob.adapter:admob-sdk:23.6.0'
+    
+    // 옵션 디펜던시(제외가능): Levelplay Adapter SDK Repository
+    implementation 'net.adwhale.sdk.levelplay.adapter:levelplay-sdk:8.7.0' 
     ...    
 }
 

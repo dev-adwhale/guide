@@ -83,6 +83,9 @@ public class RNAdWhaleMediationAdSettingModule extends ReactContextBaseJavaModul
             promise.reject("NO_ACTIVITY", "Unable to initialize AdWhale SDK: No activity available");
             return;
         }
+        
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
 
         AdWhaleMediationAds.init(currentActivity, new AdWhaleMediationOnInitCompleteListener() {
             @Override
@@ -132,6 +135,11 @@ class RNAdWhaleMediationAdSettingModule(context : ReactApplicationContext?) : Re
 
     @ReactMethod(isBlockingSynchronousMethod = true)
     fun initialize(promise: Promise) : Unit {
+        Log.i(REACT_CLASS_NAME, ".initialize()")
+        
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
+        
         AdWhaleMediationAds.init(currentActivity) {
             statusCode, message -> Log.i(REACT_CLASS_NAME, ".onInitComplete($statusCode, ${message});")
             promise.resolve(statusCode)

@@ -121,4 +121,16 @@
 -keep class net.adwhale.sdk.admob.adapter.AdmobAdRewardedInterstitialLoader {*;}
 
 #================== AdWhale Admob Adapter SDK Proguard for Release 적용 코드 끝 ==================
+
+#================== AdWhale LevelPlay Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdBannerPreLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdRewardLoader {*;}
+
+#================== AdWhale LevelPlay Adapter SDK Proguard for Release 적용 코드 끝 ==================
 ```

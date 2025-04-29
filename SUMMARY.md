@@ -49,6 +49,7 @@
     * [네트워크 보안 구성](react-native/sdk/option/network-security-configuration.md)
     * [난독화(proguard) 설정](react-native/sdk/option/proguard-setting.md)
     * [액티비티 Orientation 설정](react-native/sdk/option/activity-orientation-setting.md)
+    * [로거 설정](react-native/sdk/option/logger-setting.md)
     * [expo 환경 설정](react-native/sdk/option/expo-setting.md)
   * [8. ChangeLog](react-native/sdk/changelog.md)
   * [9. ETC](react-native/sdk/etc/README.md)
