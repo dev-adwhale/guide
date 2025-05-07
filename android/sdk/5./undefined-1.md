@@ -22,9 +22,14 @@ public void setAdWhaleMediationInterstitialAdListener(AdWhaleMediationInterstiti
 public void loadAd() // 미디에이션 전면광고로드
 ```
 
+<pre class="language-java"><code class="lang-java"><strong>public void showAd() // 미디에이션 전면광고로드 후 표시할 때 호출
+</strong></code></pre>
+
 ```java
-public void showAd() // 미디에이션 전면광고로드 후 표시할 때 호출
+public void showAd(Activity activity) // 미디에이션 전면광고로드 후 표시할 때 호출
 ```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
 
 ```java
 public void destroy() // onDestroy() 시 호출
@@ -176,8 +181,16 @@ fun showAd() : Unit // 미디에이션 전면광고로드 후 표시할 때 호�
 ```
 
 ```kotlin
+fun showAd(activity : Activity) : Unit // 미디에이션 전면광고로드 후 표시할 때 호출
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
+
+```kotlin
 fun destroy() : Unit // onDestroy() 시 호출
 ```
+
+
 
 
 
