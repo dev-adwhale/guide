@@ -10,7 +10,7 @@
   * [5. 광고 구현](android/sdk/5./README.md)
     * [배너](android/sdk/5./undefined.md)
     * [전면](android/sdk/5./undefined-1.md)
-    * [보상형 전면](android/sdk/5./undefined-2.md)
+    * [보상형](android/sdk/5./undefined-2.md)
   * [6. Sample Project](android/sdk/6.-sample-project.md)
   * [7. OPTION](android/sdk/7.-option/README.md)
     * [네트워크 보안 구성](android/sdk/7.-option/undefined.md)
