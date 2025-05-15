@@ -1,4 +1,9 @@
-# 6. Sample Project
+# 7. Sample Project
 
-{% embed url="https://github.com/dev-adwhale/AdWhaleMediationSDK-ReactNative" %}
+**React Native Sample**
 
+{% embed url="https://github.com/dev-adwhale/AdWhaleMediationSDK-ReactNative/tree/main/ReactNativeSample" %}
+
+**React Native Expo Sample**
+
+{% embed url="https://github.com/dev-adwhale/AdWhaleMediationSDK-ReactNative/tree/main/ExpoSample" %}

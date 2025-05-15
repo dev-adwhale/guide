@@ -4,6 +4,72 @@
 
 {% tabs %}
 {% tab title="Java" %}
+**AdWhaleMediationInterstitialAd 클래스 API 설명**
+
+```java
+public AdWhaleMediationInterstitialAd(String placementUid)
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+
+```java
+public void setAdWhaleMediationInterstitialAdListener(AdWhaleMediationInterstitialAdListener listener)
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationInterstitialAdListener</p></td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```java
+public void loadAd() // 미디에이션 전면광고로드
+```
+
+<pre class="language-java"><code class="lang-java"><strong>public void showAd() // 미디에이션 전면광고로드 후 표시할 때 호출
+</strong></code></pre>
+
+```java
+public void showAd(Activity activity) // 미디에이션 전면광고로드 후 표시할 때 호출
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
+
+```java
+public void destroy() // onDestroy() 시 호출
+```
+
+\
+**AdWhaleMediationInterstitialAdListener 클래스 API 설명**
+
+```java
+public void onAdLoaded() // 미디에이션 전면광고요청 성공 시
+```
+
+```java
+public void onAdLoadFailed(int statusCode, String message) // 미디에이션 전면광고요청 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```java
+public void onAdShowed() // 미디에이션 전면광고표시 후
+```
+
+```java
+public void onAdShowFailed(int statusCode, String message) // 미디에이션 전면광고표시 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```java
+public void onAdClosed() // 미디에이션 전면광고닫기 시
+```
+
+```java
+public void onAdClicked() // 미디에이션 전면광고클릭 시
+```
+
+
+
+**전면 구현 샘플은 아래와 같습니다.**&#x20;
+
 ```java
 public class RNAdWhaleMediationInterstitialAd extends ReactContextBaseJavaModule implements AdWhaleMediationInterstitialAdListener {
 
@@ -21,20 +87,10 @@ public class RNAdWhaleMediationInterstitialAd extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void initialize(String placementUid, final Promise promise) {
-        Log.e(REACT_CLASS_NAME, "initialize() placementUid: " + placementUid);
+    public void loadAd(String placementUid) {
+        Log.e(REACT_CLASS_NAME, ".loadAd()");
         adWhaleMediationInterstitialAd = new AdWhaleMediationInterstitialAd(placementUid);
         adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(this);
-    }
-
-    @ReactMethod
-    public void loadAd() {
-        Log.e(REACT_CLASS_NAME, ".loadAd()");
-
-        if (adWhaleMediationInterstitialAd == null) {
-            Log.e(REACT_CLASS_NAME, "adWhaleMediationInterstitialAd is null");
-            return;
-        }
 
         UiThreadUtil.runOnUiThread(() -> {
             adWhaleMediationInterstitialAd.loadAd();
@@ -121,11 +177,79 @@ public class RNAdWhaleMediationInterstitialAd extends ReactContextBaseJavaModule
      }
 }
 ```
-
-
 {% endtab %}
 
 {% tab title="Kotlin" %}
+**AdWhaleMediationInterstitialAd 클래스 API 설명**
+
+```kotlin
+AdWhaleMediationInterstitialAd(placementUid : String)
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+
+```kotlin
+fun setAdWhaleMediationInterstitialAdListener(listener : AdWhaleMediationInterstitialAdListener) : Unit
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener</td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```kotlin
+fun loadAd() : Unit // 미디에이션 전면광고로드
+```
+
+```kotlin
+fun showAd() : Unit // 미디에이션 전면광고로드 후 표시할 때 호출
+```
+
+```kotlin
+fun showAd(activity : Activity) : Unit // 미디에이션 전면광고로드 후 표시할 때 호출
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
+
+```kotlin
+fun destroy() : Unit // onDestroy() 시 호출
+```
+
+
+
+
+
+**AdWhaleMediationInterstitialAdListener 클래스 API 설명**
+
+```kotlin
+fun onAdLoaded() : Unit // 미디에이션 전면광고요청 성공 시
+```
+
+```kotlin
+fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면광고요청 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```kotlin
+fun onAdShowed() : Unit // 미디에이션 전면광고표시 후
+```
+
+```kotlin
+fun onAdShowFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면광고표시 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```kotlin
+fun onAdClosed() : Unit // 미디에이션 전면광고닫기 시
+```
+
+```kotlin
+fun onAdClicked() : Unit // 미디에이션 전면광고클릭 시
+```
+
+
+
+**전면 구현 샘플은 아래와 같습니다.**&#x20;
+
 ```kotlin
 class RNAdWhaleMediationInterstitialAd(private val context: ReactApplicationContext) : ReactContextBaseJavaModule(context), AdWhaleMediationInterstitialAdListener {
 
@@ -140,15 +264,11 @@ class RNAdWhaleMediationInterstitialAd(private val context: ReactApplicationCont
     }
 
     @ReactMethod
-    fun initialize(placementUid: String, promise: Promise) {
-        Log.e(REACT_CLASS_NAME, "initialize() placementUid: $placementUid")
+    fun loadAd(placementUid: String) {
+        Log.e(REACT_CLASS_NAME, "loadAd()")
         adWhaleMediationInterstitialAd = AdWhaleMediationInterstitialAd(placementUid)
         adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(this)
-    }
-
-    @ReactMethod
-    fun loadAd() {
-        Log.e(REACT_CLASS_NAME, "loadAd()")
+        
         UiThreadUtil.runOnUiThread{
             adWhaleMediationInterstitialAd.loadAd()
         }
@@ -215,8 +335,6 @@ class RNAdWhaleMediationInterstitialAd(private val context: ReactApplicationCont
     }
 }
 ```
-
-
 {% endtab %}
 {% endtabs %}
 
@@ -296,7 +414,6 @@ class InterstitialAd extends Component {
   }
 
   _interstitialAdInit = () => {
-    RNAdWhaleMediationInterstitialAd.initialize("발급받은 placement uid 값");
     const eventEmitter = new NativeEventEmitter(RNAdWhaleMediationInterstitialAd);
     eventEmitter.addListener('onInterstitialAdLoaded', this._onInterstitialAdLoaded);
     eventEmitter.addListener('onInterstitialAdShowed', this._onInterstitialAdShowed);
@@ -307,7 +424,7 @@ class InterstitialAd extends Component {
   }
 
   onPressInterstitialRequestButton = () => {
-    RNAdWhaleMediationInterstitialAd.loadAd();
+    RNAdWhaleMediationInterstitialAd.loadAd("발급받은 placement uid 값");
   }
 
   onPressInterstitialShowButton = () => {

@@ -1,4 +1,4 @@
-# 4. SDK 초기화 및 구현
+# 5. SDK 초기화 및 구현
 
 ### 1. MainActivity 클래스
 
@@ -31,6 +31,22 @@ intent-filter를 사용하는 액티비티를 포함하는 경우 exported=true 
     </activity>
     ...
 </application>
+```
+
+액티비티 Orientation 설정
+
+{% hint style="info" %}
+액티비티 형식의 랜딩을 지원하기 위해서는 아래의 설정을 추가하여야 합니다.
+
+만약 설정하지 않으면 화면 전환 시 마다 view가 초기화 됩니다.
+{% endhint %}
+
+```xml
+<!-- AndroidManifest.xml -->
+<activity
+    android:name=".MainActivity"
+    android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+</activity>
 ```
 
 ### 2. RNAdWhaleMediationAdSettingModule 클래스
