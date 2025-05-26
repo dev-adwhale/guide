@@ -521,7 +521,7 @@ class App extends Component {
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.mainViewStyle}>
                     <View style={styles.contentViewStyle}>
-                        <RewardAd />
+                        <BannerAd />
                     </View>
                 </View>
             </SafeAreaView>
