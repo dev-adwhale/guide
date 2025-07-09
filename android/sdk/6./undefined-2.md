@@ -33,8 +33,16 @@ public void showAd(AdWhaleMediationUserEarnedRewardListener listener) // 미디�
 <table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationUserEarnedRewardListener</p></td><td>보상형 미디에이션 광고 리워드 지급 콜백 리스너</td></tr></tbody></table>
 
 ```java
-public void destroy() // onDestroy() 시 호출
+public void showAd(Activity activity, AdWhaleMediationUserEarnedRewardListener listener) // 미디에이션 보상형 전면 광고로드 후 표시할 때 호출
 ```
+
+| 파라미터 타입                                                                              | 파라미터 값                     |
+| ------------------------------------------------------------------------------------ | -------------------------- |
+| android.app.Activity                                                                 | Android Activity 클래스       |
+| <p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationUserEarnedRewardListener</p> | 보상형 미디에이션 광고 리워드 지급 콜백 리스너 |
+
+<pre class="language-java"><code class="lang-java"><strong>public void destroy() // onDestroy() 시 호출
+</strong></code></pre>
 
 
 
