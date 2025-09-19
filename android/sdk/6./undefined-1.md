@@ -1,5 +1,34 @@
 # 전면
 
+{% hint style="danger" %}
+#### SDK 업데이트에 따른 onAdLoaded 메서드 변경 안내
+
+AdWhale SDK 2.6.0 버전부터 전면 광고 리스너(AdWhaleMediationInterstitialAdListener)의 광고 로드 성공 콜백인 `onAdLoaded` 메서드 시그니처가 변경되었습니다.
+
+* 광고 응답에 대한 상세 정보를 제공하는 AdWhaleMediationResponseInfo 객체가 파라미터로 추가되었습니다.
+* 2.5.9 이하 버전을 사용하는 앱에서 업데이트를 진행하면, 아래와 같은 컴파일 에러가 발생할 수 있습니다.
+
+```
+error: <anonymous ...> is not abstract and does not override abstract method onAdLoaded(AdWhaleMediationResponseInfo) in AdWhaleMediationInterstitialAdListener
+```
+
+
+
+**조치 안내**
+
+* 기존 `onAdLoaded()` 메서드에 `AdWhaleMediationResponseInfo` 파라미터를 추가하여 새로운 시그니처에 맞게 수정합니다.
+
+```java
+adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
+    @Override
+    public void onAdLoaded(AdWhaleMediationResponseInfo responseInfo) { // responseInfo 파라미터 추가
+        // ...
+    }
+    // ...
+});
+```
+{% endhint %}
+
 {% hint style="warning" %}
 `targetSdkVersion 35` 환경의 Android 15 기기에서 **전면 광고 일부 화면 잘림 이슈**를 수정했습니다.
 
@@ -45,8 +74,12 @@ public void destroy() // onDestroy() 시 호출
 **AdWhaleMediationInterstitialAdListener 클래스 API 설명**
 
 ```java
-public void onAdLoaded() // 미디에이션 전면광고요청 성공 시
+public void onAdLoaded(AdWhaleMediationResponseInfo responseInfo) // 미디에이션 전면광고요청 성공 시
 ```
+
+| 파라미터 타입                                                    | 파라미터 값   |
+| ---------------------------------------------------------- | -------- |
+| net.adwhale.sdk.mediation.ads.AdWhaleMediationResponseInfo | 광고 응답 정보 |
 
 ```java
 public void onAdLoadFailed(int statusCode, String message) // 미디에이션 전면광고요청 실패 시
@@ -114,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         // 전면광고 콜백 리스너 등록
         adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
             @Override
-            public void onAdLoaded() {
+            public void onAdLoaded(AdWhaleMediationResponseInfo responseInfo) {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded();");
                 // 전면광고 표시
                 adWhaleMediationInterstitialAd.showAd();
@@ -203,8 +236,12 @@ fun destroy() : Unit // onDestroy() 시 호출
 **AdWhaleMediationInterstitialAdListener 클래스 API 설명**
 
 ```kotlin
-fun onAdLoaded() : Unit // 미디에이션 전면광고요청 성공 시
+fun onAdLoaded(responseInfo : AdWhaleMediationResponseInfo) : Unit // 미디에이션 전면광고요청 성공 시
 ```
+
+| 파라미터 타입                                                    | 파라미터 값   |
+| ---------------------------------------------------------- | -------- |
+| net.adwhale.sdk.mediation.ads.AdWhaleMediationResponseInfo | 광고 응답 정보 |
 
 ```kotlin
 fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면광고요청 실패 시
@@ -272,7 +309,7 @@ public class MainActivity : AppCompatActivity() {
         
             object : AdWhaleMediationInterstitialAdListener {
             
-            override fun onAdLoaded() {
+            override fun onAdLoaded(responseInfo : AdWhaleMediationResponseInfo) {
                 Log.i(MainActivity::class.simpleName, ".onAdLoaded()")
                 // 전면광고 표시
                 adWhaleMediationInterstitialAd.showAd()

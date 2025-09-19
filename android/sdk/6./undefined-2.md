@@ -1,5 +1,34 @@
 # 보상형
 
+{% hint style="danger" %}
+#### SDK 업데이트에 따른 onAdLoaded 메서드 변경 안내
+
+AdWhale SDK 2.6.0 버전부터 보상형 광고 리스너(**AdWhaleMediationRewardAdLoadCallback**)의 광고 로드 성공 콜백인 `onAdLoaded` 메서드 시그니처가 변경되었습니다.
+
+* 광고 응답에 대한 상세 정보를 제공하는 AdWhaleMediationResponseInfo 객체가 파라미터로 추가되었습니다.
+* 2.5.9 이하 버전을 사용하는 앱에서 업데이트를 진행하면, 아래와 같은 컴파일 에러가 발생할 수 있습니다.
+
+```
+error: <anonymous ...> is not abstract and does not override abstract method onAdLoaded(AdWhaleMediationRewardAd,AdWhaleMediationResponseInfo,String) in AdWhaleMediationRewardedAdLoadCallback
+```
+
+
+
+**조치 안내**
+
+* 기존 `onAdLoaded()` 메서드에 `AdWhaleMediationResponseInfo` 파라미터를 추가하여 새로운 시그니처에 맞게 수정합니다.
+
+```java
+adWhaleMediationRewardAd.loadAd(new AdWhaleMediationRewardedAdLoadCallback() {
+    @Override
+    public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, AdWhaleMediationResponseInfo responseInfo, String message) { // responseInfo 파라미터 추가
+        // ...
+    }
+    // ...
+});
+```
+{% endhint %}
+
 보상형 광고 생성
 
 {% tabs %}
@@ -71,10 +100,10 @@ public void onAdShowed() // 미디에이션 보상형 광고표시 후
 **AdWhaleMediationRewardAdLoadCallback 클래스 API 설명**
 
 ```java
-public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String message) // 미디에이션 보상형 광고로드 성공 시
+public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, AdWhaleMediationResponseInfo responseInfo, String message) // 미디에이션 보상형 광고로드 성공 시
 ```
 
-<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationResponseInfo</td><td>광고 응답 정보</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
 
 ```java
 public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 광고로드 실패 시
@@ -160,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         // 보상형광고 로드
         adWhaleMediationRewardAd.loadAd(new AdWhaleMediationRewardedAdLoadCallback() {
             @Override
-            public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String message) {
+            public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, AdWhaleMediationResponseInfo responseInfo, String message) {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded(" + message + ")");
                 
                 if(adWhaleMediationRewardAd != null) {
@@ -258,10 +287,10 @@ fun onAdShowed() : Unit // 미디에이션 보상형광고표시 후
 **AdWhaleMediationRewardAdLoadCallback 클래스 API 설명**
 
 ```kotlin
-fun onAdLoaded(adWhaleMediationRewardAd : AdWhaleMediationRewardAd, message : String) : Unit // 미디에이션 보상형광고로드 성공 시
+fun onAdLoaded(adWhaleMediationRewardAd : AdWhaleMediationRewardAd, responseInfo : AdWhaleMediationResponseInfo, message : String) : Unit // 미디에이션 보상형광고로드 성공 시
 ```
 
-<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationResponseInfo</td><td>광고 응답 정보</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
 
 ```kotlin
 fun onFailedToShow(statusCode : Int, message : String) : Unit // 미디에이션 보상형로드 실패 시
@@ -342,7 +371,8 @@ public class MainActivity : AppCompatActivity() {
         // 보상형광고 로드
         adWhaleMediationRewardAd.loadAd(object : AdWhaleMediationRewardedAdLoadCallback {
             
-            override fun onAdLoaded(adWhaleMediationRewardAd : AdWhaleMediationRewardAd, message : String) {
+            override fun onAdLoaded(adWhaleMediationRewardAd : AdWhaleMediationRewardAd, responseInfo : AdWhaleMediationResponseInfocha
+            , message : String) {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded(${message})");
                 // 보상형광고 표시
                 adWhaleMediationRewardAd.showAd(adWhaleMediationRewardItem -> {
