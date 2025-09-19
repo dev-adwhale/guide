@@ -1,34 +1,5 @@
 # 배너
 
-{% hint style="danger" %}
-#### SDK 업데이트에 따른 onAdLoaded 메서드 변경 안내
-
-AdWhale SDK 2.6.0 버전부터 배너 광고 리스너(AdWhaleMediationAdViewListener)의 광고 로드 성공 콜백인 `onAdLoaded` 메서드 시그니처가 변경되었습니다.
-
-* 광고 응답에 대한 상세 정보를 제공하는 AdWhaleMediationResponseInfo 객체가 파라미터로 추가되었습니다.
-* 2.5.9 이하 버전을 사용하는 앱에서 업데이트를 진행하면, 아래와 같은 컴파일 에러가 발생할 수 있습니다.
-
-```
-error: <anonymous ...> is not abstract and does not override abstract method onAdLoaded(AdWhaleMediationResponseInfo) in AdWhaleMediationAdViewListener
-```
-
-
-
-**조치 안내**
-
-* 기존 `onAdLoaded()` 메서드에 `AdWhaleMediationResponseInfo` 파라미터를 추가하여 새로운 시그니처에 맞게 수정합니다.
-
-```java
-adWhaleMediationAdView.setAdWhaleMediationAdViewListener(new AdWhaleMediationAdViewListener() {
-    @Override
-    public void onAdLoaded(AdWhaleMediationResponseInfo responseInfo) { // responseInfo 파라미터 추가
-        // ...
-    }
-    // ...
-});
-```
-{% endhint %}
-
 {% hint style="info" %}
 &#x20;ADwhale Mediation 배너 광고는 Programmatic 방식과 XML 방식 2가지 형태의 구현과 사용이 가능합니다.&#x20;
 {% endhint %}
@@ -83,12 +54,8 @@ public void destroy() // onDestroy 콜백 시 호출필요
 **AdWhaleMediationAdViewListener 클래스 API 설명**
 
 ```java
-public void onAdLoaded(AdWhaleMediationResponseInfo responseInfo) // 배너 광고요청 성공 시
+public void onAdLoaded() // 배너 광고요청 성공 시
 ```
-
-| 파라미터 타입                                                    | 파라미터 값   |
-| ---------------------------------------------------------- | -------- |
-| net.adwhale.sdk.mediation.ads.AdWhaleMediationResponseInfo | 광고 응답 정보 |
 
 ```java
 public void onAdLoadFailed(int statusCode, String message) // 미디에이션 배너광고요청 실패 시
@@ -148,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         // 배너광고 뷰 콜백 리스너 등록
         adWhaleMediationAdView.setAdWhaleMediationAdViewListener(new AdWhaleMediationAdViewListener() {
             @Override
-            public void onAdLoaded(AdWhaleMediationResponseInfo responseInfo) {
+            public void onAdLoaded() {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded();");
             }
 
@@ -267,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         // 배너 뷰 콜백 리스너 등록
         adWhaleMediationAdView.setAdWhaleMediationAdViewListener(new AdWhaleMediationAdViewListener() {
             @Override
-            public void onAdLoaded(AdWhaleMediationResponseInfo responseInfo) {
+            public void onAdLoaded() {
                 Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded();");
             }
 
@@ -375,12 +342,8 @@ fun destroy() : Unit // destroy 콜백 시 호출필요
 **AdWhaleMediationAdViewListener 클래스 API 설명**
 
 ```kotlin
-fun onAdLoaded(responseInfo : AdWhaleMediationResponseInfo) : Unit // 배너 광고요청 성공 시
+fun onAdLoaded() : Unit // 배너 광고요청 성공 시
 ```
-
-| 파라미터 타입                                                    | 파라미터 값   |
-| ---------------------------------------------------------- | -------- |
-| net.adwhale.sdk.mediation.ads.AdWhaleMediationResponseInfo | 광고 응답 정보 |
 
 ```kotlin
 fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 배너광고요청 실패 시
@@ -437,7 +400,7 @@ class MainActivity : AppCompatActivity() {
         // 배너광고 뷰 콜백 리스너 등록        
         adWhaleMediationAdView!!.adWhaleMediationAdViewListener =
             object : AdWhaleMediationAdViewListener {
-                override fun onAdLoaded(responseInfo : AdWhaleMediationResponseInfo) {
+                override fun onAdLoaded() {
                     Log.i(MainActivity::class.simpleName, ".onAdLoaded()")
                 }
 
@@ -534,7 +497,7 @@ class MainActivity : AppCompatActivity() {
         // 배너 뷰 콜백 리스너 등록        
         adWhaleMediationAdView!!.adWhaleMediationAdViewListener =
             object : AdWhaleMediationAdViewListener {
-                override fun onAdLoaded(responseInfo: AdWhaleMediationResponseInfo) {
+                override fun onAdLoaded() {
                     Log.i(MainActivity::class.simpleName, ".onAdLoaded()")
                 }
 

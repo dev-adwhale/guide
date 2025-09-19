@@ -17,7 +17,6 @@
     * [네트워크 보안 구성](android/sdk/8.-option/undefined.md)
     * [로거 설정](android/sdk/8.-option/undefined-1.md)
     * [LevelPlay 추가 설정](android/sdk/8.-option/levelplay.md)
-    * [응답 정보](android/sdk/8.-option/undefined-2.md)
   * [9. Changelog](android/sdk/9.-changelog.md)
   * [10. ETC](android/sdk/10.-etc/README.md)
     * [Error code](android/sdk/10.-etc/error-code.md)
