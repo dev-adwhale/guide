@@ -79,11 +79,10 @@ public void onAdClicked() // 배너 클릭 시
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE;
@@ -91,6 +90,7 @@ import net.adwhale.sdk.mediation.ads.AdWhaleMediationAdView;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAdViewListener;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
+import net.adwhale.sdk.utils.AdWhaleLog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -212,12 +212,15 @@ public class MainActivity extends AppCompatActivity {
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAdView;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAdViewListener;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
+import net.adwhale.sdk.utils.AdWhaleLog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -228,6 +231,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
+        
         // 배너 뷰 바인딩
         adWhaleMediationAdView = findViewById(R.id.adWhaleMediationAdView);
         

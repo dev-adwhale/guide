@@ -76,15 +76,15 @@ public void onAdClicked() // 미디에이션 전면광고클릭 시
 
 <pre class="language-java"><code class="lang-java">import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAd;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
+import net.adwhale.sdk.utils.AdWhaleLog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -235,15 +235,15 @@ fun onAdClicked() : Unit // 미디에이션 전면광고클릭 시
 ```kotlin
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAd;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
+import net.adwhale.sdk.utils.AdWhaleLog;
 
 public class MainActivity : AppCompatActivity() {
 

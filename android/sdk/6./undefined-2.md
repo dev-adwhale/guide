@@ -60,7 +60,7 @@ public void onAdDismissed() // 미디에이션 보상형 광고닫기 시
 public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 광고표시 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>초기화 결과 메시지</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>광고표시 결과 메시지</td></tr></tbody></table>
 
 ```java
 public void onAdShowed() // 미디에이션 보상형 광고표시 후
@@ -77,10 +77,10 @@ public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String
 <table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
 
 ```java
-public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 광고로드 실패 시
+public void onFailedToLoad(int statusCode, String message) // 미디에이션 보상형 광고로드 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>광고표시 결과 메시지</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고로드 결과 코드</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
 
 
 
@@ -99,8 +99,6 @@ public void onUserRewarded(AdWhaleMediationRewardItem rewardItem) // 미디에�
 ```java
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -109,6 +107,7 @@ import net.adwhale.sdk.mediation.ads.AdWhaleMediationFullScreenContentCallback;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationRewardAd;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationRewardedAdLoadCallback;
+import net.adwhale.sdk.utils.AdWhaleLog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -286,8 +285,6 @@ fun onUserRewarded(rewardItem : AdWhaleMediationRewardItem) : Unit // 미디에�
 ```kotlin
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -296,6 +293,7 @@ import net.adwhale.sdk.mediation.ads.AdWhaleMediationFullScreenContentCallback;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationRewardAd;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationRewardedAdLoadCallback;
+import net.adwhale.sdk.utils.AdWhaleLog;
 
 public class MainActivity : AppCompatActivity() {
 
