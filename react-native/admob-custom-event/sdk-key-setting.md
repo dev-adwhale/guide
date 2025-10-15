@@ -14,7 +14,7 @@ AndroidManifest.xml 파일에 \<application>에  \<meta-data> 태그를 추가�
             
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="Google AdMob 에서 발급한 키값" />            
+            android:value="애드웨일이 제공한 Admob APP ID 값" />            
         ...
 </application>
 ```
