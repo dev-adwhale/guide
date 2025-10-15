@@ -1,4 +1,4 @@
-# 3. SDK 연동 키 설정
+# 4. SDK 연동 키 설정
 
 {% hint style="info" %}
 AndroidManifest.xml 파일에 \<application>에  \<meta-data> 태그를 추가합니다.
@@ -14,7 +14,7 @@ AndroidManifest.xml 파일에 \<application>에  \<meta-data> 태그를 추가�
             
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="Admob에서 발급받은 APP ID 값" />            
+            android:value="애드웨일이 제공한 Admob APP ID값" />            
         ...
 </application>
 ```
