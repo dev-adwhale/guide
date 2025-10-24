@@ -29,13 +29,19 @@ public void loadAd() // 미디에이션 배너광고로드
 public void setAdwhaleAdSize(ADWHALE_AD_SIZE adWhaleAdSize) // 미디에이션 배너사이즈 설정
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE</td><td>배너 광고 사이즈(사이즈 종류: BANNER320x50, BANNER320x100, BANNER300x250, BANNER250x250) </td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE</td><td>배너 광고 사이즈(사이즈 종류: BANNER320x50, BANNER320x100, BANNER300x250, BANNER250x250, ADAPTIVE_ANCHOR) </td></tr></tbody></table>
 
 ```java
 public void setAdWhaleMediationAdViewListener(AdWhaleMediationAdViewListener listener) // 리스너 등록
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationAdViewListener</p></td><td>배너 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```java
+public void setAdaptiveAnchorWidth(int width) // 디바이스 width 입력. ADAPTIVE_ANCHOR 적응형 배너 적용시 사용.
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td>디바이스 width 입력</td></tr></tbody></table>
 
 ```java
 public void resume() // resume 콜백 시 호출필요
@@ -111,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
         adWhaleMediationAdView = new AdWhaleMediationAdView(this);
         adWhaleMediationAdView.setPlacementUid("발급받은 placement uid 값");
         adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.BANNER320x50);
+        // 적응형 배너 뷰를 적용할 경우 
+        // adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.ADAPTIVE_ANCHOR);
+        // adWhaleMediationAdView.setAdaptiveAnchorWidth(360); // 디바이스 width 입력
+        
         
         // 배너광고 뷰 콜백 리스너 등록
         adWhaleMediationAdView.setAdWhaleMediationAdViewListener(new AdWhaleMediationAdViewListener() {
@@ -323,13 +333,19 @@ fun loadAd() : Unit // 미디에이션 배너광고 로드
 fun setAdwhaleAdSize(adWhaleAdSize : ADWHALE_AD_SIZE) : Unit // 미디에이션 배너사이즈 설정
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE</td><td>배너 광고 사이즈(사이즈 종류: BANNER320x50, BANNER320x100, BANNER300x250, BANNER250x250) </td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE</td><td>배너 광고 사이즈(사이즈 종류: BANNER320x50, BANNER320x100, BANNER300x250, BANNER250x250, ADAPTIVE_ANCHOR) </td></tr></tbody></table>
 
 ```kotlin
-fun setAdWhaleMediationAdViewListener(listener : AdWhaleMediationAdViewListener) : Unit // 리스너 등
+fun setAdWhaleMediationAdViewListener(listener : Int) : Unit // 리스너 등
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationAdViewListener</p></td><td>배너 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>배너 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```kotlin
+fun setAdaptiveAnchorWidth(width : Int) : Unit // 디바이스 width 입력. ADAPTIVE_ANCHOR 적응형 배너 적용시 사용.
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>디바이스 width 입력</td></tr></tbody></table>
 
 ```kotlin
 fun resume() : Unit // resume 콜백 시 호출필요
@@ -355,7 +371,7 @@ fun onAdLoaded() : Unit // 배너 광고요청 성공 시
 fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 배너광고요청 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Inte</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int </td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```kotlin
 fun onAdClicked() : Unit // 배너 클릭 시
@@ -402,7 +418,10 @@ class MainActivity : AppCompatActivity() {
         adWhaleMediationAdView = AdWhaleMediationAdView(this)
         adWhaleMediationAdView.setPlacementUid("발급받은 placement uid 값")
         adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.BANNER320x50)
-         
+        // 적응형 배너 뷰를 적용할 경우 
+        // adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.ADAPTIVE_ANCHOR)
+        // adWhaleMediationAdView.setAdaptiveAnchorWidth(360) // 디바이스 width 입력
+        
         // 배너광고 뷰 콜백 리스너 등록        
         adWhaleMediationAdView!!.adWhaleMediationAdViewListener =
             object : AdWhaleMediationAdViewListener {
