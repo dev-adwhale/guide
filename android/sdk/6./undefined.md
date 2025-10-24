@@ -41,7 +41,7 @@ public void setAdWhaleMediationAdViewListener(AdWhaleMediationAdViewListener lis
 public void setAdaptiveAnchorWidth(int width) // 디바이스 width 입력. ADAPTIVE_ANCHOR 적응형 배너 적용시 사용.
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td>디바이스 width 입력</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td>디바이스 width 입력<br>0을 입력할 경우 디바이스 전체 가로 길이 적용됨</td></tr></tbody></table>
 
 ```java
 public void resume() // resume 콜백 시 호출필요
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.BANNER320x50);
         // 적응형 배너 뷰를 적용할 경우 
         // adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.ADAPTIVE_ANCHOR);
-        // adWhaleMediationAdView.setAdaptiveAnchorWidth(360); // 디바이스 width 입력
+        // adWhaleMediationAdView.setAdaptiveAnchorWidth(360); // 디바이스 width 입력. 0을 입력할 경우 디바이스 전체 가로 길이 적용됨.
         
         
         // 배너광고 뷰 콜백 리스너 등록
@@ -345,7 +345,7 @@ fun setAdWhaleMediationAdViewListener(listener : Int) : Unit // 리스너 등
 fun setAdaptiveAnchorWidth(width : Int) : Unit // 디바이스 width 입력. ADAPTIVE_ANCHOR 적응형 배너 적용시 사용.
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>디바이스 width 입력</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>디바이스 width 입력<br>0을 입력할 경우 디바이스 전체 가로 길이 적용됨</td></tr></tbody></table>
 
 ```kotlin
 fun resume() : Unit // resume 콜백 시 호출필요
@@ -420,7 +420,7 @@ class MainActivity : AppCompatActivity() {
         adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.BANNER320x50)
         // 적응형 배너 뷰를 적용할 경우 
         // adWhaleMediationAdView.setAdwhaleAdSize(ADWHALE_AD_SIZE.ADAPTIVE_ANCHOR)
-        // adWhaleMediationAdView.setAdaptiveAnchorWidth(360) // 디바이스 width 입력
+        // adWhaleMediationAdView.setAdaptiveAnchorWidth(360) // 디바이스 width 입력. 0을 입력할 경우 디바이스 전체 가로 길이 적용됨.
         
         // 배너광고 뷰 콜백 리스너 등록        
         adWhaleMediationAdView!!.adWhaleMediationAdViewListener =
