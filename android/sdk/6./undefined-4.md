@@ -1,102 +1,151 @@
-# 전면
+# 앱 오프닝 광고
 
-{% hint style="warning" %}
-`targetSdkVersion 35` 환경의 Android 15 기기에서 **전면 광고 일부 화면 잘림 이슈**를 수정했습니다.
-
-Android 15 이상을 타겟팅하는 경우 **2.5.8 이상**을 적용합니다.
-{% endhint %}
-
-전면 생성
+앱 오프닝 광고 생성
 
 {% tabs %}
 {% tab title="Java" %}
-**AdWhaleMediationInterstitialAd 클래스 API 설명**
+**AdWhaleMediationAppOpenAd 클래스 API 설명**
 
 ```java
-public AdWhaleMediationInterstitialAd(String placementUid)
+public AdWhaleMediationAppOpenAd(Activity activity, String placementUid)
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
 
 ```java
-public void setAdWhaleMediationInterstitialAdListener(AdWhaleMediationInterstitialAdListener listener)
+public void setAdWhaleMediationAppOpenAdListener(AdWhaleMediationAppOpenAdListener listener)
 ```
 
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationInterstitialAdListener</p></td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationAppOpenAdListener</p></td><td>앱 오프닝 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
 
 ```java
-public void loadAd() // 미디에이션 전면광고로드
+public void loadAd() // 미디에이션 앱 오프닝 광고로드
 ```
 
-<pre class="language-java"><code class="lang-java"><strong>public void showAd() // 미디에이션 전면광고로드 후 표시할 때 호출
-</strong></code></pre>
-
 ```java
-public void showAd(Activity activity) // 미디에이션 전면광고로드 후 표시할 때 호출
+public void showAd(Activity activity) // 미디에이션 앱 오프닝 광고로드 후 표시할 때 호출
 ```
 
 <table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
 
 ```java
-public void destroy() // onDestroy() 시 호출
+public void destroy() // onDestroy() 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
 ```
 
 \
-**AdWhaleMediationInterstitialAdListener 클래스 API 설명**
+**AdWhaleMediationAppOpenAdListener 클래스 API 설명**
 
 ```java
-public void onAdLoaded() // 미디에이션 전면광고요청 성공 시
+public void onAdLoaded() // 미디에이션 앱 오프닝 광고요청 성공 시
 ```
 
 ```java
-public void onAdLoadFailed(int statusCode, String message) // 미디에이션 전면광고요청 실패 시
+public void onAdLoadFailed(int statusCode, String message) // 미디에이션 앱 오프닝 광고요청 실패 시
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```java
-public void onAdShowed() // 미디에이션 전면광고표시 후
+public void onAdShowed() // 미디에이션 앱 오프닝 광고표시 후
 ```
 
 ```java
-public void onAdShowFailed(int statusCode, String message) // 미디에이션 전면광고표시 실패 시
+public void onAdShowFailed(int statusCode, String message) // 미디에이션 앱 오프닝 광고표시 실패 시
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```java
-public void onAdClosed() // 미디에이션 전면광고닫기 시
+public void onAdDismissed() // 미디에이션 앱 오프닝 광고닫기 시
 ```
 
 ```java
-public void onAdClicked() // 미디에이션 전면광고클릭 시
+public void onAdClicked() // 미디에이션 앱 오프닝 광고클릭 시
 ```
 
-**전면 구현 샘플은 아래와 같습니다.**&#x20;
+
+
+**앱 오픈 광고는 앱 상태가 백그라운드에서 포그라운드로 변경될 때 광고를 노출합니다.**
+
+1. 앱오픈광고 요청하기 위해 AdWhaleMediationAppOpenAd생성자를 호출합니다.
+2. &#x20;AdWhaleMediationAppOpenAd가 Application의 Foreground 상태에 진입하는 것을 감지하면 광고를 요청합니다.
+3. 더 이상 광고를 요청하지 않으려면 AdWhaleMediationAppOpenAd의 Destroy를 호출합니다.
+
+&#x20;
+
+**앱 오픈 광고 구현 샘플은 아래와 같습니다.**
+
+먼저 백그라운드/포어그라운드 감지를 위한 라이프사이클 등록이 필요합니다.
+
+라이프사이클 등록/해제에 필요한 의존성을 app 레벨의 build.gradle에 추가 후 sync 합니다.
+
+```
+    // Lifecycle Process (ProcessLifecycleOwner 사용을 위해 필요)
+    implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.6.2'
+```
 
 <pre class="language-java"><code class="lang-java">import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAd;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener;
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationAppOpenAd;
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationAppOpenAdListener;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
 import net.adwhale.sdk.utils.AdWhaleLog;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdWhaleMediationAppOpenAdListener {
 
-    private ConstraintLayout root;
+    private static final String TAG = "AppOpenLifecycleTest";
+    
+    // 라이프사이클 관리 (사용자가 직접 처리)
+    private DefaultLifecycleObserver appLifecycleObserver;
+    
+    // 백그라운드/포어그라운드 상태체크 플래그값 (사용자가 직접 처리)
+    private boolean isAppInBackground = false;
 
-<strong>    private AdWhaleMediationInterstitialAd adWhaleMediationInterstitialAd;
+<strong>    private AdWhaleMediationAppOpenAd adWhaleMediationAppOpenAd;
 </strong>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 앱 라이프사이클 관리 Observer 등록: 백그라운드/포어그라운드 감지를 위해 등록 필요
+        appLifecycleObserver = new DefaultLifecycleObserver() {
+            @Override
+            public void onStart(@NonNull LifecycleOwner owner) {
+                Log.d(TAG, "App moved to foreground");
+                
+                // 사용자가 직접 처리: 포어그라운드로 전환 시 광고 표시
+                // 필요에 따라 조건 체크 (예: 백그라운드 시간, 광고 간격 등)를 추가할 수 있음
+                if (adWhaleMediationAppOpenAd != null &#x26;&#x26; isAppInBackground) {
+                    if (adWhaleMediationAppOpenAd != null) {
+                        adWhaleMediationAppOpenAd.showAd(MainActivity.this);
+                    }
+                }
+                // 사용자가 직접 처리: 백그라운드/포어그라운드 상태체크 플래그값 업데이트
+                isAppInBackground = false;
+            }
+
+            @Override
+            public void onStop(@NonNull LifecycleOwner owner) {
+                Log.d(TAG, "App moved to background");
+                
+                // 사용자가 직접 처리: 백그라운드/포어그라운드 상태체크 플래그값 업데이트
+                isAppInBackground = true;
+            }
+        };
         
+       // ProcessLifecycleOwner에 Observer 등록
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(appLifecycleObserver);
+                         
         // 로거 설정
         AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
         
@@ -104,61 +153,81 @@ public class MainActivity extends AppCompatActivity {
         AdWhaleMediationAds.init(this, new AdWhaleMediationOnInitCompleteListener() {
             @Override
             public void onInitComplete(int statusCode, String message) {
-                Log.i(MainActivity.class.getSimpleName(), ".onInitComplete(" + statusCode + ", " + message + ");");
-            }
-        });
-
-        // 전면광고 생성
-        adWhaleMediationInterstitialAd = new AdWhaleMediationInterstitialAd("발급받은 placement uid 값");
+                Log.i(TAG, ".onInitComplete(" + statusCode + ", " + message + ");");
+                
+                // 앱 오프닝 광고 null 체크: 이미 load하거나 생성된 앱 오프닝 광고가 있다면 onDestroy()가 있는 release() 호출
+                if (adWhaleMediationAppOpenAd != null) {
+                    release();
+                }
+                                
+                // 앱 오프닝 광고 생성
+                adWhaleMediationAppOpenAd = new AdWhaleMediationAppOpenAd(MainActivity.this, "발급받은 placement uid 값");
         
-        // 전면광고 콜백 리스너 등록
-        adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
-            @Override
-            public void onAdLoaded() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded();");
-                // 전면광고 표시
-                adWhaleMediationInterstitialAd.showAd();
+                // 앱 오프닝 광고 콜백 리스너 등록
+                adWhaleMediationAppOpenAd.setAdWhaleMediationAppOpenAdListener(MainActivity.this);
+                
+                // 앱 오프닝 광고 로드
+                adWhaleMediationAppOpenAd.loadAd();
             }
-
-            @Override
-            public void onAdLoadFailed(int statusCode, String message) {
-                Log.e(MainActivity.class.getSimpleName(), ".onAdLoadFailed(" + statusCode + ", " + message + ");");
-            }
-
-            @Override
-            public void onAdShowed() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdShowed();");
-            }
-
-            @Override
-            public void onAdShowFailed(int statusCode, String message) {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdShowFailed(" + statusCode + ", " + message + ");");
-            }
-
-            @Override
-            public void onAdClosed() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdClosed();");
-            }
-            
-            @Override
-            public void onAdClicked() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdClicked();");
-            }            
         });
-
-        // 전면광고 로드
-        adWhaleMediationInterstitialAd.loadAd();
-
     }
-    
-    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
+
+    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy()가 있는 release() 호출 필요
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(adWhaleMediationInterstitialAd != null) {
-            adWhaleMediationInterstitialAd.destroy();        
+        release();
+    }
+
+    private void release() {
+        // ProcessLifecycleOwner Observer 해제
+        if (appLifecycleObserver != null) {
+            ProcessLifecycleOwner.get().getLifecycle().removeObserver(appLifecycleObserver);
+            appLifecycleObserver = null;
         }
-    }    
+        
+        if (adWhaleMediationAppOpenAd != null) {
+            // 앱 종료 시 또는 더 이상 앱오프닝 광고를 사용하지 않을 때 호출
+            adWhaleMediationAppOpenAd.destroy();
+            adWhaleMediationAppOpenAd = null;
+        }
+    }
+
+    // 앱 오프낭 광고 콜백 리스너: 광고 로드 성공 시 콜백됨
+    @Override
+    public void onAdLoaded() {
+        Log.i(TAG, ".onAdLoaded();");
+    }
+
+    // 앱 오프낭 광고 콜백 리스너: 광고 로드 실패 시 콜백됨
+    @Override
+    public void onAdFailedToLoad(int statusCode, String message) {
+        Log.e(TAG, ".onAdFailedToLoad(" + statusCode + ", " + message + ");");
+    }
+
+    // 앱 오프낭 광고 콜백 리스너: 광고 표시 실패 시 콜백됨
+    @Override
+    public void onAdFailedToShow(int statusCode, String message) {
+        Log.e(TAG, ".onAdFailedToShow(" + statusCode + ", " + message + ");");
+    }
+
+    // 앱 오프낭 광고 콜백 리스너: 광고 클릭 시 콜백됨
+    @Override
+    public void onAdClicked() {
+        Log.i(TAG, ".onAdClicked();");
+    }
+
+    // 앱 오프낭 광고 콜백 리스너: 광고 닫기 시 콜백됨
+    @Override
+    public void onAdDismissed() {
+        Log.i(TAG, ".onAdDismissed();");
+    }
+
+    // 앱 오프낭 광고 콜백 리스너: 광고 표시 성공 시 콜백됨
+    @Override
+    public void onAdShowed() {
+        Log.i(TAG, ".onAdShowed();");
+    }
 }
 </code></pre>
 {% endtab %}
@@ -313,8 +382,6 @@ public class MainActivity : AppCompatActivity() {
 ```
 {% endtab %}
 {% endtabs %}
-
-
 
 
 
