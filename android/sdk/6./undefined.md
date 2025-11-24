@@ -565,5 +565,207 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 {% endtab %}
+
+{% tab title="Compose" %}
+**AdWhaleMediationAdView 클래스 API 설명**
+
+```kotlin
+AdWhaleMediationAdView(context : Context)
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.content.Context</td><td>Android Main Activity 클래스</td></tr></tbody></table>
+
+```kotlin
+fun loadAd() : Unit // 미디에이션 배너광고 로드
+```
+
+<pre class="language-kotlin"><code class="lang-kotlin"><strong>fun setPlacementUid(placementUid : String) : Unit // 지면 등록
+</strong></code></pre>
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+
+```kotlin
+fun setAdwhaleAdSize(adWhaleAdSize : ADWHALE_AD_SIZE) : Unit // 미디에이션 배너사이즈 설정
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE</td><td>배너 광고 사이즈(사이즈 종류: BANNER320x50, BANNER320x100, BANNER300x250, BANNER250x250, ADAPTIVE_ANCHOR) </td></tr></tbody></table>
+
+```kotlin
+fun setAdWhaleMediationAdViewListener(listener : Int) : Unit // 리스너 등
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>배너 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```kotlin
+fun setAdaptiveAnchorWidth(width : Int) : Unit // 디바이스 width 입력. ADAPTIVE_ANCHOR 적응형 배너 적용시 사용.
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>디바이스 width 입력<br>0을 입력할 경우 디바이스 전체 가로 길이 적용됨</td></tr></tbody></table>
+
+```kotlin
+fun resume() : Unit // resume 콜백 시 호출필요
+```
+
+```kotlin
+fun pause() : Unit // pause 콜백 시 호출필요
+```
+
+```kotlin
+fun destroy() : Unit // destroy 콜백 시 호출필요
+```
+
+
+
+**AdWhaleMediationAdViewListener 클래스 API 설명**
+
+```kotlin
+fun onAdLoaded() : Unit // 배너 광고요청 성공 시
+```
+
+```kotlin
+fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 배너광고요청 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int </td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```kotlin
+fun onAdClicked() : Unit // 배너 클릭 시
+```
+
+
+
+**배너 구현 샘플은 아래와 같습니다.**&#x20;
+
+```kotlin
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.content.Context
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
+import net.adwhale.sdk.mediation.ads.ADWHALE_AD_SIZE
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationAdView
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationAdViewListener
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener
+import net.adwhale.sdk.utils.AdWhaleLog
+
+class MainActivity : ComponentActivity() {
+
+    private var adWhaleMediationAdView: AdWhaleMediationAdView? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+
+        // 먼저 배너 View 생성 (Compose에서 재사용)
+        adWhaleMediationAdView = createBannerView(this)
+
+        // AdWhale 초기화
+        AdWhaleMediationAds.init(this, object : AdWhaleMediationOnInitCompleteListener {
+            override fun onInitComplete(statusCode: Int, message: String?) {
+                Log.i(MainActivity::class.java.simpleName,
+                    ".onInitComplete($statusCode, $message);")
+
+                // 초기화 완료 후 배너 로드
+                if (adWhaleMediationAdView != null) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        adWhaleMediationAdView?.loadAd()
+                    }, 0)
+                }
+            }
+        })
+
+        setContent {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // 화면 하단 중앙에 배너 배치
+                AndroidView(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter),
+                    factory = { context ->
+                        // 이미 onCreate에서 만든 뷰 재사용
+                        adWhaleMediationAdView ?: createBannerView(context).also {
+                            adWhaleMediationAdView = it
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    private fun createBannerView(context: Context): AdWhaleMediationAdView {
+        return AdWhaleMediationAdView(context).apply {
+            // placement uid 설정
+            setPlacementUid("발급받은 placement uid 값")
+
+            // 고정 배너 사이즈 320x50
+            setAdwhaleAdSize(ADWHALE_AD_SIZE.BANNER320x50)
+
+            // 적응형 배너를 쓸 경우:
+            // setAdwhaleAdSize(ADWHALE_AD_SIZE.ADAPTIVE_ANCHOR)
+            // setAdaptiveAnchorWidth(360) // 디바이스 width. 0이면 전체 가로 길이
+
+            setAdWhaleMediationAdViewListener(object : AdWhaleMediationAdViewListener {
+                override fun onAdLoaded() {
+                    Log.i(MainActivity::class.java.simpleName, ".onAdLoaded();")
+                }
+
+                override fun onAdLoadFailed(statusCode: Int, message: String?) {
+                    Log.i(
+                        MainActivity::class.java.simpleName,
+                        ".onAdLoadFailed($statusCode, $message);"
+                    )
+                }
+
+                override fun onAdClicked() {
+                    Log.i(MainActivity::class.java.simpleName, ".onAdClicked();")
+                }
+            })
+
+            val params = RelativeLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+                addRule(RelativeLayout.CENTER_HORIZONTAL)
+            }
+            layoutParams = params
+        }
+    }
+
+    // 라이프사이클 onResume 콜백 시 반드시 onResume 호출 필요
+    override fun onResume() {
+        super.onResume()
+        adWhaleMediationAdView?.resume()
+    }
+
+    // 라이프사이클 onPause 콜백 시 반드시 onPause 호출 필요
+    override fun onPause() {
+        super.onPause()
+        adWhaleMediationAdView?.pause()
+    }
+
+    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
+    override fun onDestroy() {
+        super.onDestroy()
+        adWhaleMediationAdView?.destroy()
+        adWhaleMediationAdView = null
+    }
+}
+
+```
+{% endtab %}
 {% endtabs %}
 

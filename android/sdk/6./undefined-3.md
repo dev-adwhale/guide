@@ -434,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
 **AdWhaleMediationNativeAdView 클래스 API 설명**
 
 ```kotlin
-AdWhaleMediationNativeAdView(Context context)
+AdWhaleMediationNativeAdView(context : Context)
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.content.Context</td><td>Android Main Activity 클래스</td></tr></tbody></table>
@@ -765,6 +765,387 @@ public class MainActivity : AppCompatActivity() {
         }
     }
 }
+```
+{% endtab %}
+
+{% tab title="Compose" %}
+**AdWhaleMediationNativeAdView 클래스 API 설명**
+
+```kotlin
+AdWhaleMediationNativeAdView(Context context)
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.content.Context</td><td>Android Main Activity 클래스</td></tr></tbody></table>
+
+```kotlin
+fun setAdWhaleMediationNativeAdViewListener(listener : AdWhaleMediationNativeAdViewListener) : Unit
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationNativeAdViewListener</p></td><td>네이티브 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```kotlin
+fun loadAdWithBinder(binder : AdWhaleNativeAdBinder) : Unit // 미디에이션 커스텀 바인딩 네이티브 광고로드 시 호출
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleNativeAdBinder</p></td><td>커스텀 바인딩 네이티브 광고 로드를 위한 바인더</td></tr></tbody></table>
+
+```kotlin
+fun loadAdWithTemplate(template : ADWHALE_NATIVE_TEMPLATE) : Unit // 미디에이션 고정 템플릿 네이티브 광고로드 시 호출
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>ADWHALE_NATIVE_TEMPLATE</p></td><td>고정 템플릿 네이티브 광고 사이즈(사이즈 종류: SMALL, MEDIUM, FULLSCREEN) </td></tr></tbody></table>
+
+```kotlin
+fun setTemplateStyle(style : AdWhaleMediationNativeTemplateStyle) : Unit // 고정 템플릿 네이티브 광고 요소에 스타일 적
+```
+
+| 파라미터 타입                                                           | 파라미터 값                             |
+| ----------------------------------------------------------------- | ---------------------------------- |
+| net.adwhale.sdk.mediation.ads.AdWhaleMediationNativeTemplateStyle | (Optional) 고정 템플릿 네이티브 이용 시 스타일 적용 |
+
+```kotlin
+fun setPlacementUid(placementUid : String) : Unit // 지면 등록
+```
+
+| 파라미터 타입 | 파라미터 값                |
+| ------- | --------------------- |
+| String  | placementUid 값(발급 필요) |
+
+```kotlin
+fun setDebugEnabled(isDebugEnabled : boolean) : Unit // 광고검사기 활성/비활성
+```
+
+| 파라미터 타입 | 파라미터 값                     |
+| ------- | -------------------------- |
+| Boolean | 개발 모드에서 네이티브 광고 검사기 활성/비활성 |
+
+```kotlin
+fun show() : Unit // 네이티브 광고 표시
+```
+
+<pre class="language-kotlin"><code class="lang-kotlin"><strong>fun resume() : Unit // resume 콜백 시 호출필요
+</strong></code></pre>
+
+```kotlin
+fun pause() : Unit // pause 콜백 시 호출필요
+```
+
+```kotlin
+fun destroy() : Unit // onDestroy 콜백 시 호출필요
+```
+
+
+
+**AdWhaleMediationNativeAdViewListener 클래스 API 설명**
+
+```kotlin
+fun onNativeAdLoaded() : Unit // 미디에이션 네이티브 광고로드 성공 시
+```
+
+```kotlin
+fun onNativeAdFailedToLoad(statusCode : Int, message : String) : Unit // 미디에이션 네이티브 광고로드 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고로드 결과 코드</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
+
+```kotlin
+fun onNativeAdShowFailed(statusCode : Int, message : String) : Unit // 미디에이션 네이티브 광고표시 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>광고표시 결과 메시지</td></tr></tbody></table>
+
+```kotlin
+fun onNativeAdClicked() : Unit // 미디에이션 네이티브 광고클릭 시
+```
+
+```kotlin
+fun onNativeAdClosed() : Unit // 미디에이션 보상형 광고닫기 시
+```
+
+
+
+**AdWhaleNativeAdBinder.Builder 클래스 API 설명**
+
+사용자는 2가지 형태의 네이티브 광고를 호출 및 표시할 수 있습니다 :&#x20;
+
+* 커스텀 바인딩 네이티브 광고와&#x20;
+* 고정형 템플릿 네이티브 광고
+
+커스텀 바인딩 네이티브 광고는 사용자가 직접 네이티브 광고 레이아웃을 정의하여 사용합니다.
+
+커스텀 바인딩 네이티브 광고를 로드할 때(**loadAdWithBinder 메서드**) 함께 사용하는 API 입니다.
+
+```kotlin
+Builder(context : Context, layoutResId : Int) // 커스텀 바인딩 네이티브 광고 로드를 위한 바인더 빌더
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.content.Context</td><td>Android Main Activity 클래스</td></tr><tr><td>Int</td><td>사용자가 직접 정의한 커스텀 네이티브 레이아웃 resoure id</td></tr></tbody></table>
+
+```kotlin
+fun setIconViewId(IconViewResId : Int) : AdWhaleNativeAdBinder.Builder // 사용자가 직접 정의한 아이콘 뷰 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>사용자가 직접 정의한 아이콘 뷰 resoure id</td></tr></tbody></table>
+
+```kotlin
+fun setTitleViewID(titleViewResId : Int) : AdWhaleNativeAdBinder.Builder // 사용자가 직접 정의한 타이틀 뷰 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>사용자가 직접 정의한 타이틀 뷰 resoure id</td></tr></tbody></table>
+
+```kotlin
+fun setBodyTextViewId(bodyTextViewResId : Int) : AdWhaleNativeAdBinder.Builder // 사용자가 직접 정의한 바디 텍스트 설명 뷰 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>사용자가 직접 정의한 바디 텍스트 설명 뷰 resoure id</td></tr></tbody></table>
+
+```kotlin
+fun setCallToActionViewId(callToActionViewResId : Int) : AdWhaleNativeAdBinder.Builder // 사용자가 직접 정의한 CTA 버튼 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>사용자가 직접 정의한 CTA 버튼 resoure id</td></tr></tbody></table>
+
+```kotlin
+fun setMediaViewGroupId(mediaViewGroupResId : Int) : AdWhaleNativeAdBinder.Builder // 사용자가 직접 정의한 미디어 뷰 그룹 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>사용자가 직접 정의한 미디어 뷰 그룹 resoure id</td></tr></tbody></table>
+
+```kotlin
+fun build() : AdWhaleNativeAdBinder // AdWhaleNativeAdBinder 객체를 리턴
+```
+
+
+
+**AdWhaleMediationNativeTemplateStyle.Builder 클래스 주요 API 설명**
+
+고정형 템플릿 네이티브 광고는 ADwhale에서 제공하는 사이즈 별 템플릿 (SMALL, MEDIUM, FULLSCREEN)을 사용합니다.
+
+이 때, 사용자 앱의 look & feel 에 맞추어 템플릿의 요소들에 스타일을 변경 적용할 수 있습니다.
+
+고정형 템플릿 네이티브 광고를 로드할 때(**loadAdWithTemplate 메서드**) 함께 사용하는 API 입니다.
+
+```kotlin
+Builder() // 고정형 템플릿 네이티브 광고 스타일 적용을 위한 옵션 빌더
+```
+
+```kotlin
+fun withMainBackgroundColor(colorDrawable : ColorDrawable) : AdWhaleMediationNativeTemplateStyle.Builder // 고정형 템플릿 메인 색상 선택
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.graphics.drawable.ColorDrawable</td><td>컬러 색상 값</td></tr></tbody></table>
+
+```kotlin
+fun withPrimaryTextTypefaceColor(color : Int) : AdWhaleMediationNativeTemplateStyle.Builder // 헤드라인 뷰 텍스트 색상 설정
+fun withSecondaryTextTypefaceColor(color : Int) : AdWhaleMediationNativeTemplateStyle.Builder // 세컨더리 뷰 텍스트 색상 설정
+fun withTertiaryTextTypefaceColor(color : Int) : AdWhaleMediationNativeTemplateStyle.Builder // 바디 텍스트 뷰 텍스트 색상 설정
+fun withCallToActionTypefaceColor(color : Int) : AdWhaleMediationNativeTemplateStyle.Builder // CTA 버튼 텍스트 색상 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>텍스트 색상 값</td></tr></tbody></table>
+
+```kotlin
+fun withPrimaryTextSize(size : Float) : AdWhaleMediationNativeTemplateStyle.Builder // 헤드라인 뷰 텍스트 사이즈 설정
+fun withSecondaryTextSize(size : Float) : AdWhaleMediationNativeTemplateStyle.Builder // 세컨더리 뷰 텍스트 사이즈 설정
+fun withTertiaryTextSize(size : Float) : AdWhaleMediationNativeTemplateStyle.Builder // 바디 텍스트 뷰 텍스트 사이즈 설정
+fun withCallToActionTextSize(size : Float) : AdWhaleMediationNativeTemplateStyle.Builder // CTA 버튼 텍스트 사이즈 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Float</td><td>텍스트 사이즈 값</td></tr></tbody></table>
+
+```kotlin
+fun withPrimaryTextTypeface(typeface : Typeface) : AdWhaleMediationNativeTemplateStyle.Builder // 헤드라인 뷰 텍스트 폰트 설정
+fun withSecondaryTextTypeface(typeface : Typeface) : AdWhaleMediationNativeTemplateStyle.Builder // 세컨더리 뷰 텍스트 폰트 설정
+fun withTertiaryTextTypeface(typeface : Typeface) : AdWhaleMediationNativeTemplateStyle.Builder // 바디 텍스트 뷰 텍스트 폰트 설정
+fun withCallToActionTextTypeface(typeface : Typeface) : AdWhaleMediationNativeTemplateStyle.Builder // CTA 버튼 텍스트 폰트 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.graphics.Typeface</td><td>텍스트 폰트 값</td></tr></tbody></table>
+
+```kotlin
+fun withPrimaryTextBackgroundColor(colorDrawable : ColorDrawable) : AdWhaleMediationNativeTemplateStyle.Builder // 헤드라인 뷰 텍스트 백그라운드 색상 설정
+fun withSecondaryTextBackgroundColor(colorDrawable : ColorDrawable) : AdWhaleMediationNativeTemplateStyle.Builder // 세컨더리 뷰 텍스트 백그라운드 색상 설정
+fun withTertiaryTextBackgroundColor(colorDrawable : ColorDrawable) : AdWhaleMediationNativeTemplateStyle.Builder // 바디 텍스트 뷰 텍스트 백그라운드 색상 설정
+fun withCallToActionBackgroundColor(colorDrawable : ColorDrawable) : AdWhaleMediationNativeTemplateStyle.Builder // CTA 버튼 백그라운드 색상 설정
+```
+
+<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.graphics.drawable.ColorDrawable</td><td>컬러 색상 값</td></tr></tbody></table>
+
+```kotlin
+fun build() : AdWhaleMediationNativeTemplateStyle // AdWhaleMediationNativeTemplateStyle 객체를 리턴
+```
+
+
+
+**네이티브 구현 샘플은 아래와 같습니다.**&#x20;
+
+```kotlin
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
+import net.adwhale.sdk.mediation.ads.ADWHALE_NATIVE_TEMPLATE
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationNativeAdView
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationNativeAdViewListener
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationNativeTemplateStyle
+import net.adwhale.sdk.mediation.ads.AdWhaleNativeAdBinder
+import net.adwhale.sdk.utils.AdWhaleLog
+
+class MainActivity : ComponentActivity() {
+
+    private var adWhaleMediationNativeAdView: AdWhaleMediationNativeAdView? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+
+        // 초기화 코드
+        AdWhaleMediationAds.init(this) { statusCode, message ->
+            Log.i(
+                MainActivity::class.java.simpleName,
+                ".onInitComplete($statusCode, $message)"
+            )
+        }
+
+        // 네이티브 광고 생성
+        adWhaleMediationNativeAdView = AdWhaleMediationNativeAdView(this).apply {
+            // 네이티브 광고 지면 설정
+            setPlacementUid("발급 받은 placement uid 값")
+
+            // 네이티브 콜백 리스너 등록
+            setAdWhaleMediationNativeAdViewListener(object : AdWhaleMediationNativeAdViewListener {
+                override fun onNativeAdLoaded() {
+                    Log.i(
+                        MainActivity::class.java.simpleName,
+                        ".onNativeAdLoaded();"
+                    )
+                    // 네이티브 광고 표시
+                    show()
+                }
+
+                override fun onNativeAdFailedToLoad(errorCode: Int, errorMessage: String) {
+                    Log.e(
+                        MainActivity::class.java.simpleName,
+                        ".onNativeAdFailedToLoad($errorCode, $errorMessage)"
+                    )
+                }
+
+                override fun onNativeAdShowFailed(errorCode: Int, errorMessage: String) {
+                    Log.e(
+                        MainActivity::class.java.simpleName,
+                        ".onNativeAdShowFailed($errorCode, $errorMessage)"
+                    )
+                }
+
+                override fun onNativeAdClicked() {
+                    Log.i(
+                        MainActivity::class.java.simpleName,
+                        ".onNativeAdClicked()"
+                    )
+                }
+
+                override fun onNativeAdClosed() {
+                    Log.i(
+                        MainActivity::class.java.simpleName,
+                        ".onNativeAdClosed()"
+                    )
+                }
+            })
+
+            // ─────────────────────────────────────
+            // 네이티브 광고 로드 방법1(택1): 커스텀 바인딩
+            // custom native AdBinder 생성(custom_native_ad_layout.xml)
+            val adWhaleNativeAdBinder = AdWhaleNativeAdBinder.Builder(
+                this@MainActivity,
+                R.layout.custom_native_ad_layout
+            )
+                .setIconViewId(R.id.view_icon)
+                .setTitleViewId(R.id.view_title)
+                .setBodyTextViewId(R.id.view_body)
+                .setCallToActionViewId(R.id.button_cta)
+                .setMediaViewGroupId(R.id.view_media)
+                .build()
+
+            // 커스텀 바인딩으로 광고 로드
+            // 실제 사용 시에는 방법1/방법2 중 하나만 선택해서 호출하는 것을 권장
+            loadAdWithBinder(adWhaleNativeAdBinder)
+
+            // ─────────────────────────────────────
+            // 네이티브 광고 로드 방법2(택1):
+            // ADwhale에서 제공하는 고정 템플릿 + 스타일 적용
+            val style = AdWhaleMediationNativeTemplateStyle.Builder()
+                .withMainBackgroundColor(ColorDrawable(Color.parseColor("#2C2C2C")))
+                .withPrimaryTextTypefaceColor(Color.WHITE)
+                .withPrimaryTextTypeface(Typeface.DEFAULT_BOLD)
+                .withPrimaryTextBackgroundColor(ColorDrawable(Color.parseColor("#4CAF50")))
+                .withPrimaryTextSize(15.0f)
+                .build()
+            setTemplateStyle(style)
+
+            // 고정 템플릿으로 광고 로드
+            loadAdWithTemplate(ADWHALE_NATIVE_TEMPLATE.SMALL)
+            // ADWHALE_NATIVE_TEMPLATE.MEDIUM, ADWHALE_NATIVE_TEMPLATE.FULLSCREEN 도 사용 가능
+        }
+
+        // Compose UI에 네이티브 광고 View 붙이기
+        setContent {
+            MaterialTheme {
+                NativeAdContainer(adWhaleMediationNativeAdView)
+            }
+        }
+    }
+
+    // 라이프사이클 onResume 콜백 시 반드시 onResume 호출 필요
+    override fun onResume() {
+        super.onResume()
+        adWhaleMediationNativeAdView?.resume()
+    }
+
+    // 라이프사이클 onPause 콜백 시 반드시 onPause 호출 필요
+    override fun onPause() {
+        super.onPause()
+        adWhaleMediationNativeAdView?.pause()
+    }
+
+    // 라이프사이클 onDestroy 콜백 시 반드시 destroy 호출 필요
+    override fun onDestroy() {
+        adWhaleMediationNativeAdView?.destroy()
+        adWhaleMediationNativeAdView = null
+        super.onDestroy()
+    }
+}
+
+@Composable
+fun NativeAdContainer(nativeAdView: AdWhaleMediationNativeAdView?) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        if (nativeAdView != null) {
+            AndroidView(
+                factory = { nativeAdView },
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Text(text = "네이티브 광고 뷰가 초기화되지 않았습니다.")
+        }
+    }
+}
+
 ```
 {% endtab %}
 {% endtabs %}
