@@ -23,6 +23,22 @@
   * [10. ETC](android/sdk/10.-etc/README.md)
     * [Error code](android/sdk/10.-etc/error-code.md)
 
+## IOS
+
+* [SDK 연동 가이드](ios/sdk/README.md)
+  * [1. 요구사항 및 사용권한](ios/sdk/1..md)
+  * [2. 프로젝트 설정](ios/sdk/2./README.md)
+    * [SDK 설치](ios/sdk/2./sdk.md)
+    * [Project Setting](ios/sdk/2./project-setting.md)
+    * [SDK 연동 키 설정](ios/sdk/2./sdk-1.md)
+    * [App Tracking Transparency](ios/sdk/2./app-tracking-transparency.md)
+    * [Page 6](ios/sdk/2./page-6.md)
+    * [Page 5](ios/sdk/2./page-5.md)
+  * [Page 4](ios/sdk/page-4.md)
+  * [Page 3](ios/sdk/page-3.md)
+  * [Page 2](ios/sdk/page-2.md)
+  * [Page 1](ios/sdk/page-1.md)
+
 ## REACT NATIVE
 
 * [Admob Custom event 연동 가이드](react-native/admob-custom-event/README.md)
@@ -71,7 +87,6 @@
   * [6. Sample Code](flutter/admob-custom-event/sample-code.md)
 * [SDK 적용 가이드](flutter/sdk/README.md)
   * [1. 요구사항 및 사용권한 ](flutter/sdk/1..md)
-  * [2. 프로젝트 빌드 설정(build.gradle)](flutter/sdk/2.-build.gradle.md)
   * [3. 난독화(proguard) 설정](flutter/sdk/3.-proguard.md)
   * [4. SDK 연동 키 설정](flutter/sdk/4.-sdk.md)
   * [5. SDK 초기화 및 구현](flutter/sdk/5.-sdk.md)
@@ -79,16 +94,6 @@
     * [배너](flutter/sdk/6./undefined.md)
     * [전면](flutter/sdk/6./undefined-1.md)
     * [보상형](flutter/sdk/6./undefined-2.md)
-  * [7. Sample Project](flutter/sdk/7.-sample-project.md)
-  * [8. Dart 파일 연결을 위한 java클래스 구현](flutter/sdk/8.-dart-java/README.md)
-    * [AdInstanceManager](flutter/sdk/8.-dart-java/adinstancemanager.md)
-    * [AdMessageCodec](flutter/sdk/8.-dart-java/admessagecodec.md)
-    * [AdWhaleAdsViewFactory](flutter/sdk/8.-dart-java/adwhaleadsviewfactory.md)
-    * [AdWhaleFlutterSdkPlugin](flutter/sdk/8.-dart-java/adwhalefluttersdkplugin.md)
-    * [BannerAdCreator](flutter/sdk/8.-dart-java/banneradcreator.md)
-    * [FlutterAd](flutter/sdk/8.-dart-java/flutterad.md)
-    * [FlutterAdInfo](flutter/sdk/8.-dart-java/flutteradinfo.md)
-    * [FlutterPlatformView](flutter/sdk/8.-dart-java/flutterplatformview.md)
   * [9. Dart 파일 추가](flutter/sdk/9.-dart/README.md)
     * [ad\_containers.dart](flutter/sdk/9.-dart/ad_containers.dart.md)
     * [ad\_instance\_manager.dart](flutter/sdk/9.-dart/ad_instance_manager.dart.md)
