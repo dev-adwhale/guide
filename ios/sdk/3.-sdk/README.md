@@ -1,0 +1,253 @@
+# 3. SDK 초기화
+
+### 1. SDK 초기화
+
+{% hint style="info" %}
+* AdWhale SDK를 프로젝트에 추가해야 합니다.
+* 광고를 요청하기 전에 초기화가 이루어져야 합니다.
+{% endhint %}
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    // Override point for customization after application launch.
+    
+    // SDK Init
+    AdWhaleAds.sharedInstance.initialize {
+        // SDK 초기화 완료 후 동작 코드
+    }
+    
+    return true
+}    
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+ - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Override point for customization after application launch.
+    
+    // SDK Init
+    [[AdWhaleAds sharedInstance] initialize:@"0" completionHandler:^{
+        // SDK 초기화 완료 후 동작 코드
+    }];
+    return YES;
+}
+```
+{% endtab %}
+{% endtabs %}
+
+<table data-header-hidden><thead><tr><th>속성</th><th>설명</th><th data-hidden></th></tr></thead><tbody><tr><td>속성</td><td>설명</td><td></td></tr><tr><td>appId</td><td>App Store에 등록된 App ID 정보 (선택사항)</td><td></td></tr><tr><td>completionHandler</td><td>SDK 초기화 완료 후 동작 코드</td><td></td></tr></tbody></table>
+
+
+
+### 2. GDPR
+
+{% hint style="info" %}
+* 2024년 1월 16일 부터 IAB 유럽의 인증과 플랫폼 사업자의 인증을 받은 동의 플랫폼(CMP)를 통해 GDPR 동의 관리를 처리해야 합니다.
+* 사용자의 앱이 유럽 경제 지역(EEA)의 사용자들이 사용할 경우에 적용해주시면 됩니다. 그 외 국가 사용자들에게는 적용을 해도 GDPR 동의 팝업이 뜨지 않습니다.&#x20;
+* Initialize를 진행 후 호출해야 합니다.
+{% endhint %}
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+override func viewDidLoad() {
+    super.viewDidLoad()
+    // Do any additional setup after loading the view.
+    
+    // SDK GDPR 설정
+    AdWhaleAds.sharedInstance.gdpr(self, testDevices: nil, completionHandler: { result in
+        // GDPR 설정 완료 후 동작 코드
+    })
+}
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    // SDK GDPR 설정
+    [[AdWhaleAds sharedInstance] gdpr:self testDevices:nil completionHandler:^(BOOL result) {
+        // GDPR 설정 완료 후 동작 코드
+    }];
+}
+```
+{% endtab %}
+{% endtabs %}
+
+<table data-header-hidden><thead><tr><th>속성</th><th>설명</th><th data-hidden></th></tr></thead><tbody><tr><td>속성</td><td>설명</td><td></td></tr><tr><td>testDevices</td><td>["TEST_DEVICE_ID"]: GDPR 테스트 모드 설정<br>nil: GDPR 테스트 모드 미사용 설정</td><td></td></tr><tr><td>completionHandler</td><td>SDK 초기화 완료 후 동작 코드<br>result: GDPR 응답 결과 (BOOL)</td><td></td></tr></tbody></table>
+
+
+
+### 3. 타겟팅 설정
+
+{% hint style="info" %}
+* 광고 요청에 타겟팅 정보를 제공합니다.
+* <mark style="background-color:red;">**구글 플레이스토어의 콘텐츠 설정과 SDK 설정이 반드시 동일하게 설정되어야 합니다.**</mark>
+{% endhint %}
+
+1. 아동 대상 설정
+
+* [아동 온라인 개인 정보 보호법(COPPA)](https://www.ftc.gov/business-guidance/privacy-security/childrens-privacy)에 따라 `tagForChildDirectedTreatment` 설정이 가능합니다.
+* 광고를 요청할 때 콘텐츠의 아동 대상 서비스 취급 여부를 지정할 수 있습니다.
+* 콘텐츠를 아동 대상으로 처리하도록 지정하면 해당 광고 요청에 대한 관심 기반 광고 및 리마케팅 광고가 사용 중지됩니다.
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+AdWhaleAds.sharedInstance.tagForChildDirectedTreatment(true)
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+[[AdWhaleAds sharedInstance] tagForChildDirectedTreatment:@YES];
+```
+{% endtab %}
+{% endtabs %}
+
+| tagForChildDirectedTreatment 설정 | 설명                                      |
+| ------------------------------- | --------------------------------------- |
+| true                            | COPPA에 따라 콘텐츠를 아동 대상으로 처리하도록 지정하는 경우    |
+| false                           | COPPA에 따라 콘텐츠를 아동 대상으로 처리하지 않도록 지정하는 경우 |
+| 미설정                             | 광고 요청에서 COPPA에 따른 콘텐츠 취급 방법을 지정하지 않는 경우 |
+
+2. 동의 연령 미만 사용자 설정 방법
+
+* 유럽 경제 지역(EEA)에 거주하는 동의 연령 미만의 사용자를 대상으로 하는 서비스로 취급하도록 광고 요청에 표시할 수 있습니다.
+* TFUA(동의 연령 미만의 유럽 사용자가 대상임을 나타내는 태그) 매개변수가 광고 요청에 포함되며, 모든 광고 요청에서 리마케팅을 포함한 개인 맞춤 광고가 사용 중지됩니다.
+* `true` 로 설정하는 경우 IDFA 수집도 차단됩니다.
+* 아동 대상 설정과 동시에 true 로 설정하면 안 되며, 이 경우 아동 대상 설정이 우선 적용됩니다.
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+AdWhaleAds.sharedInstance.tagForUnderAgeOfConsent(true)
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+[[AdWhaleAds sharedInstance] tagForUnderAgeOfConsent:@YES];
+```
+{% endtab %}
+{% endtabs %}
+
+<table data-header-hidden><thead><tr><th width="362">tagForUnderAgeOfConsent 설정</th><th>설명</th></tr></thead><tbody><tr><td>tagForUnderAgeOfConsent 설정</td><td>설명</td></tr><tr><td>true</td><td>광고 요청이 EEA에 거주하는 동의 연령 미만의 사용자를 대상으로 처리하도록 지정하는 경우</td></tr><tr><td>미설정</td><td>광고 요청이 EEA에 거주하는 동의 연령 미만의 사용자 취급 방법을 지정하지 않는 경우</td></tr></tbody></table>
+
+3. 광고 콘텐츠 필터링
+
+* 광고 내 관련 혜택이 포함된 Google Play의 [부적절한 광고 정책](https://support.google.com/googleplay/android-developer/answer/9857753?hl=ko#zippy=,examples-of-common-violations)을 준수하려면 콘텐츠 자체가 Google Play 정책을 준수하더라도 앱에 표시되는 모든 광고 및 관련 혜택은 앱의 [콘텐츠 등급](https://support.google.com/googleplay/android-developer/answer/9898843?hl=ko)에 적합해야 합니다.
+* 광고 콘텐츠 등급 한도가 설정된 경우 콘텐츠 등급이 설정된 한도 이하인 광고가 게재되며, 다음 중 하나로 설정해야합니다.
+* 콘텐츠 등급 한도 설정에 대해 [각 광고 요청에 대한 콘텐츠 등급 한도 설정하기](https://support.google.com/admob/answer/10477886?hl=ko) 또는 [앱 또는 계정의 광고 콘텐츠 등급 한도 설정하기](https://support.google.com/admob/answer/7562142?hl=ko) 를 참고 부탁드립니다.
+
+| AdWhaleMaxAdContentRatingGeneral          | .general          |
+| ----------------------------------------- | ----------------- |
+| AdWhaleMaxAdContentRatingParentalGuidance | .parentalGuidance |
+| AdWhaleMaxAdContentRatingTeen             | .teen             |
+| AdWhaleMaxAdContentRatingMatureAudience   | .matureAudience   |
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+AdWhaleAds.sharedInstance.maxAdContentRating(.general)
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+[[AdWhaleAds sharedInstance] maxAdContentRating:AdWhaleMaxAdContentRatingGeneral];
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+### 4. 테스트 기기 등록
+
+1. 광고 테스트 기기 등록
+
+{% hint style="warning" %}
+* 시뮬레이터는 기본적으로 테스트 기기이므로 기기 ID 목록에 추가할 필요가 없습니다.
+* 앱을 출시하기 전에 이러한 테스트 기기 ID를 설정하는 코드를 삭제해야 합니다.
+{% endhint %}
+
+{% hint style="info" %}
+개발 단계에서 광고를 테스트 하려면 프로그래밍 방식으로 테스트 기기를 등록하세요.
+
+1. AdWhale SDK를 탑재한 앱에서 광고를 한 번 요청합니다.
+2. 로그 출력에서 다음 메시지를 확인합니다.
+
+***
+
+```
+<Google> To get test ads on this device, set:
+GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers =
+@[ @"2077ef9a63d2b398840261c8221a0c9b" ];
+```
+
+3. 테스트 기기 ID를 복사합니다.
+4. 다음을 통해 테스트 장치 ID를 설정하도록 코드를 수정합니다.
+
+***
+
+```swift
+AdWhaleAds.sharedInstance.setTestDeviceIdentifiers(testDeviceIdentifiers: "2077ef9a63d2b39
+```
+{% endhint %}
+
+
+
+2. GDPR 테스트 기기 등록
+
+{% hint style="info" %}
+* 시뮬레이터는 기본적으로 테스트 기기이므로 기기 ID 목록에 추가할 필요가 없습니다.
+* 앱을 출시하기 전에 이러한 테스트 기기 ID를 설정하는 코드를 삭제해야 합니다.
+{% endhint %}
+
+{% hint style="info" %}
+개발 단계에서 유럽 경제 지역(EEA) 외 국가에서 GDPR 사용 테스트를 하려면 프로그래밍 방식으로 테스트 기기를 등록하세요.
+
+1. SDK 초기화 단계의 **initialize** 를 호출합니다.
+2. 로그 출력에서 다음 메시지를 확인합니다.
+
+***
+
+```
+<UMP SDK>To enable debug mode for this device, set: UMPDebugSettings.testDeviceIdentifiers = @[2077ef9a63d2b398840261c8221a0c9b];
+```
+
+3. 테스트 기기 ID를 복사합니다.
+4. **initialize** 속성 중 testDevices 에 테스트 기기 ID를 전달합니다.
+
+***
+
+```swift
+AdWhaleAds.sharedInstance.initialize(rootViewController: self, useGdpr: true, testDevices: ["2077ef9a63d2b398840261c8221a0c9b"], completionHandler: {
+})
+```
+{% endhint %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

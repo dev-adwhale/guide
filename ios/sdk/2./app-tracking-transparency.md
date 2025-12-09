@@ -56,25 +56,56 @@ Admob UMP의 IDFA 메시지 기능 활성화 시, 별도의 코드를 추가하�
 
 {% tabs %}
 {% tab title="Swift" %}
+```swift
+import AppTrackingTransparency
 
+func requestIDFA() {
+    if #available(iOS 14, *) {
+        // ATT 알림을 통한 권한 요청
+        ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+            switch status {
+            case .authorized:       // 승인
+                print("Authorized")
+            case .denied:           // 거부
+                print("Denied")
+            case .notDetermined:        // 미결정
+                print("Not Determined")
+            case .restricted:           // 제한
+                print("Restricted")
+            @unknown default:           // 알려지지 않음
+                print("Unknow")
+            }
+        })
+    }
+}
+```
 {% endtab %}
 
 {% tab title="Objective-C" %}
+```objective-c
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
 
+- (void)requestIDFA {
+    if (@available(iOS 14.5, *)) {
+        // ATT 알림을 통한 권한 요청
+        [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+            switch (status) {
+                // 승인
+                case ATTrackingManagerAuthorizationStatusAuthorized:
+                    break;
+                // 거부
+                case ATTrackingManagerAuthorizationStatusDenied:
+                    break;
+                // 제한
+                case ATTrackingManagerAuthorizationStatusRestricted:
+                    break;
+                // 미결정
+                default:
+                    break;
+            }
+        }];
+    }
+}
+```
 {% endtab %}
 {% endtabs %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
