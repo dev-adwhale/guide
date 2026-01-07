@@ -11,7 +11,7 @@ AdWhaleAdView({
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleAdViewListener Listener</td><td>배너 미디에이션 광고 호출 콜백 리스너</td></tr><tr><td>AdInfo adInfo</td><td>발급받은 placementUid, BannerHeightEnum</td></tr></tbody></table>
 
-BannerAdListener
+AdWhaleAdViewListener
 
 | 리스너 구성               | 설명       |
 | -------------------- | -------- |
@@ -20,6 +20,12 @@ BannerAdListener
 | onShowLandingScreen  | 광고 화면 랜딩 |
 | onCloseLandingScreen | 광고 화면 종료 |
 | onAdClicked          | 광고 클릭    |
+
+```
+onAppOpenAdLoadFailed: (errorCode, errorMessage) // 미디에이션 배너 광고요청 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>errorCode</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>errorMessage</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```dart
 //AdInfo에 들어가는 BannerHeightEnum

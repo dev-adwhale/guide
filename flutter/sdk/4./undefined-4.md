@@ -29,6 +29,13 @@ AdWhaleNativeAdLoadCallback
 | onNativeAdShowFailed   | 광고 화면 랜딩 실패 |
 | onNativeAdClicked      | 광고 화면 클릭    |
 | onNativeAdClosed       | 광고 화면 종료    |
+
+```
+onNativeAdFailedToLoad: (errorCode, errorMessage) // 미디에이션 템플릿 네이티브 광고요청 실패 시
+onNativeAdShowFailed: (errorCode, errorMessage) // 미디에이션 템플릿 네이티브 광고 화면 랜딩 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>errorCode</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>errorMessage</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 {% endtab %}
 {% endtabs %}
 
@@ -230,6 +237,13 @@ AdWhaleNativeAdLoadCallback
 | onNativeAdShowFailed   | 광고 화면 랜딩 실패 |
 | onNativeAdClicked      | 광고 화면 클릭    |
 | onNativeAdClosed       | 광고 화면 종료    |
+
+```
+onNativeAdFailedToLoad: (errorCode, errorMessage) // 미디에이션 커스텀 네이티브 광고요청 실패 시
+onNativeAdShowFailed: (errorCode, errorMessage) // 미디에이션 커스 네이티브 광고 화면 랜딩 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>errorCode</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>errorMessage</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 {% endtab %}
 {% endtabs %}
 

@@ -22,15 +22,22 @@ AdWhaleRewardAdLoadCallback
 | onRewardAdDismissed    | 광고 화면 종료    |
 | onRewardAdClicked      | 광고 화면 클릭    |
 | onUserRewarded         | 유저가 받은 리워드  |
+
+```
+onRewardAdFailedToLoad: (errorCode, errorMessage) // 미디에이션 보상형 광고요청 실패 시
+onRewardAdFailedToShow: (errorCode, errorMessage) // 미디에이션 보상형 광고 화면 랜딩 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>errorCode</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>errorMessage</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 {% endtab %}
 {% endtabs %}
 
 ```dart
-AdWhaleInterstitialAd.load() // 미디에이션 보상형 광고로드
+AdWhaleRewardAd.load() // 미디에이션 보상형 광고로드
 ```
 
 ```dart
-AdWhaleInterstitialAd.show() // 미디에이션 보상형 광고로드 후 표시할 때 호출
+AdWhaleRewardAd.show() // 미디에이션 보상형 광고로드 후 표시할 때 호출
 ```
 
 ### 보상형 구현 예제
