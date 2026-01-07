@@ -11,7 +11,7 @@ AdWhaleInterstitialAd({
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>발급받은 placement</td></tr><tr><td>RewardAdLoadCallback</td><td>보상형 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
 
-RewardAdLoadCallback
+AdWhaleRewardAdLoadCallback
 
 | 리스너 구성                 | 설명          |
 | ---------------------- | ----------- |
@@ -25,41 +25,76 @@ RewardAdLoadCallback
 {% endtab %}
 {% endtabs %}
 
+```dart
+AdWhaleInterstitialAd.load() // 미디에이션 보상형 광고로드
+```
+
+```dart
+AdWhaleInterstitialAd.show() // 미디에이션 보상형 광고로드 후 표시할 때 호출
+```
+
 ### 보상형 구현 예제
 
 ```dart
-void _createReward() {
-    print('FlutterRewardAd _createReward()');
-    _adwhaleRewardAd = AdWhaleRewardAd(
-      appCode: "발급 받은 placementUid",
-      adRewardLoadCallback: RewardAdLoadCallback(
-        onRewardAdLoaded: () {
-          print('FlutterRewardAd onAdLoaded');
-          _adwhaleRewardAd!.show();
-        },
-        onRewardAdFailedToLoad: (errorCode, errorMessage) {
-          print('FlutterRewardAd onAdFailedToLoad: errorCode: $errorCode, errorMessage: $errorMessage');
-          _adwhaleRewardAd = null;
-        },
-        onUserRewarded: (amount, type) {
-          print('FlutterRewardAd onUserRewarded');
-          print('FlutterRewardAd onUserRewarded: amount: $amount, type: $type');
-        },
-        onRewardAdClicked: () {
-          print('FlutterRewardAd onAdClicked');
-        },
-        onRewardAdShowed: () {
-          print('FlutterRewardAd onAdShowed');
-          _adwhaleRewardAd = null;
-        },
-        onRewardFailedToShow: (String errorCode, String errorMessage) {
-          print('FlutterRewardAd onFailedToShow: errorCode: $errorCode, errorMessage: $errorMessage');
-        },
-        onRewardAdDismissed: () {
-          print('FlutterRewardAd onDismissed');
-        },
-      ),
-    );
-    _adwhaleRewardAd!.load();
+void _loadReward() {
+    _rewardAd?.dispose();
+    _rewardAd = null;
+    _isRewardLoaded = false;
+
+    _rewardAd =
+        AdWhaleRewardAd(
+            appCode: '발급받은 PlacementUid',
+            adRewardLoadCallback: AdWhaleRewardAdLoadCallback(
+              onRewardAdLoaded: () {
+                debugPrint('GuideSamplePage Reward onAdLoaded');
+                _isRewardLoaded = true;
+                if (mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('보상형 광고 로드 완료')));
+                }
+              },
+              onRewardAdFailedToLoad: (errorCode, errorMessage) {
+                debugPrint(
+                  'GuideSamplePage Reward onAdFailedToLoad: errorCode: $errorCode, errorMessage: $errorMessage',
+                );
+                _rewardAd = null;
+                _isRewardLoaded = false;
+              },
+              onUserRewarded: (amount, type) {
+                debugPrint(
+                  'GuideSamplePage Reward onUserRewarded: $amount, $type',
+                );
+              },
+              onRewardAdClicked: () {
+                debugPrint('GuideSamplePage Reward onAdClicked');
+              },
+              onRewardAdShowed: () {
+                debugPrint('GuideSamplePage Reward onAdShowed');
+              },
+              onRewardFailedToShow: (String errorCode, String errorMessage) {
+                debugPrint(
+                  'GuideSamplePage Reward onFailedToShow: errorCode: $errorCode, errorMessage: $errorMessage',
+                );
+              },
+              onRewardAdDismissed: () {
+                debugPrint('GuideSamplePage Reward onDismissed');
+              },
+            ),
+          )
+    _rewardAd!.load();
+  }
+  void _showReward() {
+    if (_rewardAd == null || !_isRewardLoaded) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('보상형 광고를 먼저 로드해 주세요.')));
+      }
+      return;
+    }
+    _rewardAd!.show();
+    _isRewardLoaded = false;
+    _rewardAd = null;
   }
 ```

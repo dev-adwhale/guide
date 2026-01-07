@@ -11,16 +11,154 @@
 {% tabs %}
 {% tab title="Dart" %}
 ```dart
-TemplateNativeAd({
+AdWhaleTemplateNativeAd({
     required super.nativeAdLoadCallback,
     required super.placementUid,
     this.template = NativeTemplate.small
  });
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>발급받은 placement</td></tr><tr><td>NativeAdLoadCallback</td><td>네이티브 미디에이션 광고 호출 콜백 리스너</td></tr><tr><td>NativeTemplate</td><td>small, medium, fullscreen 사이즈 지원</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>발급받은 placementUid</td></tr><tr><td>AdWhaleNativeAdLoadCallback</td><td>네이티브 미디에이션 광고 호출 콜백 리스너</td></tr><tr><td>NativeTemplate</td><td>small, medium, fullscreen 사이즈 지원</td></tr></tbody></table>
 
-NativeAdLoadCallback
+AdWhaleNativeAdLoadCallback
+
+| 리스너 구성                 | 설명          |
+| ---------------------- | ----------- |
+| onNativeAdLoaded       | 광고 로드시      |
+| onNativeAdFailedToLoad | 광고 로드 실패    |
+| onNativeAdShowFailed   | 광고 화면 랜딩 실패 |
+| onNativeAdClicked      | 광고 화면 클릭    |
+| onNativeAdClosed       | 광고 화면 종료    |
+{% endtab %}
+{% endtabs %}
+
+```dart
+AdWhaleTemplateNativeAd.load() // 미디에이션 템플릿 네이티브 광고로드
+```
+
+```dart
+AdWhaleTemplateNativeAd.show() // 미디에이션 템플릿 네이티브 광고로드 후 표시할 때 호출
+```
+
+#### 템플릿 네이티브 구현 예제
+
+```dart
+void _loadTemplateNative() {
+    _adWhaleTemplateNativeAd?.dispose();
+    _adWhaleTemplateNativeAd = null;
+    _isTemplateNativeLoaded = false;
+
+    // 공통 네이티브 상태 초기화
+    _adWhaleNativeAd?.dispose();
+    _adWhaleNativeAd = null;
+    _nativeLoaded = false;
+    _nativeShown = false;
+    _nativeHeight = null;
+    _nativeHeightSub?.cancel();
+    _nativeHeightSub = null;
+
+    setState(() {
+      _nativeShown = false;
+      _nativeHeight = null;
+      _nativeLoaded = false;
+    });
+
+    _adWhaleTemplateNativeAd =
+        AdWhaleTemplateNativeAd(
+            placementUid: '발급받은 PlacementUid',
+            nativeAdLoadCallback: AdWhaleNativeAdLoadCallback(
+              onNativeAdLoaded: (ad) {
+                debugPrint('GuideSamplePage TemplateNative onLoaded');
+                setState(() {
+                  _isTemplateNativeLoaded = true;
+                  _nativeLoaded = true;
+                });
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('네이티브 템플릿 광고 로드 완료')),
+                  );
+                }
+              },
+              onNativeAdFailedToLoad: (ad, code, message) {
+                debugPrint(
+                  'GuideSamplePage TemplateNative onFailedToLoad: $code, $message',
+                );
+                ad.dispose();
+                setState(() {
+                  _adWhaleTemplateNativeAd = null;
+                  _isTemplateNativeLoaded = false;
+                  _nativeLoaded = false;
+                  _nativeShown = false;
+                  _nativeHeight = null;
+                });
+              },
+              onNativeAdShowFailed: (ad, code, message) {
+                debugPrint(
+                  'GuideSamplePage TemplateNative onShowFailed: $code, $message',
+                );
+                ad.dispose();
+                setState(() {
+                  _adWhaleTemplateNativeAd = null;
+                  _isTemplateNativeLoaded = false;
+                  _nativeLoaded = false;
+                  _nativeShown = false;
+                  _nativeHeight = null;
+                });
+              },
+              onNativeAdClicked: (ad) {
+                debugPrint('GuideSamplePage TemplateNative onClicked');
+              },
+              onNativeAdClosed: (ad) {
+                debugPrint('GuideSamplePage TemplateNative onClosed');
+              },
+            ),
+            template: _selectedTemplateSize,
+          )
+
+    _adWhaleNativeAd = _adWhaleTemplateNativeAd;
+    _nativeLoaded = false;
+
+    _nativeHeightSub = instanceManager.nativeAdHeightStream.listen((int h) {
+      if (!mounted) return;
+      setState(() {
+        _nativeHeight = h.toDouble();
+      });
+    });
+
+    _adWhaleTemplateNativeAd!.load();
+  }
+  void _showTemplateNative() {
+    if (_adWhaleTemplateNativeAd == null || !_isTemplateNativeLoaded) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('네이티브 템플릿 광고를 먼저 로드해 주세요.')),
+        );
+      }
+      return;
+    }
+    _adWhaleTemplateNativeAd!.show();
+    setState(() {
+      _isTemplateNativeLoaded = false;
+      _nativeLoaded = false;
+      _nativeShown = true; // 여기서 setState가 핵심 (native_test_page와 동일)
+    });
+  }
+```
+
+#### 2. 템플릿 네이티브 스타일 적용
+
+```dart
+AdWhaleTemplateNativeAd({
+    required super.nativeAdLoadCallback,
+    required super.placementUid,
+    this.templateStyle,
+    this.template = NativeTemplate.small
+ });
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>발급받은 placementUid</td></tr><tr><td>AdWhaleNativeAdLoadCallback</td><td>네이티브 미디에이션 광고 호출 콜백 리스너</td></tr><tr><td>TemplateStyle</td><td>small, medium, fullscreen 사이</td></tr><tr><td>NativeTemplate</td><td>small, medium, fullscreen 사이즈 지원</td></tr></tbody></table>
+
+AdWhaleNativeAdLoadCallback
 
 | 리스너 구성                 | 설명          |
 | ---------------------- | ----------- |
@@ -30,46 +168,7 @@ NativeAdLoadCallback
 | onNativeAdClicked      | 광고 화면 클릭    |
 | onNativeAdClosed       | 광고 화면 종료    |
 
-```dart
-Future<void> load() async{};
-```
-
-```dart
-Future<void> show() async{};
-```
-{% endtab %}
-{% endtabs %}
-
-#### 템플릿 네이티브 구현 예제
-
-```dart
-void _loadTemplateSmall() {
-    _disposeNative();
-    _nativeAd = TemplateNativeAd(
-      nativeAdLoadCallback: NativeAdLoadCallback(
-        onNativeAdLoaded: (ad) => setState(() { _loaded = true; }),
-        onNativeAdFailedToLoad: (ad, c, m) { ad.dispose(); setState(() => _nativeAd = null); },
-        onNativeAdShowFailed: (ad, c, m) { ad.dispose(); setState(() => _nativeAd = null); },
-      ),
-      placementUid: "발급 받은 placementUid",
-      template: NativeTemplate.small,
-      
-    )..load();
-  }
-```
-
-#### 2. 템플릿 네이티브 스타일 적용
-
-```dart
-TemplateNativeAd({
-    required super.nativeAdLoadCallback,
-    required super.placementUid,
-    this.templateStyle,
-    this.template = NativeTemplate.small
- });
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>발급받은 placement</td></tr><tr><td>NativeAdLoadCallback</td><td>네이티브 미디에이션 광고 호출 콜백 리스너</td></tr><tr><td>TemplateStyle</td><td>small, medium, fullscreen 사이</td></tr><tr><td>NativeTemplate</td><td>small, medium, fullscreen 사이즈 지원</td></tr></tbody></table>
+TemplateStyle
 
 <table data-header-hidden><thead><tr><th width="348">TemplateStyle</th><th>사용 가능한 옵션</th></tr></thead><tbody><tr><td>TemplateStyle</td><td>mainBackgroundColorHex</td></tr><tr><td></td><td>primaryTextColorHex</td></tr><tr><td></td><td>primaryTypeface</td></tr><tr><td></td><td>primaryTextBackgroundColorHex</td></tr><tr><td></td><td>primaryTextSize</td></tr><tr><td></td><td>secondaryTextColorHex</td></tr><tr><td></td><td>tertiaryTextColorHex</td></tr><tr><td></td><td>callToActionTextColorHex</td></tr></tbody></table>
 
@@ -78,8 +177,8 @@ TemplateNativeAd({
 ```dart
 void _loadTemplateStyleSmall() {
     _disposeNative();
-    _nativeAd = TemplateNativeAd(
-      nativeAdLoadCallback: NativeAdLoadCallback(
+    _nativeAd = AdWhaleTemplateNativeAd(
+      nativeAdLoadCallback: AdWhaleNativeAdLoadCallback(
         onNativeAdLoaded: (ad) => setState(() { _loaded = true; }),
         onNativeAdFailedToLoad: (ad, c, m) { ad.dispose(); setState(() => _nativeAd = null); },
         onNativeAdShowFailed: (ad, c, m) { ad.dispose(); setState(() => _nativeAd = null); },
@@ -98,6 +197,14 @@ void _loadTemplateStyleSmall() {
       ),
     )..load();
   }
+  void _showTemplateNative() {
+    _adWhaleTemplateNativeAd!.show();
+    setState(() {
+      _isTemplateNativeLoaded = false;
+      _nativeLoaded = false;
+      _nativeShown = true;
+    });
+  }
 ```
 
 #### 3. 커스텀 바인딩 네이티브 생성
@@ -105,16 +212,16 @@ void _loadTemplateStyleSmall() {
 {% tabs %}
 {% tab title="Dart" %}
 ```dart
-CustomNativeAd({
+AdWhaleCustomNativeAd({
     required super.nativeAdLoadCallback,
     required super.placementUid,
     this.factoryId
 });
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>NativeAdLoadCallback</td><td>네이티브 미디에이션 광고 호출 콜백 리스너</td></tr><tr><td>String</td><td>발급받은 placement</td></tr><tr><td>String</td><td>factoryId 구조 연결을 위한 Id값</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleNativeAdLoadCallback</td><td>네이티브 미디에이션 광고 호출 콜백 리스너</td></tr><tr><td>String</td><td>발급받은 placementUid</td></tr><tr><td>String</td><td>factoryId 구조 연결을 위한 Id값</td></tr></tbody></table>
 
-NativeAdLoadCallback
+AdWhaleNativeAdLoadCallback
 
 | 리스너 구성                 | 설명          |
 | ---------------------- | ----------- |
@@ -123,31 +230,119 @@ NativeAdLoadCallback
 | onNativeAdShowFailed   | 광고 화면 랜딩 실패 |
 | onNativeAdClicked      | 광고 화면 클릭    |
 | onNativeAdClosed       | 광고 화면 종료    |
-
-```dart
-Future<void> load() async{};
-```
-
-```dart
-Future<void> show() async{};
-```
 {% endtab %}
 {% endtabs %}
+
+```dart
+AdWhaleCustomNativeAd.load() // 미디에이션 커스텀 바인딩 네이티브 광고로드
+```
+
+```dart
+AdWhaleCustomNativeAd.show() // 미디에이션 커스텀 바인딩 네이티브 광고로드 후 표시할 때 호출
+```
 
 #### 커스텀 바인딩 네이티브 구현 예제
 
 ```dart
-void _loadCustomFactory() {
-    _disposeNative();
-    _nativeAd = CustomNativeAd(
-      nativeAdLoadCallback: NativeAdLoadCallback(
-        onNativeAdLoaded: (ad) => setState(() { _loaded = true; }),
-        onNativeAdFailedToLoad: (ad, c, m) { ad.dispose(); setState(() => _nativeAd = null); },
-        onNativeAdShowFailed: (ad, c, m) { ad.dispose(); setState(() => _nativeAd = null); },
-      ),
-      placementUid: "발급 받은 placementUid",
-      factoryId: 'app_custom',
-    )..load();
+void _loadCustomNative() {
+    _adWhaleCustomNativeAd?.dispose();
+    _adWhaleCustomNativeAd = null;
+    _isCustomNativeLoaded = false;
+
+    _adWhaleNativeAd?.dispose();
+    _adWhaleNativeAd = null;
+    _nativeLoaded = false;
+    _nativeShown = false;
+    _nativeHeight = null;
+    _nativeHeightSub?.cancel();
+    _nativeHeightSub = null;
+
+    setState(() {
+      _nativeShown = false;
+      _nativeHeight = null;
+      _nativeLoaded = false;
+    });
+
+    _adWhaleCustomNativeAd =
+        AdWhaleCustomNativeAd(
+            placementUid: 'PlacementUid',
+            nativeAdLoadCallback: AdWhaleNativeAdLoadCallback(
+              onNativeAdLoaded: (ad) {
+                debugPrint('GuideSamplePage CustomNative onLoaded');
+                setState(() {
+                  _isCustomNativeLoaded = true;
+                  _nativeLoaded = true;
+                });
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('네이티브 커스텀 광고 로드 완료')),
+                  );
+                }
+              },
+              onNativeAdFailedToLoad: (ad, code, message) {
+                debugPrint(
+                  'GuideSamplePage CustomNative onFailedToLoad: $code, $message',
+                );
+                ad.dispose();
+                setState(() {
+                  _adWhaleCustomNativeAd = null;
+                  _isCustomNativeLoaded = false;
+                  _nativeLoaded = false;
+                  _nativeShown = false;
+                  _nativeHeight = null;
+                });
+              },
+              onNativeAdShowFailed: (ad, code, message) {
+                debugPrint(
+                  'GuideSamplePage CustomNative onShowFailed: $code, $message',
+                );
+                ad.dispose();
+                setState(() {
+                  _adWhaleCustomNativeAd = null;
+                  _isCustomNativeLoaded = false;
+                  _nativeLoaded = false;
+                  _nativeShown = false;
+                  _nativeHeight = null;
+                });
+              },
+              onNativeAdClicked: (ad) {
+                debugPrint('GuideSamplePage CustomNative onClicked');
+              },
+              onNativeAdClosed: (ad) {
+                debugPrint('GuideSamplePage CustomNative onClosed');
+              },
+            ),
+            factoryId: 'app_custom',
+          )
+
+    _adWhaleNativeAd = _adWhaleCustomNativeAd;
+    _nativeLoaded = false;
+
+    _nativeHeightSub = instanceManager.nativeAdHeightStream.listen((int h) {
+      if (!mounted) return;
+      setState(() {
+        _nativeHeight = h.toDouble();
+      });
+    });
+
+    _adWhaleCustomNativeAd!.load();
+  }
+
+  void _showCustomNative() {
+    if (_adWhaleCustomNativeAd == null || !_isCustomNativeLoaded) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('네이티브 커스텀 광고를 먼저 로드해 주세요.')),
+        );
+      }
+      return;
+    }
+    _adWhaleCustomNativeAd!.show();
+    setState(() {
+      _isCustomNativeLoaded = false;
+      _nativeLoaded = false;
+      _nativeShown = true;
+    });
   }
 ```
 
