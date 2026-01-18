@@ -12,7 +12,7 @@ Future<void> setLoggerEnabled(bool enabled) async
 | ------- | -------- |
 | bool    | 로그 레벨 설정 |
 
-로그 레벨 설정
+**로그 레벨 설정**
 
 | 값     | 설명                      |
 | ----- | ----------------------- |

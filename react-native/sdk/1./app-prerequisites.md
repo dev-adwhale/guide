@@ -1,4 +1,4 @@
-# 1. 요구사항 및 사용권한
+# 1.1 요구사항 및 사용권한
 
 본 문서는 ADwhale Mediation SDK를 React-Native로 개발된 파트너사의 안드로이드 어플리케이션에 연동하기 위한 가이드 문서입니다. 연동전에 다음의 안내 사항을 반드시 읽어 주시기 바랍니다.
 
@@ -10,6 +10,10 @@
 
 ### **요구사항**
 
+* React Native 지원 스펙
+  * React Native Bridge / TurboModule / Old Architecture 지원
+  * Expo Bare Workflow / Custom Dev Client 지원&#x20;
+  * **⚠️ Expo Go (Managed Workflow)에서는 지원하지 않습니다.**
 * 안드로이드 지원 버전
   * Android API Level 24 이상
   * Android 5.0(API 21) 미만의 경우 multi-dex 적용 필요
@@ -23,18 +27,10 @@
 ### **앱 사용 권한(permission)**
 
 ```xml
+<!-- android/app/src/main/AndroidManifest.xml 에 추가 -->
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 ```
 
-### expo 환경
-
-{% hint style="warning" %}
-expo 환경에서 구현하는 경우 android 폴더가 없을 수 있습니다.
-
-이에따라 AndroidManifest.xml을 포함한 android 설정 파일이 표시되지 않을 수 있습니다.
-
-이 경우, [expo 환경 설정](option/expo-setting.md) 과정을 진행하여 android 폴더를 생성한 후 작업을 진행해주시기 바랍니다.
-{% endhint %}

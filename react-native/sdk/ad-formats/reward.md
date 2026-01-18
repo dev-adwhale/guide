@@ -1,614 +1,301 @@
 # 보상형
 
-### 1. RNAdWhaleMediationRewardAd 클래스
-
-{% tabs %}
-{% tab title="Java" %}
-**AdWhaleMediationRewardAd 클래스 API 설명**
-
-```java
-public AdWhaleMediationRewardAd(String placementUid)
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
-
-```java
-public void setAdWhaleMediationFullScreenContentCallback(AdWhaleMediationFullScreenContentCallback listener)
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationFullScreenContentCallback</p></td><td>보상형 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
-
-```java
-public void loadAd(AdWhaleMediationRewardAdLoadCallback listener) // 미디에이션 보상형 전면 광고로드 시 호출
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationRewardAdLoadCallback</p></td><td>보상형 미디에이션 광고 로드 콜백 리스너</td></tr></tbody></table>
-
-```java
-public void showAd(AdWhaleMediationUserEarnedRewardListener listener) // 미디에이션 보상형 전면 광고로드 후 표시할 때 호출
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationUserEarnedRewardListener</p></td><td>보상형 미디에이션 광고 리워드 지급 콜백 리스너</td></tr></tbody></table>
-
-```java
-public void destroy() // onDestroy() 시 호출
-```
-
-
-
-**AdWhaleMediationFullScreenContentCallback 클래스 API 설명**
-
-```java
-public void onAdClicked() // 미디에이션 보상형 광고클릭 시
-```
-
-```java
-public void onAdDismissed() // 미디에이션 보상형 광고닫기 시
-```
-
-```java
-public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 광고표시 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>초기화 결과 메시지</td></tr></tbody></table>
-
-```java
-public void onAdShowed() // 미디에이션 보상형 광고표시 후
-```
-
-
-
-**AdWhaleMediationRewardAdLoadCallback 클래스 API 설명**
-
-```java
-public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String message) // 미디에이션 보상형 광고로드 성공 시
-```
-
-<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
-
-```java
-public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 광고로드 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>광고표시 결과 메시지</td></tr></tbody></table>
-
-
-
-**AdWhaleMediationUserEarnedRewardListener 클래스 API 설명**
-
-```java
-public void onUserRewarded(AdWhaleMediationRewardItem rewardItem) // 미디에이션 보상형 리워드지급 성공 시
-```
-
-<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardItem</td><td>리워드 타입, 리워드 금액 값을 지니는 객체</td></tr></tbody></table>
-
-
-
-**보상형 구현 샘플은 아래와 같습니다.**&#x20;
-
-```java
-public class RNAdWhaleMediationRewardAd extends ReactContextBaseJavaModule implements AdWhaleMediationRewardedAdLoadCallback, AdWhaleMediationFullScreenContentCallback, AdWhaleMediationUserEarnedRewardListener {
-
-    private static final String REACT_CLASS_NAME = RNAdWhaleMediationRewardAd.class.getSimpleName();
-    private AdWhaleMediationRewardAd adWhaleMediationRewardAd;
-
-    public RNAdWhaleMediationRewardAd(ReactApplicationContext context) {
-        super(context);
-    }
-
-    @NonNull
-    @Override
-    public String getName() {
-        return REACT_CLASS_NAME;
-    }
-
-    @ReactMethod
-    public void loadAd(String placementUid) {
-        Log.e(REACT_CLASS_NAME, "loadAd()");
-        adWhaleMediationRewardAd = new AdWhaleMediationRewardAd(placementUid);
-        adWhaleMediationRewardAd.setAdWhaleMediationFullScreenContentCallback(this);
-
-        UiThreadUtil.runOnUiThread(() -> {
-            adWhaleMediationRewardAd.loadAd(this);
-        });
-    }
-
-    @ReactMethod
-    public void showAd() {
-        Log.e(REACT_CLASS_NAME, "showAd()");
-        if (adWhaleMediationRewardAd == null) {
-            Log.e(REACT_CLASS_NAME, "adWhaleMediationRewardAd is null");
-            return;
-        }
-
-        UiThreadUtil.runOnUiThread(() -> {
-            adWhaleMediationRewardAd.showAd(this);
-        });
-    }
-
-
-    /// AdWhaleMediationFullScreenContentCallback
-    @Override
-    public void onAdClicked() {
-        Log.i(REACT_CLASS_NAME, "onAdClicked()");
-        sendEvnet("onRewardAdClicked", null);
-    }
-
-    @Override
-    public void onAdDismissed() {
-        Log.i(REACT_CLASS_NAME, "onAdDismissed()");
-        sendEvnet("onRewardAdDismissed", null);
-    }
-
-    @Override
-    public void onFailedToShow(int statusCode, String message) {
-        Log.i(REACT_CLASS_NAME, "onFailedToShow(" + statusCode + ", " + message + ")");
-        WritableMap params = Arguments.createMap();
-        params.putInt("statusCode", statusCode);
-        params.putString("message", message);
-        sendEvnet("onRewardAdFailedToShow", params);
-    }
-
-    @Override
-    public void onAdShowed() {
-        Log.i(REACT_CLASS_NAME, "onAdShowed()");
-        sendEvnet("onRewardAdShowed", null);
-    }
-
-    /// AdWhaleMediationRewardedAdLoadCallback
-    @Override
-    public void onAdLoaded(AdWhaleMediationRewardAd adWhaleMediationRewardAd, String message) {
-        Log.i(REACT_CLASS_NAME, "onAdLoaded(+ " + message + ")");
-        sendEvnet("onRewardAdLoaded", null);
-    }
-
-    @Override
-    public void onAdFailedToLoad(int statusCode, String message) {
-        Log.i(REACT_CLASS_NAME, "onAdFailedToLoad(" + statusCode + ", " + message + ")");
-        WritableMap params = Arguments.createMap();
-        params.putInt("statusCode", statusCode);
-        params.putString("message", message);
-        sendEvnet("onRewardAdFailedToLoad", params);
-    }
-
-
-    /// AdWhaleMediationUserEarnedRewardListener
-    @Override
-    public void onUserRewarded(AdWhaleMediationRewardItem adWhaleMediationRewardItem) {
-        Log.i(REACT_CLASS_NAME, "onUserRewarded(" + adWhaleMediationRewardItem.toString() + ")");
-        WritableMap params = Arguments.createMap();
-        params.putString("type", adWhaleMediationRewardItem.getRewardType());
-        params.putInt("amount", adWhaleMediationRewardItem.getRewardAmount());
-        sendEvnet("onUserRewarded", params);
-    }
-
-    @Nullable
-    @Override
-    public Map<String, Object> getConstants() {
-        final Map<String, Object> constants = new HashMap<>();
-        return constants;
-    }
-
-    private void sendEvnet(String eventName, @Nullable WritableMap params) {
-        getReactApplicationContext()
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
-    }
-
-    @ReactMethod
-    public void addListener(String eventName) {
-        //TODO NOTHING
-    }
-
-    @ReactMethod
-    public void removeListeners(Integer count) {
-        //TODO NOTHING
-    }
-}
-```
-{% endtab %}
-
-{% tab title="Kotlin" %}
-**AdWhaleMediationRewardAd 클래스 API 설명**
-
-```kotlin
-AdWhaleMediationRewardAd(placementUid : String)
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
-
-```kotlin
-fun setAdWhaleMediationFullScreenContentCallback(listener : AdWhaleMediationFullScreenContentCallback) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationFullScreenContentCallback</p></td><td>보상형 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
-
-```kotlin
-fun loadAd(listener : AdWhaleMediationRewardAdLoadCallback) : Unit  // 미디에이션 보상형광고로드 시 호출
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationRewardAdLoadCallback</p></td><td>보상형 미디에이션 광고 로드 콜백 리스너</td></tr></tbody></table>
-
-```kotlin
-fun showAd(listener : AdWhaleMediationUserEarnedRewardListener) : Unit // 미디에이션 보상형광고로드 후 표시할 때 호출
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationUserEarnedRewardListener</p></td><td>보상형 미디에이션 광고 리워드 지급 콜백 리스너</td></tr></tbody></table>
-
-```kotlin
-fun destroy() : Unit // onDestroy() 시 호출
-```
-
-
-
-**AdWhaleMediationFullScreenContentCallback 클래스 API 설명**
-
-```kotlin
-fun onAdClicked() : Unit // 미디에이션 보상형광고클릭 시
-```
-
-```kotlin
-fun onAdDismissed() : Unit // 미디에이션 보상형광고닫기 시
-```
-
-```kotlin
-fun onFailedToShow(statusCode : Int , message : String) : Unit // 미디에이션 보상형광고표시 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>초기화 결과 메시지</td></tr></tbody></table>
-
-```kotlin
-fun onAdShowed() : Unit // 미디에이션 보상형광고표시 후
-```
-
-
-
-**AdWhaleMediationRewardAdLoadCallback 클래스 API 설명**
-
-```kotlin
-fun onAdLoaded(adWhaleMediationRewardAd : AdWhaleMediationRewardAd, message : String) : Unit // 미디에이션 보상형광고로드 성공 시
-```
-
-<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardAd</td><td>AdWhaleMediationRewardAd 객체</td></tr><tr><td>String</td><td>광고로드 결과 메시지</td></tr></tbody></table>
-
-```kotlin
-fun onFailedToShow(statusCode : Int, message : String) : Unit // 미디에이션 보상형로드 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td>광고표시 결과 코드</td></tr><tr><td>String</td><td>광고표시 결과 메시지</td></tr></tbody></table>
-
-
-
-**AdWhaleMediationUserEarnedRewardListener 클래스 API 설명**
-
-```kotlin
-fun onUserRewarded(rewardItem : AdWhaleMediationRewardItem) : Unit // 미디에이션 보상형리워드지급 성공 시
-```
-
-<table data-header-hidden><thead><tr><th width="356">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>AdWhaleMediationRewardItem</td><td>리워드 타입, 리워드 금액 값을 지니는 객체</td></tr></tbody></table>
-
-
-
-**보상형 구현 샘플은 아래와 같습니다.**&#x20;
-
-```kotlin
-class RNAdWhaleMediationRewardAd(private val context: ReactApplicationContext) : ReactContextBaseJavaModule(context), AdWhaleMediationRewardedAdLoadCallback, AdWhaleMediationFullScreenContentCallback, AdWhaleMediationUserEarnedRewardListener {
-
-    companion object {
-        private val REACT_CLASS_NAME = RNAdWhaleMediationRewardAd::class.java.simpleName
-    }
-
-    private lateinit var adWhaleMediationRewardAd: AdWhaleMediationRewardAd
-
-    override fun getName(): String {
-        return REACT_CLASS_NAME
-    }
-
-    @ReactMethod
-    fun loadAd(placementUid: String) {
-        Log.e(REACT_CLASS_NAME, "loadAd()")
-        adWhaleMediationRewardAd = AdWhaleMediationRewardAd(placementUid)
-        adWhaleMediationRewardAd.setAdWhaleMediationFullScreenContentCallback(this)
-
-        UiThreadUtil.runOnUiThread {
-            adWhaleMediationRewardAd.loadAd(this)
-        }
-    }
-
-    @ReactMethod
-    fun showAd() {
-        Log.e(REACT_CLASS_NAME, "showAd()")
-
-        UiThreadUtil.runOnUiThread {
-            adWhaleMediationRewardAd.showAd(this)
-        }
-    }
-
-
-    /// AdWhaleMediationFullScreenContentCallback
-    override fun onAdClicked() {
-        Log.i(REACT_CLASS_NAME, "onAdClicked()")
-        sendEvent("onRewardAdClicked", null)
-    }
-
-    override fun onAdDismissed() {
-        Log.i(REACT_CLASS_NAME, "onAdDismissed()")
-        sendEvent("onRewardAdDismissed", null)
-    }
-
-    override fun onFailedToShow(statusCode: Int, message: String?) {
-        Log.i(REACT_CLASS_NAME, "onFailedToShow($statusCode, ${message})")
-        val params = Arguments.createMap()
-        params.putInt("statusCode", statusCode)
-        params.putString("message", message)
-        sendEvent("onRewardAdFailedToShow", params)
-    }
-
-    override fun onAdShowed() {
-        Log.i(REACT_CLASS_NAME, "onAdShowed()")
-        sendEvent("onRewardAdShowed", null)
-    }
-
-    /// AdWhaleMediationRewardedAdLoadCallback
-    override fun onAdLoaded(adWhaleMediationrewardAd: AdWhaleMediationRewardAd?, message: String?) {
-        Log.i(REACT_CLASS_NAME, "onAdLoaded($message)")
-        sendEvent("onRewardAdLoaded", null)
-    }
-
-    override fun onAdFailedToLoad(statusCode: Int, message: String?) {
-        Log.i(REACT_CLASS_NAME, "onAdFailedToLoad($statusCode, ${message})")
-        val params = Arguments.createMap()
-        params.putInt("statusCode", statusCode)
-        params.putString("message", message)
-        sendEvent("onRewardAdFailedToLoad", params)
-    }
-
-    /// AdWhaleMediationUserEarnedRewardListener
-    override fun onUserRewarded(adWhaleMediationRewardItem: AdWhaleMediationRewardItem?) {
-        Log.i(REACT_CLASS_NAME, "onUserRewarded(${adWhaleMediationRewardItem.toString()})")
-        val params = Arguments.createMap()
-        params.putString("type", adWhaleMediationRewardItem?.rewardType)
-        params.putInt("amount", adWhaleMediationRewardItem?.rewardAmount ?: 0)
-        sendEvent("onUserRewarded", params)
-    }
-
-    private fun sendEvent(eventName: String, params: WritableMap?) {
-        reactApplicationContext
-            .getJSModule(RCTDeviceEventEmitter::class.java)
-            .emit(eventName, params)
-    }
-
-    @ReactMethod
-    fun addListener(eventName: String) {
-        //TODO NOTHING
-    }
-
-    @ReactMethod
-    fun removeListeners(count: Int) {
-        //TODO NOTHING
-    }
-}
-```
-{% endtab %}
-{% endtabs %}
-
-### 2. RNAdWhaleMediationAdPackage 클래스
-
 {% hint style="info" %}
-네이티브 모듈과 뷰 매니저를 React Native에 연결하는 패키지 클래스입니다.
+보상형 광고는 사용자가 광고를 시청한 후 보상을 받는 광고 형식입니다. 게임 내 아이템, 코인, 생명 등 다양한 보상을 제공하여 높은 참여도와 수익을 얻을 수 있습니다.
 {% endhint %}
 
-{% tabs %}
-{% tab title="Java" %}
-```java
-public class RNAdWhaleMediationAdPackage implements ReactPackage {
+#### 1. 주요특징 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-    private RNAdWhaleMediationAdSettingModule rnAdWhaleMediationAdSettingModule;
+* 사용자 시청 후 보상 제공
+* 높은 참여도와 완료율
+* 다양한 보상 타입 지원 (코인, 아이템 등)
+* 이벤트 기반 콜백 시스템으로 광고 상태 및 보상 추적
 
-    @NonNull
-    @Override
-    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactApplicationContext) {
-        List<NativeModule> modules = new ArrayList<>();
-        rnAdWhaleMediationAdSettingModule = new RNAdWhaleMediationAdSettingModule(reactApplicationContext);
-        RNAdWhaleMediationRewardAd rnAdWhaleMediationRewardAd = new RNAdWhaleMediationRewardAd(reactApplicationContext);
-        modules.add(rnAdWhaleMediationAdSettingModule);
-        modules.add(rnAdWhaleMediationRewardAd);
-        return modules;
-    }
+#### 2. 기본 구현 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-    ...
+보상형 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
+
+```typescript
+import { AdWhaleRewardAd } from 'adwhale-sdk-react-native';
+
+const PLACEMENT_UID = 'your-placement-uid';
+
+// 광고 로드
+AdWhaleRewardAd.loadAd(PLACEMENT_UID);
+
+// 광고 표시
+AdWhaleRewardAd.showAd();
+```
+
+#### 3. 이벤트 리스너 등록 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+광고의 상태 변화를 추적하기 위해 이벤트 리스너를 등록합니다.
+
+```typescript
+import { 
+  AdWhaleRewardAd, 
+  AdWhaleRewardErrorEvent,
+  AdWhaleRewardUserRewardedEvent
+} from 'adwhale-sdk-react-native';
+import { useEffect } from 'react';
+
+useEffect(() => {
+  const subscriptions = AdWhaleRewardAd.addEventListeners({
+    onLoaded: () => {
+      console.log('보상형 광고 로드 성공');
+    },
+    onLoadFailed: (event: AdWhaleRewardErrorEvent) => {
+      console.log('보상형 광고 로드 실패:', event.statusCode, event.message);
+    },
+    onShowed: () => {
+      console.log('보상형 광고 표시됨');
+    },
+    onShowFailed: (event: AdWhaleRewardErrorEvent) => {
+      console.log('보상형 광고 표시 실패:', event.statusCode, event.message);
+    },
+    onDismissed: () => {
+      console.log('보상형 광고 닫힘');
+    },
+    onClicked: () => {
+      console.log('보상형 광고 클릭됨');
+    },
+    onUserRewarded: (event: AdWhaleRewardUserRewardedEvent) => {
+      console.log('보상 지급:', event.type, event.amount);
+      // 보상 처리 로직
+    },
+  });
+
+  // 컴포넌트 언마운트 시 리스너 제거
+  return () => {
+    subscriptions.forEach(sub => sub.remove());
+  };
+}, []);
+```
+
+#### 4. 이벤트 리스너 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+`AdWhaleRewardAd.addEventListeners()` 메서드는 다음 이벤트를 지원합니다:
+
+| 이벤트              | 설명                 | 파라미터                             |
+| ---------------- | ------------------ | -------------------------------- |
+| `onLoaded`       | 광고 로드 성공 시 호출      | 없음                               |
+| `onLoadFailed`   | 광고 로드 실패 시 호출      | `AdWhaleRewardErrorEvent`        |
+| `onShowed`       | 광고 표시 성공 시 호출      | 없음                               |
+| `onShowFailed`   | 광고 표시 실패 시 호출      | `AdWhaleRewardErrorEvent`        |
+| `onDismissed`    | 광고가 닫힐 때 호출        | 없음                               |
+| `onClicked`      | 광고가 클릭될 때 호출       | 없음                               |
+| `onUserRewarded` | 사용자에게 보상이 지급될 때 호출 | `AdWhaleRewardUserRewardedEvent` |
+
+#### 5. 에러 이벤트 구조
+
+```typescript
+interface AdWhaleRewardErrorEvent {
+  statusCode: number;
+  message: string;
 }
 ```
-{% endtab %}
 
-{% tab title="Kotlin" %}
-```kotlin
-class RNAdWhaleMediationAdPackage : ReactPackage {
+#### 6. 보상 이벤트 구조 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-    private lateinit var rnAdWhaleMediationAdSettingModule : RNAdWhaleMediationAdSettingModule
-
-    override fun createNativeModules(reactApplicationContext : ReactApplicationContext) : List<NativeModule> {
-        rnAdWhaleMediationAdSettingModule = RNAdWhaleMediationAdSettingModule(reactApplicationContext)
-        return listOf<NativeModule>(rnAdWhaleMediationAdSettingModule, RNAdWhaleMediationRewardAd(reactApplicationContext))
-    }
-
-    ...
+```typescript
+interface AdWhaleRewardUserRewardedEvent {
+  type: string;    // 보상 타입 (예: 'coin', 'item', 'life')
+  amount: number;  // 보상 수량
 }
 ```
-{% endtab %}
-{% endtabs %}
 
-### 3. React-Native 코드
+#### 7. 보상 처리 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-#### RewardAd.js
+`onUserRewarded` 이벤트에서 보상을 처리하는 예제입니다.
 
-```javascript
-import React, { Component } from 'react';
-import { View, Button, StyleSheet, NativeModules, NativeEventEmitter } from 'react-native';
-
-const { RNAdWhaleMediationRewardAd } = NativeModules;
-
-const styles = StyleSheet.create({
-  buttonWrapper: {
-      marginBottom: 10,
-      width: '80%',
-  },
-  disabledButton: {
-      opacity: 0.5,
+```typescript
+const subscriptions = AdWhaleRewardAd.addEventListeners({
+  onUserRewarded: (event: AdWhaleRewardUserRewardedEvent) => {
+    console.log('보상 지급:', event.type, event.amount);
+    
+    // 보상 타입에 따른 처리
+    switch (event.type) {
+      case 'coin':
+        // 코인 지급
+        addCoins(event.amount);
+        break;
+      case 'item':
+        // 아이템 지급
+        addItem(event.type, event.amount);
+        break;
+      case 'life':
+        // 생명 지급
+        addLife(event.amount);
+        break;
+      default:
+        console.log('알 수 없는 보상 타입:', event.type);
+    }
   },
 });
+```
 
-class RewardAd extends Component {
-  state = {
-    isRewardAdLoaded: false,
+#### 6. 옵션 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+`loadAd` 메서드 호출 시 추가 옵션을 설정할 수 있습니다.
+
+```typescript
+AdWhaleRewardAd.loadAd(placementUid, {
+  placementName?: string;  // Placement 이름
+  region?: string;          // 지역 코드 (예: 'KR')
+  gcoder?: {                // 위치 정보
+    lt: number;             // 위도
+    lng: number;            // 경도
+  }
+});
+```
+
+#### 7. 배너 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+다음은 React Native 컴포넌트에서 전면 광고를 구현하는 완전한 예시입니다.
+
+```typescript
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { 
+  AdWhaleRewardAd, 
+  AdWhaleRewardErrorEvent,
+  AdWhaleRewardUserRewardedEvent,
+  AdWhaleMediationSdk 
+} from 'adwhale-sdk-react-native';
+
+const PLACEMENT_UID = 'your-placement-uid';
+
+const RewardAdExample: React.FC = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [coins, setCoins] = useState(0);
+
+  useEffect(() => {
+    // SDK 초기화
+    AdWhaleMediationSdk.initialize()
+      .then(code => {
+        if (code === 100) {
+          console.log('SDK 초기화 성공');
+        }
+      })
+      .catch(err => {
+        console.error('SDK 초기화 에러:', err);
+      });
+
+    // 이벤트 리스너 등록
+    const subscriptions = AdWhaleRewardAd.addEventListeners({
+      onLoaded: () => {
+        console.log('보상형 광고 로드 성공');
+        setIsLoaded(true);
+      },
+      onLoadFailed: (event: AdWhaleRewardErrorEvent) => {
+        console.log('보상형 광고 로드 실패:', event.statusCode, event.message);
+        setIsLoaded(false);
+      },
+      onShowed: () => {
+        console.log('보상형 광고 표시됨');
+      },
+      onShowFailed: (event: AdWhaleRewardErrorEvent) => {
+        console.log('보상형 광고 표시 실패:', event.statusCode, event.message);
+        setIsLoaded(false);
+      },
+      onDismissed: () => {
+        console.log('보상형 광고 닫힘');
+        setIsLoaded(false);
+        // 광고가 닫힌 후 다음 광고 로드
+        AdWhaleRewardAd.loadAd(PLACEMENT_UID);
+      },
+      onClicked: () => {
+        console.log('보상형 광고 클릭됨');
+      },
+      onUserRewarded: (event: AdWhaleRewardUserRewardedEvent) => {
+        console.log('보상 지급:', event.type, event.amount);
+        // 코인 지급
+        if (event.type === 'coin') {
+          setCoins(prev => prev + event.amount);
+        }
+      },
+    });
+
+    // 초기 광고 로드
+    AdWhaleRewardAd.loadAd(PLACEMENT_UID);
+
+    return () => {
+      subscriptions.forEach(sub => sub.remove());
+    };
+  }, []);
+
+  const handleLoadAd = () => {
+    AdWhaleRewardAd.loadAd(PLACEMENT_UID);
   };
 
-  componentDidMount() {
-    this._rewardAdInit();
-  }
-
-  _rewardAdInit = () => {
-    const eventEmitter = new NativeEventEmitter(RNAdWhaleMediationRewardAd);
-    eventEmitter.addListener('onRewardAdLoaded', this._onRewardAdLoaded);
-    eventEmitter.addListener('onRewardAdShowed', this._onRewardAdShowed);
-    eventEmitter.addListener('onRewardAdDismissed', this._onRewardAdDismissed);
-    eventEmitter.addListener('onRewardAdClicked', this._onRewardAdClicked);
-    eventEmitter.addListener('onRewardAdFailedToLoad', this._onRewardAdFailedToLoad);
-    eventEmitter.addListener('onRewardAdFailedToShow', this._onRewardAdFailedToShow);
-    eventEmitter.addListener('onUserRewarded', this._onRewardAdUserRewarded);
-  }
-
-  onPressRewardRequestButton = () => {
-    RNAdWhaleMediationRewardAd.loadAd("발급받은 placement uid 값");
-  }
-
-  onPressRewardShowButton = () => {
-    RNAdWhaleMediationRewardAd.showAd();
-  }
-
-  _onRewardAdLoaded = () => {
-    console.log("[RewardAd.js]js did registered _onRewardAdLoaded successfully!!!");
-    this.setState({ isRewardAdLoaded: true });
-  }
-
-  _onRewardAdFailedToLoad = (event) => {
-    const { statusCode, message } = event;
-    console.log("[RewardAd.js]js did registered _onRewardAdFailedToLoad successfully!!! status code: " + statusCode + ", message: " + message);
-    this.setState({ isRewardAdLoaded: false });
-  }
-
-  _onRewardAdShowed = () => {
-    console.log("[RewardAd.js]js did registered _onRewardAdShowed successfully!!!");
-  }
-
-  _onRewardAdFailedToShow = (event) => {
-    const { statusCode, message } = event;
-    console.log("[RewardAd.js]js did registered _onRewardAdFailedToShow successfully!!! status code: " + statusCode + ", message: " + message);
-    this.setState({ isRewardAdLoaded: false });
-  }
-
-  _onRewardAdDismissed = () => {
-    console.log("[RewardAd.js]js did registered _onRewardAdDismissed successfully!!!");
-    this.setState({ isRewardAdLoaded: false });
-  }
-
-  _onRewardAdClicked = () => {
-    console.log("[RewardAd.js]js did registered _onRewardAdClicked successfully!!!");
-  }
-
-  _onRewardAdUserRewarded = (event) => {
-    const { type, amount } = event;
-    console.log("[RewardAd.js]js did registered _onRewardAdUserRewarded successfully!!!");
-  }
-
-  render() {
-    return (
-      <View>
-        <View style={styles.buttonWrapper}>
-          <Button title="Reward Ad Load" onPress={this.onPressRewardRequestButton} />
-        </View>
-        <View style={styles.buttonWrapper}>
-        <Button 
-          title="Reward Ad Show" 
-          onPress={this.onPressRewardShowButton}
-          disabled={!this.state.isRewardAdLoaded}
-          style={!this.state.isRewardAdLoaded ? styles.disabledButton : null}
-        />
-        </View>
-      </View>
-    );
-  }
-}
-
-export default RewardAd;
-```
-
-#### App.js
-
-```javascript
-import React, { Component } from 'react';
-import {SafeAreaView, View, StyleSheet, NativeModules, NativeEventEmitter } from 'react-native';
-import RewardAd from './src/java/RewardAd';
-
-// 상수 정의
-const { RNAdWhaleMediationAdSettingModule } = NativeModules;
-
-// 스타일 정의
-const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    mainViewStyle: {
-        flex: 1,
-        marginTop: 50
-    },
-    contentViewStyle: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'                
-    },
-});
-
-// App 클래스 정의(React.Component 확장)
-class App extends Component {
-
-    componentDidMount() {
-        this._initialize();
+  const handleShowAd = () => {
+    if (isLoaded) {
+      AdWhaleRewardAd.showAd();
+    } else {
+      console.log('광고가 로드되지 않았습니다.');
     }
+  };
 
-    // 화면 렌더링
-    render() {
-        
-        return (            
-            <SafeAreaView style={styles.safeArea}>
-                <View style={styles.mainViewStyle}>
-                    <View style={styles.contentViewStyle}>
-                        <RewardAd />
-                    </View>
-                </View>
-            </SafeAreaView>
-        );
-    }
-
-    // SDK 초기화
-    _initialize = () => {
-        RNAdWhaleMediationAdSettingModule.initialize()
-            .then((statusCode) => {
-                if (statusCode === 100) {
-                    console.log('AdWhale SDK initialized successfully');
-                } else {
-                    console.error('AdWhale SDK initialization failed');
-                }
-            })
-            .catch((error) => {
-                console.error('Error initializing AdWhale SDK:', error);
-            });
-    }
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>보상형 광고 예제</Text>
+      <Text style={styles.coins}>보유 코인: {coins}</Text>
+      <Button title="광고 로드" onPress={handleLoadAd} />
+      {isLoaded && (
+        <Button title="광고 시청하고 코인 받기" onPress={handleShowAd} />
+      )}
+    </View>
+  );
 };
 
-export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  coins: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+});
+
+export default RewardAdExample;
 ```
 
+#### 8. 주의사항 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
+#### 보상 지급 시점
 
+* `onUserRewarded` 이벤트는 사용자가 광고를 완전히 시청했을 때만 호출됩니다.
+* 광고를 중간에 닫으면 보상이 지급되지 않습니다.
+
+#### 광고 로드 타이밍 <a href="#id-2____486" id="id-2____486"></a>
+
+* 광고는 로드가 완료된 후에만 표시할 수 있습니다.
+* `onLoaded` 이벤트가 발생한 후에 `showAd()`를 호출해야 합니다.
+
+#### 보상 중복 지급 방지 <a href="#id-3_____491" id="id-3_____491"></a>
+
+* `onUserRewarded` 이벤트는 한 번만 호출됩니다.
+* 서버와 동기화하여 중복 지급을 방지하는 것을 권장합니다.
+
+#### 리스너 정리 <a href="#id-4___496" id="id-4___496"></a>
+
+* 컴포넌트가 언마운트될 때 등록한 이벤트 리스너를 반드시 제거해야 합니다.
+
+#### 에러 처리 <a href="#id-5___501" id="id-5___501"></a>
+
+* `onLoadFailed`와 `onShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
+* 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+#### 테스트 <a href="#id-7__511" id="id-7__511"></a>
+
+* 개발 환경에서는 테스트용 placement UID를 사용하세요.
+* 보상 지급 로직을 충분히 테스트하세요.
