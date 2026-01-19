@@ -1,5 +1,9 @@
 # 앱 오프닝 광고
 
+{% hint style="info" %}
+앱오프닝 광고는 앱이 실행될 때 또는 백그라운드에서 포그라운드로 전환될 때 표시되는 전면 광고입니다. 이 문서는 Flutter 프로젝트에서 AdWhale Mediation SDK를 사용하여 앱오프닝 광고를 연동하는 방법을 설명합니다.
+{% endhint %}
+
 {% tabs %}
 {% tab title="Dart" %}
 ```dart

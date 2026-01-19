@@ -114,7 +114,7 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import { 
   AdWhaleInterstitialAd, 
   AdWhaleInterstitialErrorEvent,
-  AdWhaleMediationSdk 
+  AdWhaleMediationAds
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -124,7 +124,7 @@ const InterstitialAdExample: React.FC = () => {
 
   useEffect(() => {
     // SDK 초기화
-    AdWhaleMediationSdk.initialize()
+    AdWhaleMediationAds.initialize()
       .then(code => {
         if (code === 100) {
           console.log('SDK 초기화 성공');

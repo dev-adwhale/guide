@@ -1,14 +1,14 @@
-# 5. SDK 초기화 및 구현
+# 2. SDK 초기화 및 구현
 
 #### 1. Initialize 클래스 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 {% hint style="info" %}
-광고를 요청하기 전에 초기화가 이루어져야 합니다. 초기화 방법은 초기화를 담당하는 **AdWhaleMediationSdk 클래스를 MainActivity 에서 호출**해주며, 초기화 **호출 결과는 return 값을 통해 통지**됩니다. 자세한 구현은 아래 API와 샘플코드를 참고하여 구현하면 됩니다.
+광고를 요청하기 전에 초기화가 이루어져야 합니다. 초기화 방법은 초기화를 담당하는 **AdWhaleMediationAds 클래스를 MainActivity 에서 호출**해주며, 초기화 **호출 결과는 return 값을 통해 통지**됩니다. 자세한 구현은 아래 API와 샘플코드를 참고하여 구현하면 됩니다.
 {% endhint %}
 
 {% tabs %}
 {% tab title="JS 혹은 TypeScript" %}
-**AdWhaleMediationSdk 클래스**
+**AdWhaleMediationAds 클래스**
 
 <pre class="language-typescript"><code class="lang-typescript"><strong>initialize(): Promise&#x3C;number>
 </strong></code></pre>
@@ -24,7 +24,7 @@ const App: React.FC = () => {
   // SDK 초기화
   useEffect(() => {
     const init = async () => {
-      const statusCode = await AdWhaleMediationSdk.initialize();
+      const statusCode = await AdWhaleMediationAds.initialize();
       if (statusCode === 100) {
         console.log(`SDK 초기화 성공`);
       } else {
@@ -47,7 +47,7 @@ GDPR은 유럽연합(이하 'EU')의 개인정보 보호 법령으로 서비스 
 
 {% tabs %}
 {% tab title="JS 혹은 TypeScript" %}
-**AdWhaleMediationSdk 클래스**
+**AdWhaleMediationAds 클래스**
 
 ```typescript
 requestGdprConsent(): Promise<{ isSuccess: boolean; message: string }> //GDPR 동의 선택화면 호출
@@ -58,13 +58,13 @@ resetGdprConsentStatus() //GDPR 설정 리셋
 setGdpr 자체적으로 GDPR 선택창을 사용하실 경우 사용하며 AdWhale SDK 내부 GDPR 세팅을 위해 호출.
 {% endhint %}
 
-```
+```typescript
 setGdpr(consent: boolean) 
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>boolean</td><td>true : gdpr 동의<br>false : gdpr 비동의</td></tr></tbody></table>
 
-```
+```typescript
 setCoppa(enabled: boolean)
 ```
 
@@ -73,17 +73,17 @@ setCoppa(enabled: boolean)
 **GDPR, Coppa 샘플코드**
 
 <pre class="language-typescript"><code class="lang-typescript">// request gdpr
-const result = await AdWhaleMediationSdk.requestGdprConsent();
+const result = await AdWhaleMediationAds.requestGdprConsent();
 console.log(`GDPR Request: ${result.isSuccess ? 'Success' : 'Failed'}\n${result.message}`);
 <strong>
 </strong><strong>// reset consent
-</strong>AdWhaleMediationSdk.resetGdprConsentStatus();
+</strong>AdWhaleMediationAds.resetGdprConsentStatus();
 
 // set gdpr 
-<strong>AdWhaleMediationSdk.setGdpr(true);
+<strong>AdWhaleMediationAds.setGdpr(true);
 </strong><strong>
 </strong><strong>// set coppa
-</strong>AdWhaleMediationSdk.setCoppa(true);
+</strong>AdWhaleMediationAds.setCoppa(true);
 </code></pre>
 
 **에러 메시지**

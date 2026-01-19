@@ -24,6 +24,20 @@
   * AndroidX 대응
   * Android Support Library
 
+{% hint style="danger" %}
+**Google Play 정책 안내**
+
+**2025년 8월 31일부터** Google Play에 제출되는 모든 앱은 **Android 15 (API Level 35) 이상**을 `targetSdkVersion`으로 지정해야 합니다.
+
+* 참고: [https://developer.android.com/google/play/requirements/target-sdk?hl=ko](https://developer.android.com/google/play/requirements/target-sdk?hl=ko)
+
+***
+
+**2025년 11월 11일부터** Android 15 이상을 타겟팅하는 모든 앱은 **64비트 기기에서 16KB페이지 크기를 지원**해야 합니다.
+
+* 참고: [https://developer.android.com/guide/practices/page-sizes?hl=ko](https://developer.android.com/guide/practices/page-sizes?hl=ko)
+{% endhint %}
+
 ### **앱 사용 권한(permission)**
 
 ```xml

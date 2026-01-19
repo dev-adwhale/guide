@@ -9,19 +9,19 @@
 
 #### 2. 기본 구현 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-배너 광고는 `AdWhaleBannerView` 컴포넌트를 사용하여 구현합니다.
+배너 광고는 `AdWhaleAdView` 컴포넌트를 사용하여 구현합니다.
 
 ```typescript
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { AdWhaleBannerView } from 'adwhale-sdk-react-native';
+import { AdWhaleAdView } from 'adwhale-sdk-react-native';
 
 const BannerAdExample: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <View style={styles.container}>
-      <AdWhaleBannerView
+      <AdWhaleAdView
         style={styles.banner}
         placementUid="your-placement-uid"
         adSize="320x50"
@@ -73,21 +73,21 @@ export default BannerAdExample;
 
 ```typescript
 // 표준 배너
-<AdWhaleBannerView
+<AdWhaleAdView
   placementUid={PLACEMENT_UID}
   adSize="320x50"
   loadAd={true}
 />
 
 // 큰 배너
-<AdWhaleBannerView
+<AdWhaleAdView
   placementUid={PLACEMENT_UID}
   adSize="320x100"
   loadAd={true}
 />
 
 // 적응형 배너
-<AdWhaleBannerView
+<AdWhaleAdView
   placementUid={PLACEMENT_UID}
   adSize="ADAPTIVE_ANCHOR"
   loadAd={true}
@@ -96,7 +96,7 @@ export default BannerAdExample;
 
 #### 4. 이벤트 리스너 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-`AdWhaleBannerView` 컴포넌트는 다음 이벤트를 지원합니다:
+`AdWhaleAdView` 컴포넌트는 다음 이벤트를 지원합니다:
 
 | 이벤트              | 설명            | 파라미터                 |
 | ---------------- | ------------- | -------------------- |
@@ -115,18 +115,18 @@ interface AdWhaleAppOpenErrorEvent {
 
 #### 6. 옵션 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-`AdWhaleBannerView` 컴포넌트 호출 시 추가 옵션을 설정할 수 있습니다.
+`AdWhaleAdView` 컴포넌트 호출 시 추가 옵션을 설정할 수 있습니다.
 
 ```typescript
 // 기본 옵션
-<AdWhaleBannerView
+<AdWhaleAdView
   placementUid="your-placement-uid"
   adSize="320x50"
   loadAd={true}
 />
 
 // 모든 옵션 포함
-<AdWhaleBannerView
+<AdWhaleAdView
   placementUid="your-placement-uid"
   adSize="320x50"
   loadAd={true}
@@ -151,8 +151,8 @@ interface AdWhaleAppOpenErrorEvent {
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { 
-  AdWhaleBannerView, 
-  AdWhaleMediationSdk 
+  AdWhaleAdView, 
+  AdWhaleMediationAds 
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -163,7 +163,7 @@ const BannerAdExample: React.FC = () => {
 
   useEffect(() => {
     // SDK 초기화
-    AdWhaleMediationSdk.initialize()
+    AdWhaleMediationAds.initialize()
       .then(code => {
         if (code === 100) {
           console.log('SDK 초기화 성공');
@@ -187,7 +187,7 @@ const BannerAdExample: React.FC = () => {
 
       {/* 배너 광고 영역 */}
       <View style={styles.bannerContainer}>
-        <AdWhaleBannerView
+        <AdWhaleAdView
           style={styles.banner}
           placementUid={PLACEMENT_UID}
           adSize="320x50"

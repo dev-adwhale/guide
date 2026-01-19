@@ -160,7 +160,7 @@ import {
   AdWhaleRewardAd, 
   AdWhaleRewardErrorEvent,
   AdWhaleRewardUserRewardedEvent,
-  AdWhaleMediationSdk 
+  AdWhaleMediationAds
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -171,7 +171,7 @@ const RewardAdExample: React.FC = () => {
 
   useEffect(() => {
     // SDK 초기화
-    AdWhaleMediationSdk.initialize()
+    AdWhaleMediationAds.initialize()
       .then(code => {
         if (code === 100) {
           console.log('SDK 초기화 성공');

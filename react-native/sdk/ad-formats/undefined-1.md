@@ -142,9 +142,166 @@ interface AdWhaleNativeTemplateStyle {
 
 #### 4. 커스텀 네이티브 광고 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-커스텀 네이티브 광고는 자체 레이아웃을 사용하여 광고를 표시합니다.
+커스텀 네이티브 광고는 사용자가 직접 정의한 커스텀 레이아웃을 사용하여 광고를 표시합니다.
 
-**기본 구현**
+`factoryId`를 사용하여 MainActivity에서 등록한 BinderFactory를 통해 커스텀 레이아웃을 연결합니다.
+
+**Android MainActivity 에서 BinderFactory 등록**
+
+`android/app/src/main/java/.../MainActivity.kt` (또는 `.java`) 파일에서 BinderFactory를 등록합니다:
+
+{% tabs %}
+{% tab title="Java" %}
+```java
+package adwhalesdkreactnative.example;
+
+import android.os.Bundle;
+import com.adwhalesdkreactnative.AdwhaleSdkReactNativePackage;
+import com.adwhalesdkreactnative.SimpleBinderFactory;
+import com.facebook.react.ReactActivity;
+
+public class MainActivity extends ReactActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Register BinderFactory for custom binding (factoryId: app_custom)
+        AdwhaleSdkReactNativePackage.registerBinderFactory(
+            "app_custom",
+            new SimpleBinderFactory(
+                R.layout.custom_native_ad_main_layout,  // 레이아웃 리소스 ID
+                R.id.main_view_icon,                   // 아이콘 View ID
+                R.id.main_view_title,                  // 제목 View ID
+                R.id.main_view_body,                   // 본문 View ID
+                R.id.main_button_cta,                  // CTA 버튼 View ID
+                R.id.main_view_media                   // 미디어 View ID
+            )
+        );
+    }
+
+    @Override
+    protected String getMainComponentName() {
+        return "AdwhaleSdkReactNativeExample";
+    }
+}
+```
+{% endtab %}
+
+{% tab title="Kotlin" %}
+```kotlin
+package adwhalesdkreactnative.example
+
+import android.os.Bundle
+import com.adwhalesdkreactnative.AdwhaleSdkReactNativePackage
+import com.adwhalesdkreactnative.SimpleBinderFactory
+import com.facebook.react.ReactActivity
+
+class MainActivity : ReactActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Register BinderFactory for custom binding (factoryId: app_custom)
+        AdwhaleSdkReactNativePackage.registerBinderFactory(
+            "app_custom",
+            SimpleBinderFactory(
+                R.layout.custom_native_ad_main_layout,  // 레이아웃 리소스 ID
+                R.id.main_view_icon,                     // 아이콘 View ID
+                R.id.main_view_title,                     // 제목 View ID
+                R.id.main_view_body,                      // 본문 View ID
+                R.id.main_button_cta,                     // CTA 버튼 View ID
+                R.id.main_view_media                      // 미디어 View ID
+            )
+        )
+    }
+
+    override fun getMainComponentName(): String = "AdwhaleSdkReactNativeExample"
+}
+```
+{% endtab %}
+{% endtabs %}
+
+**커스텀 레이아웃 파일 생성**
+
+`android/app/src/main/res/layout/custom_native_ad_main_layout.xml` 파일을 생성합니다:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    android:elevation="4dp">
+
+    <!-- 앱 아이콘 -->
+    <ImageView
+        android:id="@+id/main_view_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/main_view_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/main_view_title" />
+
+    <!-- 제목 -->
+    <TextView
+        android:id="@+id/main_view_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/main_view_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="광고 제목입니다" />
+
+    <!-- 설명 -->
+    <TextView
+        android:id="@+id/main_view_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:ellipsize="end"
+        android:lines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/main_view_title"
+        app:layout_constraintTop_toBottomOf="@id/main_view_title"
+        tools:text="광고 설명입니다. 이 앱을 다운로드하세요!" />
+
+    <!-- CTA 버튼 -->
+    <Button
+        android:id="@+id/main_button_cta"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:backgroundTint="#009688"
+        android:textColor="@android:color/white"
+        android:text="설치하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_view_body" />
+
+    <!-- 미디어 뷰 -->
+    <FrameLayout
+        android:id="@+id/main_view_media"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/main_button_cta" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+**ReactNative에서 factoryId 사용**
 
 ```typescript
 import React, { useRef } from 'react';
@@ -168,7 +325,7 @@ const CustomNativeAdExample: React.FC = () => {
         ref={adRef}
         style={styles.adView}
         placementUid="your-placement-uid"
-        layoutName="custom_native_ad_layout"
+        factoryId="app_custom"
         onAdLoaded={() => {
           console.log('커스텀 네이티브 광고 로드 성공');
         }}
@@ -192,85 +349,6 @@ const styles = StyleSheet.create({
 });
 
 export default CustomNativeAdExample;
-```
-
-**사용자 지정 커스텀 네이티브 레이아웃 예시(custom\_native\_ad\_layout.xml)**
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="@android:color/white"
-    android:elevation="4dp">
-
-    <!-- 앱 아이콘 -->
-    <ImageView
-        android:id="@+id/view_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="12dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@id/view_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_title" />
-
-    <!-- 제목 -->
-    <TextView
-        android:id="@+id/view_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:ellipsize="end"
-        android:maxLines="2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/view_icon"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="광고 제목입니다" />
-
-    <!-- 설명 -->
-    <TextView
-        android:id="@+id/view_body"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
-        android:ellipsize="end"
-        android:lines="2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/view_title"
-        app:layout_constraintTop_toBottomOf="@id/view_title"
-        tools:text="광고 설명입니다. 이 앱을 다운로드하세요!" />
-
-    <!-- CTA 버튼 -->
-    <Button
-        android:id="@+id/button_cta"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:layout_marginTop="8dp"
-        android:textSize="12sp"
-        android:backgroundTint="#009688"
-        android:textColor="@android:color/white"
-        android:text="설치하기"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_body" />
-
-    <!-- 미디어 뷰 -->
-    <FrameLayout
-        android:id="@+id/view_media"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/button_cta" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
 #### 5. 이벤트 리스너 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
@@ -331,7 +409,7 @@ interface AdWhaleNativeCustomError {
 ```typescript
 <AdWhaleNativeCustomView
   placementUid={string}                     // 필수: Placement UID
-  layoutName={string}                       // 필수: 레이아웃 이름
+  factoryId={string}                        // 필수: BinderFactory ID
   placementName?: string;                    // Placement 이름
   region?: string;                           // 지역 코드
   gcoder?: {                                // 위치 정보
@@ -356,7 +434,7 @@ import {
   AdWhaleNativeTemplateHandle,
   AdWhaleNativeTemplateType,
   AdWhaleNativeTemplateStyle,
-  AdWhaleMediationSdk 
+  AdWhaleMediationAds
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -367,7 +445,7 @@ const TemplateNativeAdExample: React.FC = () => {
   const [templateType, setTemplateType] = useState<AdWhaleNativeTemplateType>('SMALL');
 
   useEffect(() => {
-    AdWhaleMediationSdk.initialize();
+    AdWhaleMediationAds.initialize();
   }, []);
 
   const customStyle: AdWhaleNativeTemplateStyle = {

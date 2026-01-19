@@ -29,5 +29,3 @@ allprojects {
 }
 ```
 
-### 최신 SDK version : 2.7.2
-
