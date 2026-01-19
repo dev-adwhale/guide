@@ -107,7 +107,7 @@ export default BannerAdExample;
 #### 5. 에러 이벤트 구조
 
 ```typescript
-interface AdWhaleAppOpenErrorEvent {
+interface AdWhaleBannerError {
   statusCode: number;
   message: string;
 }
