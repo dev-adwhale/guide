@@ -1,9 +1,57 @@
-# 9. ChangeLog
+# 7. ChangeLog
 
-## Version 2.7.2(2026.1.19)
+## Version 2.7.203(2026.1.19)
 
 * Cauly SDK 3.5.41
 * Admize SDK 1.0.8
+* AdFit SDK 3.17.2
+* AdMob SDK 24.3.0
+* Levelplay SDK 8.7.0
+
+## Version 2.7.202(2026.1.12)
+
+* Cauly SDK 3.5.41
+* Admize SDK 1.0.8
+* AdFit SDK 3.17.2
+* AdMob SDK 24.3.0
+* Levelplay SDK 8.7.0
+
+## Version 2.7.201(2026.1.12)
+
+* Cauly SDK 3.5.41
+* Admize SDK 1.0.8
+* AdFit SDK 3.17.2
+* AdMob SDK 24.3.0
+* Levelplay SDK 8.7.0
+
+## Version 2.7.200(2026.1.9)
+
+* Cauly SDK 3.5.41
+* Admize SDK 1.0.8
+* AdFit SDK 3.17.2
+* AdMob SDK 24.3.0
+* Levelplay SDK 8.7.0
+
+## Version 2.7.102(2026.12.29)
+
+* Cauly SDK 3.5.40
+* Admize SDK 1.0.7
+* AdFit SDK 3.17.2
+* AdMob SDK 24.3.0
+* Levelplay SDK 8.7.0
+
+## Version 2.7.101(2025.12.23)
+
+* Cauly SDK 3.5.40
+* Admize SDK 1.0.7
+* AdFit SDK 3.17.2
+* AdMob SDK 24.3.0
+* Levelplay SDK 8.7.0
+
+## Version 2.7.100(2025.12.15)
+
+* Cauly SDK 3.5.40
+* Admize SDK 1.0.7
 * AdFit SDK 3.17.2
 * AdMob SDK 24.3.0
 * Levelplay SDK 8.7.0
