@@ -14,7 +14,7 @@
 ```typescript
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { AdWhaleAdView } from 'adwhale-sdk-react-native';
+import { AdWhaleAdView, AdWhaleAdSize } from 'adwhale-sdk-react-native';
 
 const BannerAdExample: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -24,7 +24,7 @@ const BannerAdExample: React.FC = () => {
       <AdWhaleAdView
         style={styles.banner}
         placementUid="your-placement-uid"
-        adSize="320x50"
+        adSize={AdWhaleAdSize.BANNER_320x50}
         loadAd={true}
         onAdLoaded={() => {
           console.log('배너 광고 로드 성공');
@@ -61,35 +61,40 @@ export default BannerAdExample;
 
 배너 광고는 다음 사이즈를 지원합니다:
 
-| 사이즈              | 값                   | 설명                         |
-| ---------------- | ------------------- | -------------------------- |
-| 320x50           | `'320x50'`          | 표준 배너 (Banner)             |
-| 320x100          | `'320x100'`         | 큰 배너 (Large Banner)        |
-| 300x250          | `'300x250'`         | 중간 직사각형 (Medium Rectangle) |
-| 250x250          | `'250x250'`         | 정사각형 (Square)              |
-| ADAPTIVE\_ANCHOR | `'ADAPTIVE_ANCHOR'` | 적응형 앵커 배너                  |
+<table><thead><tr><th>사이즈</th><th width="187.8671875">값</th><th width="157.5703125">사이즈 별 높이</th><th>설명</th></tr></thead><tbody><tr><td>320x50</td><td><code>'320x50'</code></td><td>50</td><td>표준 배너 (Banner)</td></tr><tr><td>320x100</td><td><code>'320x100'</code></td><td>100</td><td>큰 배너 (Large Banner)</td></tr><tr><td>300x250</td><td><code>'300x250'</code></td><td>250</td><td>중간 직사각형 (Medium Rectangle)</td></tr><tr><td>250x250</td><td><code>'250x250'</code></td><td>250</td><td>정사각형 (Square)</td></tr><tr><td>ADAPTIVE_ANCHOR</td><td><code>'ADAPTIVE_ANCHOR'</code></td><td>60(대략적인 높이)</td><td>적응형 앵커 배너</td></tr></tbody></table>
 
 **사용예시**
 
 ```typescript
+import { AdWhaleAdView, AdWhaleAdSize } from 'adwhale-sdk-react-native';
+
 // 표준 배너
 <AdWhaleAdView
   placementUid={PLACEMENT_UID}
-  adSize="320x50"
+  adSize={AdWhaleAdSize.BANNER_320x50}
   loadAd={true}
 />
 
 // 큰 배너
 <AdWhaleAdView
   placementUid={PLACEMENT_UID}
-  adSize="320x100"
+  adSize={AdWhaleAdSize.BANNER_320x100}
   loadAd={true}
 />
 
-// 적응형 배너
+// 적응형 배너 (너비 지정)
 <AdWhaleAdView
   placementUid={PLACEMENT_UID}
-  adSize="ADAPTIVE_ANCHOR"
+  adSize={AdWhaleAdSize.ADAPTIVE_ANCHOR}
+  adaptiveAnchorWidth={360} // 디바이스 너비 값 예시
+  loadAd={true}
+/>
+
+// 적응형 배너 (디바이스 전체 너비)
+<AdWhaleAdView
+  placementUid={PLACEMENT_UID}
+  adSize={AdWhaleAdSize.ADAPTIVE_ANCHOR}
+  adaptiveAnchorWidth={0} // 0을 주거나, 아예 호출하지 않으면 디바이스 전체 너비를 자동으로 감지
   loadAd={true}
 />
 ```
@@ -118,17 +123,19 @@ interface AdWhaleBannerError {
 `AdWhaleAdView` 컴포넌트 호출 시 추가 옵션을 설정할 수 있습니다.
 
 ```typescript
+import { AdWhaleAdView, AdWhaleAdSize } from 'adwhale-sdk-react-native';
+
 // 기본 옵션
 <AdWhaleAdView
   placementUid="your-placement-uid"
-  adSize="320x50"
+  adSize={AdWhaleAdSize.BANNER_320x50}
   loadAd={true}
 />
 
 // 모든 옵션 포함
 <AdWhaleAdView
   placementUid="your-placement-uid"
-  adSize="320x50"
+  adSize={AdWhaleAdSize.BANNER_320x50}
   loadAd={true}
   placementName="main-banner"
   region="KR"
@@ -141,6 +148,14 @@ interface AdWhaleBannerError {
   onAdLoadFailed={(e) => console.log('로드 실패', e)}
   onAdClicked={() => console.log('클릭됨')}
 />
+
+// 적응형 배너 (너비 지정)
+<AdWhaleAdView
+  placementUid="your-placement-uid"
+  adSize={AdWhaleAdSize.ADAPTIVE_ANCHOR}
+  adaptiveAnchorWidth={360}
+  loadAd={true}
+/>
 ```
 
 #### 7. 배너 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
@@ -152,23 +167,26 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { 
   AdWhaleAdView, 
+  AdWhaleAdSize,
   AdWhaleMediationAds 
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
 
-const BannerAdExample: React.FC = () => {
+const BannerAdScreen: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadAd, setLoadAd] = useState(false);
 
   useEffect(() => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
-      .then(code => {
-        if (code === 100) {
-          console.log('SDK 초기화 성공');
+      .then(result => {
+        if (result.isSuccess) {
+          console.log('SDK 초기화 성공:', result.message);
           // SDK 초기화 후 광고 로드 시작
           setLoadAd(true);
+        } else {
+          console.log('SDK 초기화 실패:', result.statusCode, result.message);
         }
       })
       .catch(err => {
@@ -190,7 +208,7 @@ const BannerAdExample: React.FC = () => {
         <AdWhaleAdView
           style={styles.banner}
           placementUid={PLACEMENT_UID}
-          adSize="320x50"
+          adSize={AdWhaleAdSize.BANNER_320x50}
           loadAd={loadAd}
           onAdLoaded={() => {
             console.log('배너 광고 로드 성공');
@@ -240,7 +258,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BannerAdExample;
+export default BannerAdScreen;
 ```
 
 #### 8. 주의사항 <a href="#id-2.-initialize" id="id-2.-initialize"></a>

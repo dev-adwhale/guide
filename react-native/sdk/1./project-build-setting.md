@@ -1,12 +1,8 @@
 # 1.3 프로젝트 빌드 설정(build.gradle)
 
+### ADwhale SDK 추가하기
+
 프로젝트 단위의 "**build.gradle**" 설정에 다음 항목을 추가 합니다.
-
-{% hint style="info" %}
-**원격 저장소 목록**
-
-* mavenCentral()
-{% endhint %}
 
 ```gradle
 // project / build.gradle
@@ -29,3 +25,179 @@ allprojects {
 }
 ```
 
+### 최신 Anodroid SDK version : 2.7.2
+
+### dependencies 설정
+
+앱 단위 "**build.gradle**" 설정에 다음 항목을 확인 후 설정 합니다.&#x20;
+
+```gradle
+// app / build.gradle
+android {
+    ...
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    ...    
+    // 옵션 디펜던시(제외가능): Cauly Adapter SDK Repository
+    implementation 'net.adwhale.sdk.cauly.adapter:cauly-sdk:3.5.41.0'
+    
+    // 옵션 디펜던시(제외가능): Admize Adapter SDK Repository
+    implementation 'net.adwhale.sdk.admize.adapter:admize-sdk:1.0.8.0'
+    
+    // 옵션 디펜던시(제외가능): AdFit Adapter SDK Repository
+    implementation 'net.adwhale.sdk.adfit.adapter:adfit-sdk:3.17.2.5'
+    
+    // 옵션 디펜던시(제외가능): Admob Adapter SDK Repository
+    implementation 'net.adwhale.sdk.admob.adapter:admob-sdk:24.3.0.2'
+    
+    // 옵션 디펜던시(제외가능): Levelplay Adapter SDK Repository
+    implementation 'net.adwhale.sdk.levelplay.adapter:levelplay-sdk:8.7.0.6'
+    ...    
+}
+
+```
+
+proguard-rules.pro 난독화 설정
+
+```
+#================== AdWhale Cauly Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.cauly.adapter.CaulyAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.cauly.adapter.CaulyAdBannerPreLoader {*;}
+
+-keep class net.adwhale.sdk.cauly.adapter.CaulyAdInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.cauly.adapter.CaulyAdRewardLoader {*;}
+
+-keep class net.adwhale.sdk.cauly.adapter.CaulyCustomEventInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.cauly.adapter.CaulyCustomEventBannerLoader {*;}
+
+-keep class net.adwhale.sdk.cauly.adapter.CaulyCustomEventRewardLoader {*;}
+
+#================== AdWhale Cauly Adapter SDK Proguard for Release 적용 코드 끝 ==================
+
+#================== AdWhale Admize Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.admize.adapter.AdmizeAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.admize.adapter.AdmizeAdBannerPreLoader {*;}
+
+-keep class net.adwhale.sdk.admize.adapter.AdmizeAdInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.admize.adapter.AdmizeAdRewardLoader {*;}
+
+#================== AdWhale Admize Adapter SDK Proguard for Release 적용 코드 끝 ==================
+
+#================== AdWhale AdFit Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.adfit.adapter.AdFitAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.adfit.adapter.AdFitAdBannerPreLoader {*;}
+
+#================== AdWhale AdFit Adapter SDK Proguard for Release 적용 코드 끝 ==================
+
+#================== AdWhale AdManager Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdBannerPreLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdNativeTemplateLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdNativeCustomBindingLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdRewardLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdRewardedInterstitialLoader {*;}
+-keep class net.adwhale.sdk.admob.adapter.AdManagerAdAppOpeningLoader {*;}
+
+#================== AdWhale AdManager Adapter SDK Proguard for Release 적용 코드 끝 ==================
+
+#================== AdWhale Admob Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdBannerPreLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdNativeTemplateLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdNativeCustomBindingLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdRewardLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdRewardedInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.AdmobAdAppOpeningLoader {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.custom.cauly.AdMobCaulyEvent {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.custom.cauly.CaulyMediationBannerAd {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.custom.cauly.CaulyMediationInterstitialAd {*;}
+
+-keep class net.adwhale.sdk.admob.adapter.custom.cauly.CaulyMediationRewardAd {*;}
+
+# AdWhale AdMob Adapter - Keep the public entry points for reflection
+-keep public class net.adwhale.sdk.admob.adapter.AdMobPrivacyAdapter {
+    public static net.adwhale.sdk.admob.adapter.AdMobPrivacyAdapter getInstance();
+}
+
+#================== AdWhale Admob Adapter SDK Proguard for Release 적용 코드 끝 ==================
+
+#================== AdWhale LevelPlay Adapter SDK Proguard for Release 적용 코드 시작 ==================
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdBannerLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdBannerPreLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdInterstitialLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdRewardLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdNativeCustomBindingLoader {*;}
+
+-keep class net.adwhale.sdk.levelplay.adapter.LevelPlayAdNativeTemplateLoader {*;}
+
+# AdWhale LevelPlay Adapter - Keep the public entry points for reflection
+-keep public class net.adwhale.sdk.levelplay.adapter.LevelPlayPrivacyAdapter {
+    public static net.adwhale.sdk.levelplay.adapter.LevelPlayPrivacyAdapter getInstance();
+}
+
+#================== AdWhale LevelPlay Adapter SDK Proguard for Release 적용 코드 끝 ==================
+```
+
+{% hint style="info" %}
+애드몹 파트너 네트워크(Pangle, Vungle, AppLovin ...)&#x20;
+
+&#x20;혹은
+
+레벨플레이 파트너 네트워크를 연동하고 싶으실 경우,&#x20;
+
+아래 연결된 링크를 통해 **\[미디에이션 SDK 환경 설정 빌더]** 페이지에 접속하십시오.
+{% endhint %}
+
+### **미디에이션 SDK 환경 설정 빌더 접속 링크**
+
+이 빌더는 귀사가 선택한 네트워크에 맞춰 **필요한 모든 설정 코드를 자동으로 생성**합니다.&#x20;
+
+생성된 코드를 해당 단계의 가이드에 따라 순서대로 복사 및 붙여넣기 하시면, **모든 프로젝트 초기 설정이 완료**됩니다.
+
+* **애드몹 파트너 네트워크 연동 사용자를 위한 빌더 사용방법:**&#x20;
+  * 링크 접속 > \[운영대행] 체크 > \[Admob] 선택 > 네트워크 선택&#x20;
+  * 각 항목 복사 후 > 프로젝트 내 해당 항목들에 붙여넣기
+* **레벨플레이 파트너 네트워크 연동 사용자를 위한 빌더 사용방법:**&#x20;
+  * 링크 접속 > \[운영대행] 체크 > \[Unity(Levelplay)] 선택 > 네트워크 선택
+  * 각 항목 복사 후 > 프로젝트 내 해당 항목들에 붙여넣기
+
+{% embed url="https://image.cauly.co.kr/adwhale/sdk/guide/adwhale-mediation-guide-kr.html" %}

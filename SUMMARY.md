@@ -67,7 +67,6 @@
   * [5. Sample Project](react-native/sdk/sample-project.md)
   * [6. OPTION](react-native/sdk/option/README.md)
     * [네트워크 보안 구성](react-native/sdk/option/network-security-configuration.md)
-    * [로거 설정](react-native/sdk/option/logger-setting.md)
   * [7. ChangeLog](react-native/sdk/changelog.md)
   * [8. ETC](react-native/sdk/etc/README.md)
     * [Error Code](react-native/sdk/etc/error-code.md)

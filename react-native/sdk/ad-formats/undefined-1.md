@@ -434,7 +434,7 @@ import {
   AdWhaleNativeTemplateHandle,
   AdWhaleNativeTemplateType,
   AdWhaleNativeTemplateStyle,
-  AdWhaleMediationAds
+  AdWhaleMediationAds 
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -445,7 +445,12 @@ const TemplateNativeAdExample: React.FC = () => {
   const [templateType, setTemplateType] = useState<AdWhaleNativeTemplateType>('SMALL');
 
   useEffect(() => {
-    AdWhaleMediationAds.initialize();
+    AdWhaleMediationAds.initialize()
+      .then(result => {
+        if (!result.isSuccess) {
+          console.error('SDK 초기화 실패:', result.message);
+        }
+      });
   }, []);
 
   const customStyle: AdWhaleNativeTemplateStyle = {

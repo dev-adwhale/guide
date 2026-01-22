@@ -114,7 +114,7 @@ import { AppState, View, Text, Button } from 'react-native';
 import { 
   AdWhaleAppOpenAd, 
   AdWhaleAppOpenErrorEvent,
-  AdWhaleMediationAds
+  AdWhaleMediationAds 
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -126,9 +126,11 @@ const AppOpenAdExample: React.FC = () => {
   useEffect(() => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
-      .then(code => {
-        if (code === 100) {
-          console.log('SDK 초기화 성공');
+      .then(result => {
+        if (result.isSuccess) {
+          console.log('SDK 초기화 성공:', result.message);
+        } else {
+          console.log('SDK 초기화 실패:', result.statusCode, result.message);
         }
       })
       .catch(err => {
@@ -228,7 +230,11 @@ const App: React.FC = () => {
   useEffect(() => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
-      .then(() => {
+      .then(result => {
+        if (!result.isSuccess) {
+          console.error('SDK 초기화 실패:', result.message);
+          return;
+        }
         // 이벤트 리스너 등록
         AdWhaleAppOpenAd.addEventListeners({
           onLoaded: () => {

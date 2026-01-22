@@ -104,7 +104,7 @@ AdWhaleInterstitialAd.loadAd(placementUid, {
 });
 ```
 
-#### 7. 배너 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+#### 7. 전면 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 다음은 React Native 컴포넌트에서 전면 광고를 구현하는 완전한 예시입니다.
 
@@ -114,7 +114,7 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import { 
   AdWhaleInterstitialAd, 
   AdWhaleInterstitialErrorEvent,
-  AdWhaleMediationAds
+  AdWhaleMediationAds 
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -125,9 +125,11 @@ const InterstitialAdExample: React.FC = () => {
   useEffect(() => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
-      .then(code => {
-        if (code === 100) {
-          console.log('SDK 초기화 성공');
+      .then(result => {
+        if (result.isSuccess) {
+          console.log('SDK 초기화 성공:', result.message);
+        } else {
+          console.log('SDK 초기화 실패:', result.statusCode, result.message);
         }
       })
       .catch(err => {

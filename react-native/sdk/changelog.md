@@ -1,5 +1,13 @@
 # 7. ChangeLog
 
+## Version 2.7.204(2026.1.22)
+
+* Cauly SDK 3.5.41
+* Admize SDK 1.0.8
+* AdFit SDK 3.17.2
+* AdMob SDK 24.3.0
+* Levelplay SDK 8.7.0
+
 ## Version 2.7.203(2026.1.19)
 
 * Cauly SDK 3.5.41

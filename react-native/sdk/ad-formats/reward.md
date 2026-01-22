@@ -149,9 +149,9 @@ AdWhaleRewardAd.loadAd(placementUid, {
 });
 ```
 
-#### 7. 배너 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+#### 7. 보상 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-다음은 React Native 컴포넌트에서 전면 광고를 구현하는 완전한 예시입니다.
+다음은 React Native 컴포넌트에서 보상형 광고를 구현하는 완전한 예시입니다.
 
 ```typescript
 import React, { useEffect, useState } from 'react';
@@ -160,7 +160,7 @@ import {
   AdWhaleRewardAd, 
   AdWhaleRewardErrorEvent,
   AdWhaleRewardUserRewardedEvent,
-  AdWhaleMediationAds
+  AdWhaleMediationAds 
 } from 'adwhale-sdk-react-native';
 
 const PLACEMENT_UID = 'your-placement-uid';
@@ -172,9 +172,11 @@ const RewardAdExample: React.FC = () => {
   useEffect(() => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
-      .then(code => {
-        if (code === 100) {
-          console.log('SDK 초기화 성공');
+      .then(result => {
+        if (result.isSuccess) {
+          console.log('SDK 초기화 성공:', result.message);
+        } else {
+          console.log('SDK 초기화 실패:', result.statusCode, result.message);
         }
       })
       .catch(err => {
@@ -201,8 +203,6 @@ const RewardAdExample: React.FC = () => {
       onDismissed: () => {
         console.log('보상형 광고 닫힘');
         setIsLoaded(false);
-        // 광고가 닫힌 후 다음 광고 로드
-        AdWhaleRewardAd.loadAd(PLACEMENT_UID);
       },
       onClicked: () => {
         console.log('보상형 광고 클릭됨');
