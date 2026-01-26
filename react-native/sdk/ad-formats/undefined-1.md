@@ -422,6 +422,10 @@ interface AdWhaleNativeCustomError {
 />
 ```
 
+{% hint style="info" %}
+**중요**: `factoryId`는 필수이며, MainActivity에서 해당 `factoryId`로 BinderFactory를 등록해야 합니다.
+{% endhint %}
+
 #### 7. 템플릿 네이티브 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 다음은 React Native 컴포넌트에서 템플릿 네이티브 광고를 구현하는 완전한 예시입니다.
@@ -629,6 +633,11 @@ const FullscreenNativeAdModal: React.FC = () => {
 
 * 템플릿 스타일은 광고 로드 전에 설정해야 합니다.
 * 스타일을 변경하려면 컴포넌트를 재생성하세요.
+
+#### 커스텀 네이티브 광고
+
+* `factoryId`는 MainActivity에서 등록한 값과 정확히 일치해야 합니다.
+* 레이아웃 파일의 View ID가 올바르게 설정되어 있는지 확인하세요.
 
 #### 에러 처리 <a href="#id-6___562" id="id-6___562"></a>
 

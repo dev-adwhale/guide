@@ -3,7 +3,7 @@
 #### 1. 초기화 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 {% hint style="info" %}
-광고를 요청하기 전에 초기화가 이루어져야 합니다. 초기화 방법은 초기화를 담당하는 **AdWhaleMediationAds 클래스를 MainActivity 에서 호출**해주며, 초기화 **호출 결과는 return 값을 통해 통지**됩니다. 자세한 구현은 아래 API와 샘플코드를 참고하여 구현하면 됩니다.
+광고를 요청하기 전에 초기화가 이루어져야 합니다. 초기화 방법은 초기화를 담당하는 **AdWhaleMediationAds 클래스를 호출**해주며, 초기화 **호출 결과는 return 값을 통해 통지**됩니다. 자세한 구현은 아래 API와 샘플코드를 참고하여 구현하면 됩니다.
 {% endhint %}
 
 {% tabs %}
@@ -37,14 +37,23 @@ AdWhaleMediationAds.initialize()
 #### 2. 로거 설정 <a href="#id-3.-gdpr-coppa" id="id-3.-gdpr-coppa"></a>
 
 {% tabs %}
-{% tab title="First Tab" %}
+{% tab title="JS 혹은 TypeScript" %}
 **AdWhaleMediationAds 클래스**
 
 ```typescript
 setLoggerEnabled(enabled: boolean)
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>boolean</td><td>true : Error, Warn, Info 로그 출력<br>false : 모든 로그 출력 안함</td></tr></tbody></table>
+| 파라미터 타입 | 파라미터 값   |
+| ------- | -------- |
+| bool    | 로그 레벨 설정 |
+
+**로그 레벨 설정**
+
+| 값     | 설명                      |
+| ----- | ----------------------- |
+| false | 모든 로그 출력 안함             |
+| true  | Error, Warn, Info 로그 출력 |
 
 ```typescript
 getLogLevel() // 현재 설정된 로그레벨 출력

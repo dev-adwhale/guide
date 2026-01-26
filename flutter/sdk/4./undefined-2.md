@@ -4,103 +4,251 @@
 전면 광고는 앱 화면 전체를 덮는 전면형 광고입니다. 게임 레벨 완료, 콘텐츠 전환 등 자연스러운 타이밍에 노출하여 높은 참여도를 얻을 수 있습니다.
 {% endhint %}
 
-{% tabs %}
-{% tab title="Dart" %}
-```dart
-AdWhaleInterstitialAd({
-    required this.appCode,
-    required this.adLoadCallback,
-  });
-```
+#### 1. 주요특징 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>발급받은 placementUis</td></tr><tr><td>AdWhaleInterstitialAdLoadCallback</td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+* 화면 전체를 덮는 전면형 광고
+* 사용자 액션 후 자연스러운 타이밍에 노출
+* 이벤트 기반 콜백 시스템으로 광고 상태 추적 가능
+* 다양한 옵션 설정 지원
 
-AdWhaleInterstitialAdLoadCallback
+#### 2. 기본 구현 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-| 리스너 구성                     | 설명          |
-| -------------------------- | ----------- |
-| onInterstitialAdLoaded     | 광고 로드시      |
-| onInterstitialAdLoadFailed | 광고 로드 실패    |
-| onInterstitialAdShowed     | 광고 화면 랜딩    |
-| onInterstitialAdShowFailed | 광고 화면 랜딩 실패 |
-| onInterstitialAdClosed     | 광고 화면 종료    |
-| onInterstitialAdClicked    | 광고 화면 클릭    |
-
-<pre><code><strong>onInterstitialAdLoadFailed: (errorCode, errorMessage) // 미디에이션 전면 광고요청 실패 시
-</strong>onInterstitialAdShowFailed: (errorCode, errorMessage) // 미디에이션 전면 광고 화면 랜딩 실패 시
-</code></pre>
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>errorCode</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>errorMessage</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-{% endtab %}
-{% endtabs %}
+전면 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
 
 ```dart
-AdWhaleInterstitialAd.load() // 미디에이션 전면 광고로드
-```
+import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
 
-```dart
-AdWhaleInterstitialAd.show() // 미디에이션 전면 광고로드 후 표시할 때 호출
-```
+const String PLACEMENT_UID = 'your-placement-uid';
 
-### 전면 구현 예제
+// 광고 인스턴스 생성 및 로드
+AdWhaleInterstitialAd? _interstitialAd;
 
-```dart
 void _loadInterstitial() {
-    _interstitialAd?.dispose();
-    _interstitialAd = null;
-    _isInterstitialLoaded = false;
+  _interstitialAd = AdWhaleInterstitialAd(
+    appCode: PLACEMENT_UID,
+    adLoadCallback: AdWhaleInterstitialAdLoadCallback(
+      onLoaded: () {
+        print('전면 광고 로드 성공');
+      },
+      onLoadFailed: (errorCode, errorMessage) {
+        print('전면 광고 로드 실패: $errorCode, $errorMessage');
+        _interstitialAd = null;
+      },
+      onShowed: () {
+        print('전면 광고 표시됨');
+      },
+      onShowFailed: (errorCode, errorMessage) {
+        print('전면 광고 표시 실패: $errorCode, $errorMessage');
+        _interstitialAd = null;
+      },
+      onClosed: () {
+        print('전면 광고 닫힘');
+        _interstitialAd = null;
+      },
+      onClicked: () {
+        print('전면 광고 클릭됨');
+      },
+    ),
+  )..loadAd();
+}
 
-    _interstitialAd =
-        AdWhaleInterstitialAd(
-            appCode: '발급받은 placementUid',
-            adLoadCallback: AdWhaleInterstitialAdLoadCallback(
-              onInterstitialAdLoaded: () {
-                debugPrint('GuideSamplePage Interstitial onAdLoaded');
-                _isInterstitialLoaded = true;
-                if (mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(const SnackBar(content: Text('전면 광고 로드 완료')));
-                }
-              },
-              onInterstitialAdLoadFailed: (errorCode, errorMessage) {
-                debugPrint(
-                  'GuideSamplePage Interstitial onAdLoadFailed: $errorMessage',
-                );
-                _interstitialAd = null;
-                _isInterstitialLoaded = false;
-              },
-              onInterstitialAdShowed: () {
-                debugPrint('GuideSamplePage Interstitial onAdShowed');
-              },
-              onInterstitialAdShowFailed: (errorCode, errorMessage) {
-                debugPrint(
-                  'GuideSamplePage Interstitial onAdShowFailed: $errorMessage',
-                );
-                _interstitialAd = null;
-                _isInterstitialLoaded = false;
-              },
-              onInterstitialAdClosed: () {
-                debugPrint('GuideSamplePage Interstitial onAdClosed');
-              },
-              onInterstitialAdClicked: () {
-                debugPrint('GuideSamplePage Interstitial onAdClicked');
-              },
-            ),
-          )
-    _interstitialAd!.load();
+void _showInterstitial() {
+  if (_interstitialAd != null) {
+    _interstitialAd!.showAd();
   }
-  void _showInterstitial() {
-    if (_interstitialAd == null || !_isInterstitialLoaded) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('전면 광고를 먼저 로드해 주세요.')));
-      }
-      return;
-    }
-    _interstitialAd!.show();
-    _isInterstitialLoaded = false;
-    _interstitialAd = null;
-  }
+}
 ```
+
+#### 3. 이벤트 리스너 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+`AdWhaleInterstitialAdLoadCallback` 은 다음 이벤트를 지원합니다:
+
+| 이벤트            | 설명            | 파라미터                                                                           |
+| -------------- | ------------- | ------------------------------------------------------------------------------ |
+| `onLoaded`     | 광고 로드 성공 시 호출 | 없음                                                                             |
+| `onLoadFailed` | 광고 로드 실패 시 호출 | <p><code>String errorCode</code>, <br><code>String errorMessage</code><br></p> |
+| `onShowed`     | 광고 표시 성공 시 호출 | 없음                                                                             |
+| `onShowFailed` | 광고 표시 실패 시 호출 | <p><code>String errorCode</code>, <br><code>String errorMessage</code><br></p> |
+| `onClosed`     | 광고가 닫힐 때 호출   | 없음                                                                             |
+| `onClicked`    | 광고가 클릭될 때 호출  | 없음                                                                             |
+
+#### 4. 옵션 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+`AdWhaleInterstitialAd` 생성 시 추가 옵션을 설정할 수 있습니다.
+
+```dart
+import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
+
+AdWhaleInterstitialAd(
+  appCode: 'placement-uid',  // 필수: Placement UID
+  adLoadCallback: AdWhaleInterstitialAdLoadCallback(...),
+)
+  ..setRegion('서울시 서초구')      // 지역 정보
+  ..setGcoder(37.49, 127.02)       // 위치 정보 (위도, 경도)
+  ..setPlacementName('interstitial-main') // Placement 이름
+  ..loadAd();
+```
+
+#### 5. 전면 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+다음은 Flutter 위젯에서 전면 광고를 구현하는 완전한 예시입니다.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
+
+class InterstitialAdScreen extends StatefulWidget {
+  const InterstitialAdScreen({super.key});
+
+  @override
+  State<InterstitialAdScreen> createState() => _InterstitialAdScreenState();
+}
+
+class _InterstitialAdScreenState extends State<InterstitialAdScreen> {
+  AdWhaleInterstitialAd? _interstitialAd;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAndLoadInterstitial();
+  }
+
+  Future<void> _initializeAndLoadInterstitial() async {
+    // SDK 초기화
+    final result = await AdWhaleMediationAds.instance.initialize();
+    if (result.isSuccess) {
+      print('SDK 초기화 성공: ${result.message}');
+      _loadInterstitial();
+    } else {
+      print('SDK 초기화 실패: ${result.statusCode}, ${result.message}');
+    }
+  }
+
+  void _loadInterstitial() {
+    _interstitialAd?.destroy();
+    _interstitialAd = null;
+    _isLoaded = false;
+
+    _interstitialAd = AdWhaleInterstitialAd(
+      appCode: 'your-placement-uid',
+      adLoadCallback: AdWhaleInterstitialAdLoadCallback(
+        onLoaded: () {
+          print('전면 광고 로드 성공');
+          setState(() {
+            _isLoaded = true;
+          });
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('전면 광고 로드 완료')),
+            );
+          }
+        },
+        onLoadFailed: (errorCode, errorMessage) {
+          print('전면 광고 로드 실패: $errorCode, $errorMessage');
+          setState(() {
+            _interstitialAd = null;
+            _isLoaded = false;
+          });
+        },
+        onShowed: () {
+          print('전면 광고 표시됨');
+        },
+        onShowFailed: (errorCode, errorMessage) {
+          print('전면 광고 표시 실패: $errorCode, $errorMessage');
+          setState(() {
+            _interstitialAd = null;
+            _isLoaded = false;
+          });
+        },
+        onClosed: () {
+          print('전면 광고 닫힘');
+          setState(() {
+            _interstitialAd = null;
+            _isLoaded = false;
+          });
+          // 다음 광고 미리 로드
+          _loadInterstitial();
+        },
+        onClicked: () {
+          print('전면 광고 클릭됨');
+        },
+      ),
+    )
+      ..setRegion('서울시 서초구')
+      ..setGcoder(37.49, 127.02)
+      ..setPlacementName('test_interstitial');
+    
+    _interstitialAd!.loadAd();
+  }
+
+  void _showInterstitial() {
+    if (_interstitialAd != null && _isLoaded) {
+      _interstitialAd!.showAd();
+      _isLoaded = false;
+      _interstitialAd = null;
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('전면 광고를 먼저 로드해 주세요.')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('전면 광고 예제')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: _loadInterstitial,
+              child: const Text('광고 로드'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _isLoaded ? _showInterstitial : null,
+              child: const Text('광고 표시'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _interstitialAd?.destroy();
+    super.dispose();
+  }
+}
+```
+
+#### 6. 주의사항 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+#### 광고 로드 타이밍
+
+* 광고는 로드가 완료된 후에만 표시할 수 있습니다.
+* `onLoaded` 이벤트가 발생한 후에 `showAd()`를 호출해야 합니다.
+
+#### 광고 표시 조건 <a href="#id-2____376" id="id-2____376"></a>
+
+* 사용자 액션(레벨 완료, 페이지 전환 등) 후 자연스러운 타이밍에 표시하세요.
+* 너무 자주 표시하면 사용자 경험이 저하될 수 있습니다.
+
+#### 리스너 정리 <a href="#id-3___381" id="id-3___381"></a>
+
+* 컴포넌트가 언마운트될 때 등록한 이벤트 리스너를 반드시 제거해야 합니다.
+
+#### 에러 처리 <a href="#id-4___386" id="id-4___386"></a>
+
+* `onLoadFailed`와 `onShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
+* 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+#### 테스트 <a href="#id-6__396" id="id-6__396"></a>
+
+* 개발 환경에서는 테스트용 placement UID를 사용하세요.
+* 실제 배포 전에 다양한 시나리오에서 테스트하세요.

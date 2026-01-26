@@ -1,5 +1,9 @@
 # 배너
 
+{% hint style="info" %}
+배너 광고는 앱 화면의 특정 영역에 표시되는 직사각형 광고입니다. 사용자가 앱을 사용하는 동안 지속적으로 노출되어 높은 노출 빈도를 제공합니다.
+{% endhint %}
+
 #### 1. 주요특징 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 * 다양한 사이즈 지원 (320x50, 320x100, 300x250, 250x250, ADAPTIVE\_ANCHOR)
@@ -61,7 +65,7 @@ export default BannerAdExample;
 
 배너 광고는 다음 사이즈를 지원합니다:
 
-<table><thead><tr><th>사이즈</th><th width="187.8671875">값</th><th width="157.5703125">사이즈 별 높이</th><th>설명</th></tr></thead><tbody><tr><td>320x50</td><td><code>'320x50'</code></td><td>50</td><td>표준 배너 (Banner)</td></tr><tr><td>320x100</td><td><code>'320x100'</code></td><td>100</td><td>큰 배너 (Large Banner)</td></tr><tr><td>300x250</td><td><code>'300x250'</code></td><td>250</td><td>중간 직사각형 (Medium Rectangle)</td></tr><tr><td>250x250</td><td><code>'250x250'</code></td><td>250</td><td>정사각형 (Square)</td></tr><tr><td>ADAPTIVE_ANCHOR</td><td><code>'ADAPTIVE_ANCHOR'</code></td><td>60(대략적인 높이)</td><td>적응형 앵커 배너</td></tr></tbody></table>
+<table><thead><tr><th width="181.7578125">사이즈</th><th width="283.515625">값</th><th width="146.29296875">사이즈 별 높이</th><th>설명</th></tr></thead><tbody><tr><td>320x50</td><td><code>AdWhaleAdSize.BANNER_320x50</code></td><td>50</td><td>표준 배너 (Banner)</td></tr><tr><td>320x100</td><td><code>AdWhaleAdSize.BANNER_320x100</code></td><td>100</td><td>큰 배너 (Large Banner)</td></tr><tr><td>300x250</td><td><code>AdWhaleAdSize.BANNER_300x250</code></td><td>250</td><td>중간 직사각형 (Medium Rectangle)</td></tr><tr><td>250x250</td><td><code>AdWhaleAdSize.BANNER_250x250</code></td><td>250</td><td>정사각형 (Square)</td></tr><tr><td>ADAPTIVE_ANCHOR</td><td><code>AdWhaleAdSize.ADAPTIVE_ANCHOR</code></td><td>60(대략적인 높이)</td><td>적응형 앵커 배너</td></tr></tbody></table>
 
 **사용예시**
 
