@@ -108,7 +108,7 @@
   * [1. 프로젝트 설정](flutter/sdk/1./README.md)
     * [1.1 요구사항 및 사용권한](flutter/sdk/1./1.1.md)
     * [1.2 Dart 패키지 추가하기](flutter/sdk/1./1.2-dart.md)
-    * [1.3 프로젝트 빌드 설정(build.gradle)](flutter/sdk/1./1.3-build.gradle.md)
+    * [1.3 프로젝트 빌드 설정(build.gradle)](flutter/sdk/1./1.3-proguard.md)
     * [1.4 SDK 연동 키 설정](flutter/sdk/1./1.4-sdk.md)
   * [2. SDK 초기화 및 구현](flutter/sdk/2.-sdk.md)
   * [3. 테스트 디바이스 및 광고 사용 설정하기](flutter/sdk/3..md)
