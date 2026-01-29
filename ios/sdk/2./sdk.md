@@ -12,7 +12,7 @@ AdWhale iOS SDK 업데이트에 따라 아래 내용이 변경될 수 있습니�
 source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/dev-adwhale/AdWhaleSDK_iOS.git'
 
-pod 'AdWhaleSDK', '1.0.2'
+pod 'AdWhaleSDK', '1.0.3'
 
 # Xcode15.0 이상 버전에서 TOOL CHAIN 관련 빌드 에러가 발생하는 경우, 아래 코드를 추가합니다.
 post_install do |installer|
@@ -47,7 +47,7 @@ pod install --repo-update
 
 
 
-## 최신 SDK Version : 1.0.2
+## 최신 SDK Version : 1.0.3
 
 
 

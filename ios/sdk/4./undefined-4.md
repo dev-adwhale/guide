@@ -6,9 +6,9 @@
 * 광고를 요청하기 전에 SDK 초기화를 진행합니다.
 {% endhint %}
 
+### NativeAdView 설정
 
-
-## 1. 레이아웃 설정
+#### 1. 레이아웃 설정
 
 Native Ad의 경우, 광고에 사용 될 레이아웃을 직접 구성해야 합니다. 필수 구성 요소들은 다음과 같습니다.
 
@@ -20,10 +20,17 @@ Native Ad의 경우, 광고에 사용 될 레이아웃을 직접 구성해야 �
 * **Media View** : `AdWhaleMediaView`
 
 {% hint style="info" %}
-이 요소들은 반드시 포함하여 구성하여 주시고, 광고 컨텐츠를 덮는 View가 없어야 합니다.&#x20;
+위 요소들은 **반드시 모두 포함**되어야 합니다.
 
-또한 텍스트 변경, 이미지 변경, 터치 시 액션 변경 등 광고 컨텐츠에 관련된 부분을 가공하거나 변경하지 않도록 주의 부탁드립니다.
+광고 컨텐츠를 덮는 View가 존재해서는 안 됩니다.
+
+텍스트, 이미지, 터치 액션 등 **광고 컨텐츠를 가공하거나 변경해서는 안 됩니다.**
 {% endhint %}
+
+#### 2. NativeAdView 클래스 구현
+
+광고 레이아웃은 `AdWhaleNativeAdView`를 상속받아 구현하며,\
+각 광고 구성 요소를 SDK에 전달하기 위해 **필수 메서드를 오버라이드**해야 합니다.
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -116,9 +123,121 @@ class NativeAdView: AdWhaleNativeAdView {
 {% endtab %}
 {% endtabs %}
 
+### NativeAdLoader 설정
+
+#### 1. 광고 객체 생성
+
+네이티브 광고를 사용하기 위해 `AdWhaleNativeAdLoader` 객체를 생성합니다.
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+let nativeAdLoader = AdWhaleNativeAdLoader()
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+AdWhaleNativeAdLoader *nativeAdLoader = [[AdWhaleNativeAdLoader alloc] init];
+```
+{% endtab %}
+{% endtabs %}
+
+#### 2. 광고 객체 설정(초기화)
+
+네이티브 광고용으로 발급받은 **Ad Unit ID**와 **RootViewController**를 설정(초기화)합니다.
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+nativeAdLoader.initialize(adUnitId: "네이티브 광고 AD_UNIT_ID 입력", rootViewController: self)
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+[self.nativeAdLoader initializeWithAdUnitId:@"네이티브 광고 AD_UNIT_ID 입력"
+                         rootViewController:self];
+```
+{% endtab %}
+{% endtabs %}
+
+#### 3. Delegate 설정
+
+네이티브 광고의 이벤트는 **Delegate를 통해 전달**됩니다.
+
+* Loader Delegate: 로드 성공/실패 콜백 수신
+* NativeAd Delegate: 노출/클릭/화면 전환 등 이벤트 수신
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+nativeAdLoader.delegate = self
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+self.nativeAdLoader.delegate = self;
+```
+{% endtab %}
+{% endtabs %}
+
+#### 4. 광고 요청
+
+Delegate 설정이 완료되면 `load()`를 호출하여 네이티브 광고를 요청합니다.
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+nativeAdLoader.loadAd()
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+[self.nativeAdLoader loadAd];
+```
+{% endtab %}
+{% endtabs %}
+
+#### 5. 광고 표시(바인딩)
+
+광고가 로드된 이후, **직접 구성한 NativeAdView 레이아웃**을 생성한 뒤 `bind`/`bindView`로 바인딩하여 화면에 표시합니다.
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+nativeAdLoader.bind(nativeAdView)
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+AdWhaleNativeAdView *adView = [self.nativeAdLoader bindView:nativeAdView];
+[self.nativeAdPlaceholder addSubview:adView];
+```
+{% endtab %}
+{% endtabs %}
 
 
-## 2. 구현
+
+### NativeAd Delegate 설명
+
+네이티브 광고의 상태 변화는 Delegate를 통해 전달됩니다.
+
+| Delegate 메서드                     | 설명                                                |
+| -------------------------------- | ------------------------------------------------- |
+| nativeAdLoaderDidReceiveAd       | 네이티브 광고가 성공적으로 로드되었을 때 호출됩니다.                     |
+| nativeAdLoaderDidFailToReceiveAd | 네이티브 광고 로드에 실패했을 때 호출됩니다.                         |
+| nativeAdDidImpression            | 네이티브 광고가 화면에 노출되었을 때 호출됩니다.                       |
+| nativeAdDidClickAd               | 네이티브 광고를 클릭했을 때 호출됩니다.                            |
+| nativeAdWillPresentScreen        | 네이티브 광고 클릭으로 전체 화면이 표시되기 직전에 호출됩니다.               |
+| nativeAdWillDismissScreen        | 네이티브 광고로 열린 화면이 닫히기 직전에 호출됩니다.                    |
+| nativeAdDidDismissScreen         | 네이티브 배너 광고로 열린 화면이 완전히 닫힌 후 호출됩니다.                |
+| nativeAdWillLeaveApplication     | 광고 클릭으로 인해 외부 앱 또는 브라우저로 이동하여 앱이 비활성화되기 직전 호출됩니다. |
+
+### 네이티브 광고 구현 샘플
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -127,14 +246,18 @@ import UIKit
 import AdWhaleSDK
 
 class ViewController: UIViewController {
+    var nativeAdLoader: AdWhaleNativeAdLoader?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        AdWhaleNativeAdLoader.sharedInstance.initialize(adUnitId: "네이티브 광고 AD_UNIT_ID 입력", rootViewController: self)
-        AdWhaleNativeAdLoader.sharedInstance.delegate = self
+        // NativeAdLoader Setting
+        nativeAdLoader = AdWhaleNativeAdLoader()
+        nativeAdLoader?.initialize(adUnitId: "네이티브 광고 AD_UNIT_ID 입력", rootViewController: self)
+        nativeAdLoader?.delegate = self
         
-        AdWhaleNativeAdLoader.sharedInstance.loadAd()
+        // Native Ad Request
+        nativeAdLoader?.loadAd()
     }
     
     func setNativeAdView() {
@@ -149,7 +272,7 @@ class ViewController: UIViewController {
                                     width: (Int(UIScreen.main.bounds.width) - 20),
                                     height: 380)
         self.view.addSubview(nativeAdView)
-        AdWhaleNativeAdLoader.sharedInstance.bind(nativeAdView)
+        nativeAdLoader?.bind(nativeAdView)
     }
 }
 
@@ -201,6 +324,8 @@ extension ViewController: AdWhaleNativeAdLoaderDelegate, AdWhaleNativeAdDelegate
 
 @interface ViewController () <AdWhaleNativeAdLoaderDelegate, AdWhaleNativeAdDelegate>
 
+@property (nonatomic, strong) AdWhaleNativeAdLoader *nativeAdLoader;
+
 @end
 
 @implementation ViewController
@@ -210,12 +335,12 @@ extension ViewController: AdWhaleNativeAdLoaderDelegate, AdWhaleNativeAdDelegate
     // Do any additional setup after loading the view.
     
     // NativeAdLoader Setting
-    AdWhaleNativeAdLoader *adLoader = [AdWhaleNativeAdLoader sharedInstance];
-    [adLoader initializeWithAdUnitId:@"네이티브 광고 AD_UNIT_ID 입력" rootViewController:self];
-    adLoader.delegate = self;
+    nativeAdLoader = [[AdWhaleNativeAdLoader alloc] init];
+    [nativeAdLoader initializeWithAdUnitId:@"네이티브 광고 AD_UNIT_ID 입력" rootViewController:self];
+    nativeAdLoader.delegate = self;
     
     // Native Ad Request
-    [adLoader loadAd];
+    [nativeAdLoader loadAd];
 }
 
 - (void)setNativeAdView {
@@ -225,7 +350,7 @@ extension ViewController: AdWhaleNativeAdLoaderDelegate, AdWhaleNativeAdDelegate
                                     [UIScreen mainScreen].bounds.size.height - 430,
                                     [UIScreen mainScreen].bounds.size.width - 20,
                                     350);
-    AdWhaleNativeAdView *adView = [[AdWhaleNativeAdLoader sharedInstance] bindView:nativeAdView];
+    AdWhaleNativeAdView *adView = [nativeAdLoader bindView:nativeAdView];
     [self.view addSubview:adView];
 }
 

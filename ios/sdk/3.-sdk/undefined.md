@@ -1,97 +1,149 @@
-# 타겟팅 설정
+# 광고 음소거 및 볼륨 제어
 
 {% hint style="info" %}
-* 광고 요청에 타겟팅 정보를 제공합니다.
-* <mark style="background-color:red;">**구글 플레이스토어의 콘텐츠 설정과 SDK 설정이 반드시 동일하게 설정되어야 합니다.**</mark>
-* Adwhale SDK는 Bidding 광고를 우선적으로 사용하며, Bidding 광고를 사용하기 위해서는 <mark style="background-color:red;">**아동대상 설정 FALSE, 광고 콘텐츠 필터링 T 이상 등급 설정이 필요합니다.**</mark>
+AdWhale SDK는 앱의 광고 오디오를 의도적으로 제어할 수 있도록\
+전역 음소거 및 볼륨 설정 기능을 제공합니다.
+
+이 기능을 사용하면 광고가 소리를 재생하지 않도록 하거나,\
+또는 낮은 볼륨으로만 재생되도록 앱 정책에 맞게 조정할 수 있습니다.
+
+동영상 광고의 오디오 제어는 일부 광고 소스에만 적용되며,\
+미디에이션을 통해 로드된 광고에는 적용되지 않을 수 있습니다.
 {% endhint %}
 
-
-
-### 1. 아동 대상 설정
-
-* [아동 온라인 개인 정보 보호법(COPPA)](https://www.ftc.gov/business-guidance/privacy-security/childrens-privacy)에 따라 `tagForChildDirectedTreatment` 설정이 가능합니다.
-* 광고를 요청할 때 콘텐츠의 아동 대상 서비스 취급 여부를 지정할 수 있습니다.
-* 콘텐츠를 아동 대상으로 처리하도록 지정하면 해당 광고 요청에 대한 관심 기반 광고 및 리마케팅 광고가 사용 중지됩니다.
-
-{% hint style="danger" %}
-**아동용으로 광고 요청시 Bidding 네트워크에 광고 요청이 불가하므로 FALSE 설정이 필요합니다.**
-{% endhint %}
+### 지원 API
 
 {% tabs %}
 {% tab title="Swift" %}
 ```swift
-AdWhaleAds.sharedInstance.tagForChildDirectedTreatment(true)
+AdWhaleAds.sharedInstance.setMuted(muted: Bool)
+AdWhaleAds.sharedInstance.setVolume(volume: Float)
 ```
 {% endtab %}
 
 {% tab title="Objective-C" %}
 ```objective-c
-[[AdWhaleAds sharedInstance] tagForChildDirectedTreatment:@YES];
+[[AdWhaleAds sharedInstance] setMuted:(BOOL)muted];
+[[AdWhaleAds sharedInstance] setVolume:(float)volume];
 ```
 {% endtab %}
 {% endtabs %}
 
-| tagForChildDirectedTreatment 설정 | 설명                                      |
-| ------------------------------- | --------------------------------------- |
-| true                            | COPPA에 따라 콘텐츠를 아동 대상으로 처리하도록 지정하는 경우    |
-| false                           | COPPA에 따라 콘텐츠를 아동 대상으로 처리하지 않도록 지정하는 경우 |
-| 미설정                             | 광고 요청에서 COPPA에 따른 콘텐츠 취급 방법을 지정하지 않는 경우 |
+### 동작 개요
 
+<table data-header-hidden><thead><tr><th valign="bottom">설정 상태</th><th valign="bottom">광고 오디오 동작</th></tr></thead><tbody><tr><td valign="bottom">설정 상태</td><td valign="bottom">광고 오디오 동작</td></tr><tr><td valign="bottom">setMuted(true)</td><td valign="bottom">광고는 의도적으로 무음 상태로 시작</td></tr><tr><td valign="bottom">setMuted(false)</td><td valign="bottom">광고는 소리를 재생할 수 있음</td></tr><tr><td valign="bottom">setVolume(0.1)</td><td valign="bottom">광고 볼륨을 기기 볼륨 대비 10% 비율로 제한</td></tr></tbody></table>
 
+### setMuted(Bool)
 
-### 2. 동의 연령 미만 사용자 설정 방법
-
-* 유럽 경제 지역(EEA)에 거주하는 동의 연령 미만의 사용자를 대상으로 하는 서비스로 취급하도록 광고 요청에 표시할 수 있습니다.
-* TFUA(동의 연령 미만의 유럽 사용자가 대상임을 나타내는 태그) 매개변수가 광고 요청에 포함되며, 모든 광고 요청에서 리마케팅을 포함한 개인 맞춤 광고가 사용 중지됩니다.
-* `true` 로 설정하는 경우 IDFA 수집도 차단됩니다.
-* [아동 대상 설정](undefined.md#id-1)과 동시에 true 로 설정하면 안 되며, 이 경우 아동 대상 설정이 우선 적용됩니다.
-
-{% tabs %}
-{% tab title="Swift" %}
-```swift
-AdWhaleAds.sharedInstance.tagForUnderAgeOfConsent(true)
-```
-{% endtab %}
-
-{% tab title="Objective-C" %}
-```objective-c
-[[AdWhaleAds sharedInstance] tagForUnderAgeOfConsent:@YES];
-```
-{% endtab %}
-{% endtabs %}
-
-<table data-header-hidden><thead><tr><th width="362">tagForUnderAgeOfConsent 설정</th><th>설명</th></tr></thead><tbody><tr><td>tagForUnderAgeOfConsent 설정</td><td>설명</td></tr><tr><td>true</td><td>광고 요청이 EEA에 거주하는 동의 연령 미만의 사용자를 대상으로 처리하도록 지정하는 경우</td></tr><tr><td>미설정</td><td>광고 요청이 EEA에 거주하는 동의 연령 미만의 사용자 취급 방법을 지정하지 않는 경우</td></tr></tbody></table>
-
-
-
-### 3. 광고 콘텐츠 필터링
-
-* 광고 내 관련 혜택이 포함된 Google Play의 [부적절한 광고 정책](https://support.google.com/googleplay/android-developer/answer/9857753?hl=ko#zippy=,examples-of-common-violations)을 준수하려면 콘텐츠 자체가 Google Play 정책을 준수하더라도 앱에 표시되는 모든 광고 및 관련 혜택은 앱의 [콘텐츠 등급](https://support.google.com/googleplay/android-developer/answer/9898843?hl=ko)에 적합해야 합니다.
-* 광고 콘텐츠 등급 한도가 설정된 경우 콘텐츠 등급이 설정된 한도 이하인 광고가 게재되며, 다음 중 하나로 설정해야합니다.
-* 콘텐츠 등급 한도 설정에 대해 [각 광고 요청에 대한 콘텐츠 등급 한도 설정하기](https://support.google.com/admob/answer/10477886?hl=ko) 또는 [앱 또는 계정의 광고 콘텐츠 등급 한도 설정하기](https://support.google.com/admob/answer/7562142?hl=ko) 를 참고 부탁드립니다.
-
-{% hint style="danger" %}
-**청소년(Teen) 이하 등급 설정시 Bidding 네트워크에 광고 요청이 불가하므로 Teen 또는 MatureAudience 설정이 필요합니다.**
+{% hint style="info" %}
+이 설정은 **배너, 전면, 리워드, 앱 오프닝, 네이티브 광고를 포함한 모든 광고 유형**의\
+**초기** **오디오 재생 상태를 음소거로 설정**하기 위한 전역 설정입니다.
 {% endhint %}
 
-| 광고 콘텐츠 등급 한도 (Objective-C)                | 광고 콘텐츠 등급 한도 (Swift) | 설명                                    |
-| ----------------------------------------- | -------------------- | ------------------------------------- |
-| AdWhaleMaxAdContentRatingGeneral          | .general             | <p>일반 잠재고객<br>(가족, 아동을 포함한 모든 대상)</p> |
-| AdWhaleMaxAdContentRatingParentalGuidance | .parentalGuidance    | 부모 지도 요망                              |
-| AdWhaleMaxAdContentRatingTeen             | .teen                | 청소년                                   |
-| AdWhaleMaxAdContentRatingMatureAudience   | .matureAudience      | 성인                                    |
-
 {% tabs %}
 {% tab title="Swift" %}
 ```swift
-AdWhaleAds.sharedInstance.maxAdContentRating(.general)
+AdWhaleAds.sharedInstance.setMuted(true)
 ```
 {% endtab %}
 
 {% tab title="Objective-C" %}
 ```objective-c
-[[AdWhaleAds sharedInstance] maxAdContentRating:AdWhaleMaxAdContentRatingGeneral];
+[[AdWhaleAds sharedInstance] setMuted:YES];
 ```
 {% endtab %}
 {% endtabs %}
+
+#### 동작 특징
+
+* 음소거 상태에서는 광고의 **오디오가 재생되지 않습니다**.
+* 음소거가 설정된 경우, `setVolume()`으로 지정한 볼륨 값은 적용되지 않습니다.
+* 음소거 설정은 **광고를 요청(load)하기 전에 적용**되어야 하며,\
+  광고가 시작될 때의 **초기 오디오 상태에만 영향을 줍니다**.
+* 광고 요청 이후에 변경된 음소거 상태는 이미 요청된 광고에는 반영되지 않을 수 있습니다.
+
+{% hint style="warning" %}
+**유의 사항**
+
+* 광고 유형별로 서로 다른 음소거/볼륨 설정을 개별적으로 지정하는 기능은 제공되지 않습니다.
+* 이 설정은 **앱 실행 중 메모리 상에 유지되는 전역 설정**이며,\
+  앱이 종료되면 자동으로 초기화됩니다.
+* ViewController 전환 여부와 관계없이 설정 값은 유지됩니다.
+* 광고 재생 중 사용자가 광고 UI를 통해 음소거를 해제하거나 볼륨을 변경할 수 있으며,\
+  **해당 사용자 동작은 SDK에서 제어하거나 차단할 수 없습니다**.
+* 일부 동영상 광고 소재는 음소거 상태에서는 노출되지 않을 수 있으며,\
+  이 경우 **광고 노출률 또는 수익에 영향을 줄 수 있습니다**.
+{% endhint %}
+
+### setVolume(float)
+
+{% hint style="info" %}
+이 설정은 광고 소리는 필요하지만, 과도한 음량을 피하고 싶은 경우에 사용합니다.
+{% endhint %}
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+AdWhaleAds.sharedInstance.setVolume(0.3)
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+[[AdWhaleAds sharedInstance] setVolume:0.3f];
+```
+{% endtab %}
+{% endtabs %}
+
+#### 동작 특징
+
+* setMuted(true) 상태에서는 setVolume() 값과 관계없이 항상 무음으로 동작합니다.
+* 볼륨 값은 0.0 \~ 1.0 범위 내에서 동작합니다.
+
+{% hint style="warning" %}
+**유의 사항**
+
+* 적용 대상: **앱 오프닝 / 배너 / 전면 / 보상형**&#x20;
+* Native 광고는  `setVolume()` 설정이 그대로 적용되지 않을 수 있습니다.
+* 일부 광고 네트워크 또는 광고 소재의 구현 방식에 따라\
+  `setVolume()`으로 설정한 볼륨 값이 100% 반영되지 않을 수 있습니다.
+* 특히 미디에이션 환경에서는 개별 네트워크 SDK 또는\
+  광고 크리에이티브 정책에 의해 볼륨 설정이 적용되지 않을 수 있습니다.
+{% endhint %}
+
+#### 적용 예시
+
+<table data-header-hidden><thead><tr><th valign="bottom">설정</th><th valign="bottom">결과</th></tr></thead><tbody><tr><td valign="bottom">설정</td><td valign="bottom">결과</td></tr><tr><td valign="bottom">setMuted(false) + setVolume(0.3)</td><td valign="bottom">광고 소리가 작게 재생됨</td></tr><tr><td valign="bottom">setMuted(true) + setVolume(0.3)</td><td valign="bottom">무음 (의도된 동작)</td></tr></tbody></table>
+
+### 권장 사용 패턴
+
+{% hint style="info" %}
+* 광고 로드 직전에 반복 호출할 필요는 없습니다.
+* 전역 정책으로 한 번 설정한 뒤 유지하는 방식을 권장합니다.
+{% endhint %}
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+// 앱 시작 시 또는 광고 초기화 시 1회 설정 
+AdWhaleAds.sharedInstance.setMuted(false)
+AdWhaleAds.sharedInstance.setVolume(0.3)
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+// 앱 시작 시 또는 광고 초기화 시 1회 설정 
+[[AdWhaleAds sharedInstance] setMuted:NO];
+[[AdWhaleAds sharedInstance] setVolume:0.3f];
+```
+{% endtab %}
+{% endtabs %}
+
+#### 기본값 안내
+
+{% hint style="info" %}
+앱 실행 후 음소거 또는 볼륨 설정을 별도로 호출하지 않은 경우, SDK 초기 상태에서는 아래 기본값이 적용됩니다.
+{% endhint %}
+
+<table data-header-hidden><thead><tr><th valign="bottom">설정</th><th valign="bottom">기본값</th></tr></thead><tbody><tr><td valign="bottom">설정</td><td valign="bottom">기본값</td></tr><tr><td valign="bottom">음소거</td><td valign="bottom">OFF (음소거 미적용)</td></tr><tr><td valign="bottom">볼륨</td><td valign="bottom">1.0 (시스템 볼륨 기준 100%)</td></tr></tbody></table>
