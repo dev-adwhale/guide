@@ -1,0 +1,215 @@
+---
+hidden: true
+---
+
+# backup of 1.3 프로젝트 빌드 설정(build.gradle)
+
+### ![:확성기:](https://a.slack-edge.com/production-standard-emoji-assets/14.0/apple-medium/1f4e2.png) ADwhale SDK 저장소 경로 변경 및 버전 업데이트 안내
+
+{% hint style="danger" %}
+**꼭 확인해 주세요!**
+
+ADwhale SDK의 저장소 경로가 기존 **GitHub Packages** 방식에서 **GitHub Pages** 방식으로 변경되었습니다.&#x20;
+
+이에 따라, **기존 GitHub Packages 경로를 통한 SDK 추가는 더 이상 지원되지 않습니다.**&#x20;
+
+현재 **2.5.8 이하 버전을 사용 중인 앱**의 경우, 향후 앱 업데이트 시 SDK 연결 과정에서 **예기치 않은 빌드 오류가 발생할 수 있습니다.** 안정적인 광고 연동과 빌드 오류 방지를 위해, 사전 대응 차원에서 **아래와 같은 조치를 권장**드립니다.
+
+
+
+**조치 안내**
+
+* 기존 build.gradle 내 SDK 경로 설정 코드 중 **GitHub Packages 관련 코드 블록 삭제**
+
+```clojure
+// (Deprecated 됨) AdWhale SDK Repository Public Access Info
+maven { url 'https://dev-adwhale.github.io/adwhale-sdk-android-maven/maven-repo' }
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/dev-adwhale/AdWhaleAndroid/SDK")
+    credentials {
+        username = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)'
+        password = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)'
+    }
+}
+
+// (Deprecated 됨) Cauly SDK Repository Public Access Info
+maven { url 'https://cauly.github.io/cauly-sdk-android-maven/maven-repo' }
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/cauly/Android-SDK/SDK")
+    credentials {
+        username = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)'
+        password = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)'
+    }
+}
+
+// (Deprecated 됨) Admize SDK Repository Public Access Info
+maven { url 'https://cauly.github.io/admize-sdk-android-maven/maven-repo' }
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/cauly/admize-sdk-android/SDK")
+    credentials {
+        username = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)'
+        password = 'SDK 부록페이지 참고(https://adwhale.gitbook.io/sdk-android-appendix)'
+    }
+}
+```
+
+
+
+* 코드블록 삭제 후, 이어서 [**ADwhale SDK 추가하기**](backup-of-1.3-build.gradle.md#adwhale-sdk-1)를 진행
+* [**dependencies 설정**](backup-of-1.3-build.gradle.md#dependencies)을 참고하여 ADwhale SDK를 **최신 버전(2.5.9 이상)** 으로 업데이트
+{% endhint %}
+
+### ADwhale SDK 추가하기
+
+프로젝트 단위의 "**build.gradle**" 설정에 다음 항목을 추가 합니다.
+
+```gradle
+// project / build.gradle
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        // ADwhale SDK Repository Public Access Info
+        maven { url 'https://dev-adwhale.github.io/adwhale-sdk-android-maven/maven-repo' }
+
+        // Cauly SDK Repository Public Access Info
+        maven { url 'https://cauly.github.io/cauly-sdk-android-maven/maven-repo' }
+        
+        // Admize SDK Repository Public Access Info
+        maven { url 'https://cauly.github.io/admize-sdk-android-maven/maven-repo' }
+
+        // AdFit SDK Repository Public Access Info
+        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
+    }
+}
+```
+
+### 최신 SDK version : 2.7.2
+
+### dependencies 설정
+
+앱 단위 "**build.gradle**" 설정에 다음 항목을 확인 후 설정 합니다.&#x20;
+
+{% hint style="warning" %}
+기존에 ADwhale SDK 2.5.9 이하를 사용했다면,
+
+기존 **dependencies** 항목은 그대로 유지하며, SDK 버전이 **최신 버전**인지 확인합니다.
+{% endhint %}
+
+```gradle
+// app / build.gradle
+android {
+    ...
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    ...
+    // 기본 디펜던시: ADwhale Mediation SDK Repository
+    implementation 'net.adwhale.sdk.mediation:adwhale-mediation-sdk:2.7.2'
+    
+    // 옵션 디펜던시(제외가능): Cauly Adapter SDK Repository
+    implementation 'net.adwhale.sdk.cauly.adapter:cauly-sdk:3.5.41.0'
+    
+    // 옵션 디펜던시(제외가능): Admize Adapter SDK Repository
+    implementation 'net.adwhale.sdk.admize.adapter:admize-sdk:1.0.8.0'
+    
+    // 옵션 디펜던시(제외가능): AdFit Adapter SDK Repository
+    implementation 'net.adwhale.sdk.adfit.adapter:adfit-sdk:3.17.2.5'
+    
+    // 옵션 디펜던시(제외가능): Admob Adapter SDK Repository
+    implementation 'net.adwhale.sdk.admob.adapter:admob-sdk:24.3.0.2'
+    
+    // 옵션 디펜던시(제외가능): Levelplay Adapter SDK Repository
+    implementation 'net.adwhale.sdk.levelplay.adapter:levelplay-sdk:8.7.0.6'
+    ...    
+}
+
+```
+
+
+
+{% hint style="warning" %}
+**Gradle 의존성 버전 충돌이 발생할 수 있습니다.**
+
+앱과 SDK 간에 중복 사용중인 의존성에 대해 버전 충돌이 생길 수 있습니다. 이런 경우, 앱 프로젝트의 build.gradle에서 라이브러리의 버전을 특정 버전으로 강제 통일하여 해결할 수 있습니다.
+
+```gradle
+// 앱 level build.gradle 예시
+configurations.all {
+        resolutionStrategy.force 'com.android.support:support-annotations:23.4.0' // 충돌나는 com.android.support:support-annotations 의존성 버전을 23.4.0 버전으로 강제 통일
+}
+
+```
+{% endhint %}
+
+{% hint style="danger" %}
+**SDK 및 Gradle 관련 오류 안내**
+
+**1. 기존 ADwhale SDK 2.5.8 이하를 사용하는 경우**
+
+**`build.gradle`** 경로를 변경하지 않고 **SDK 버전만 업데이트**할 경우, 아래와 같은 오류가 발생할 수 있습니다.
+
+* **오류 예시**: `Could not find com.fsn.cauly:cauly-sdk:3.5.38`&#x20;
+* **오류 예시**: `Could not find io.admize.sdk.android:admize-sdk-android:1.0.5`&#x20;
+
+> **해결 방법**: 최신 build.gradle 설정을 적용하고 최신 SDK 버전 **`2.5.9`** 이상을 사용하세요.
+>
+> ```
+> // project / build.gradle
+> allprojects {
+>     repositories {
+>         google()
+>         mavenCentral()
+>         // AdWhale SDK Repository Public Access Info
+>         maven { url 'https://dev-adwhale.github.io/adwhale-sdk-android-maven/maven-repo' }
+>
+>         // Cauly SDK Repository Public Access Info
+>         maven { url 'https://cauly.github.io/cauly-sdk-android-maven/maven-repo' }
+>         
+>         // Admize SDK Repository Public Access Info
+>         maven { url 'https://cauly.github.io/admize-sdk-android-maven/maven-repo' }
+>
+>         // AdFit SDK Repository Public Access Info
+>         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
+>     }
+> }
+> ```
+
+
+
+**2. Gradle Sync 및 빌드 관련 문제 해결 (1, 2 항목으로 해결 실패 시)**
+
+위의 1, 2 항목에 대한 문제를 해결했음에도 Gradle Sync 또는 빌드 과정에서 문제가 발생한 경우, 아래 단계를 순차적으로 진행합니다.
+
+1. **Android Studio 캐시 초기화 및 재빌드**
+   * Android Studio 상단 메뉴에서 **File** → **Invalidate Caches / Restart...** → **Invalidate and Restart**를 선택하세요.
+   * 캐시 초기화 후 문제가 해결되지 않으면, 다음 단계를 진행하세요.
+2. **수동으로 Gradle 캐시 초기화 및 종속성 새로고침**
+   * Android Studio의 Gradle 창에서 다음 명령어를 실행하세요:
+     * `gradle --build-cache`
+     * `gradle assemble --refresh-dependencies`
+   * 그런 다음 Android Studio 상단 메뉴에서 **Build** → **Clean Project**를 실행한 후 **Rebuild Project**를 수행하세요.
+   * 수동 SDK 삭제 후에도 에러 발생 시 다음 단계를 진행하세요.
+3. **Gradle 캐시 파일 직접 삭제**
+   *   아래 경로에서 Gradle 캐시 파일을 삭제한 후 프로젝트를 다시 빌드하세요: **총 9개 폴더 삭제 필요**
+
+       ```
+       (on MAC환경에서,)
+       /Users/<YOUR_USER_NAME>/.gradle/caches/modules-2/files-2.1 폴더
+           ㄴcom.fsn.cauly
+           ㄴio.admize.sdk.android
+           ㄴnet.adwhale.sdk.adfit.adapter
+           ㄴnet.adwhale.sdk.admize.adapter
+           ㄴnet.adwhale.sdk.admob.adapter
+           ㄴnet.adwhale.sdk.cauly.adapter
+           ㄴnet.adwhale.sdk.levelplay.adapter
+           ㄴnet.adwhale.sdk.core
+           ㄴnet.adwhale.sdk.mediation
+       ```
+
+       (운영 체제와 사용자 환경에 따라 경로가 다를 수 있습니다.)
+{% endhint %}

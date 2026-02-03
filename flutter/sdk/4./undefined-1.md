@@ -11,7 +11,7 @@
 * 간단한 컴포넌트 기반 구현
 * 이벤트 기반 콜백으로 광고 상태 추적
 
-#### 2. 기본 구현 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+#### 2. 기본 구현 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 배너 광고는 `AdWhaleAdView` 와 `AdWhaleAdWidget` 을 사용하여 구현합니다.
 

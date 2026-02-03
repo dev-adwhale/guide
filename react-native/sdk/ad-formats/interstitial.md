@@ -11,7 +11,7 @@
 * 이벤트 기반 콜백 시스템으로 광고 상태 추적 가능
 * 다양한 옵션 설정 지원
 
-#### 2. 기본 구현 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+#### 2. 기본 구현 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 전면 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
 

@@ -36,7 +36,7 @@
 
 <table><thead><tr><th width="139.9375">타입</th><th>값</th><th>설명</th></tr></thead><tbody><tr><td>SMALL</td><td><code>AdWhaleNativeTemplate.small</code></td><td>작은 크기의 네이티브 광고</td></tr><tr><td>MEDIUM</td><td><code>AdWhaleNativeTemplate.medium</code></td><td>중간 크기의 네이티브 광고</td></tr><tr><td>FULLSCREEN</td><td><code>AdWhaleNativeTemplate.fullscreen</code></td><td>전체 화면 네이티브 광고</td></tr></tbody></table>
 
-**기본 구현**
+**기본 구현 샘플코드**
 
 ```dart
 import 'package:flutter/material.dart';
@@ -107,7 +107,7 @@ class _NativeAdExampleState extends State<NativeAdExample> {
 }
 ```
 
-**템플릿 스타일 커스터마이징**
+**템플릿 스타일 커스터마이징 샘플코드**
 
 템플릿 네이티브 광고의 스타일을 커스터마이징할 수 있습니다.
 
@@ -140,7 +140,7 @@ AdWhaleNativeTemplateView(
 )..loadAd();
 ```
 
-**스타일 옵션**
+**스타일 옵션 샘플코드**
 
 ```dart
 class AdWhaleNativeTemplateStyle {

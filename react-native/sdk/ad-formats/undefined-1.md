@@ -40,7 +40,7 @@
 | MEDIUM     | `'MEDIUM'`     | 중간 크기의 네이티브 광고 |
 | FULLSCREEN | `'FULLSCREEN'` | 전체 화면 네이티브 광고  |
 
-**기본 구현**
+**기본 구현 샘플코드**
 
 ```typescript
 import React, { useRef } from 'react';
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
 export default NativeAdExample;
 ```
 
-**템플릿 스타일 커스터마이징**
+**템플릿 스타일 커스터마이징 샘플코드**
 
 템플릿 네이티브 광고의 스타일을 커스터마이징할 수 있습니다.
 
@@ -117,7 +117,7 @@ const customStyle: AdWhaleNativeTemplateStyle = {
 />
 ```
 
-**스타일 옵션**
+**스타일 옵션 샘플코드**
 
 ```typescript
 interface AdWhaleNativeTemplateStyle {
