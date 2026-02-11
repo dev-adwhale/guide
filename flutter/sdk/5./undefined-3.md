@@ -1,5 +1,9 @@
 # 보상형
 
+{% hint style="danger" %}
+전면은 현재 **Android**에서만 지원되며, iOS 지원은 추후 예정입니다.
+{% endhint %}
+
 {% hint style="info" %}
 보상형 광고는 사용자가 광고를 시청한 후 보상을 받는 광고 형식입니다. 게임 내 아이템, 코인, 생명 등 다양한 보상을 제공하여 높은 참여도와 수익을 얻을 수 있습니다.
 {% endhint %}
@@ -56,6 +60,7 @@ void _loadReward() {
   )..loadAd();
 }
 
+// 광고 표시
 void _showReward() {
   if (_rewardAd != null) {
     _rewardAd!.showAd();

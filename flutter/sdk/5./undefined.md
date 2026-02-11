@@ -53,8 +53,11 @@ class _BannerAdExampleState extends State<BannerAdExample> {
           print('배너 광고 클릭됨');
         },
       ),
-      adInfo: AdInfo('your-placement-uid', AdWhaleAdSize.BANNER_320x50),
-    )..loadAd();
+      adInfo: AdInfo(
+        androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+        iosBannerAdUnitId: 'Admob 배너 unit id', 
+        bannerHeight: AdWhaleAdSize.BANNER_320x50),
+      )..loadAd();
   }
 
   @override
@@ -92,6 +95,31 @@ class _BannerAdExampleState extends State<BannerAdExample> {
 
 <table><thead><tr><th width="180.42578125">사이즈</th><th width="297.95703125">값</th><th>설명</th></tr></thead><tbody><tr><td>320x50</td><td><code>AdWhaleAdSize.BANNER_320x50</code></td><td>표준 배너 (Banner)</td></tr><tr><td>320x100</td><td><code>AdWhaleAdSize.BANNER_320x100</code></td><td>큰 배너 (Large Banner)</td></tr><tr><td>300x250</td><td><code>AdWhaleAdSize.BANNER_300x250</code></td><td>중간 직사각형 (Medium Rectangle)</td></tr><tr><td>250x250</td><td><code>AdWhaleAdSize.BANNER_250x250</code></td><td>정사각형 (Square)</td></tr><tr><td>ADAPTIVE_ANCHOR</td><td><code>AdWhaleAdSize.ADAPTIVE_ANCHOR</code></td><td>적응형 앵커 배너</td></tr></tbody></table>
 
+**AdInfo (배너 타게팅)**
+
+*   **Android**만 사용하는 경우
+
+    ```dart
+    AdInfo(
+        androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+        bannerHeight: AdWhaleAdSize.BANNER_320x50)
+    ```
+*   **iOS**만 사용하는 경우
+
+    ```dart
+    AdInfo(
+        iosBannerAdUnitId: 'Admob 배너 unit id', 
+        bannerHeight: AdWhaleAdSize.BANNER_320x50)
+    ```
+*   **Android + iOS**
+
+    ```dart
+    AdInfo(
+        androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+        iosBannerAdUnitId: 'Admob 배너 unit id', 
+        bannerHeight: AdWhaleAdSize.BANNER_320x50)
+    ```
+
 **사용예시**
 
 ```dart
@@ -100,27 +128,39 @@ import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
 // 표준 배너
 AdWhaleAdView(
   listener: listener,
-  adInfo: AdInfo('placement-uid', AdWhaleAdSize.BANNER_320x50),
+  adInfo: AdInfo(
+    androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+    iosBannerAdUnitId: 'Admob 배너 unit id', 
+    bannerHeight: AdWhaleAdSize.BANNER_320x50),
 )..loadAd();
 
 // 큰 배너
 AdWhaleAdView(
   listener: listener,
-  adInfo: AdInfo('placement-uid', AdWhaleAdSize.BANNER_320x100),
+  adInfo: AdInfo(
+    androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+    iosBannerAdUnitId: 'Admob 배너 unit id', 
+    bannerHeight: AdWhaleAdSize.BANNER_320x100),
 )..loadAd();
 
 // 적응형 배너 (너비 지정)
 AdWhaleAdView(
   listener: listener,
-  adInfo: AdInfo('placement-uid', AdWhaleAdSize.ADAPTIVE_ANCHOR),
+  adInfo: AdInfo(
+    androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+    iosBannerAdUnitId: 'Admob 배너 unit id', 
+    bannerHeight: AdWhaleAdSize.ADAPTIVE_ANCHOR),
 )
-  ..setAdaptiveAnchorWidth(360) // 디바이스 너비 값 예시
+  ..setAdaptiveAnchorWidth(360)
   ..loadAd();
 
 // 적응형 배너 (디바이스 전체 너비)
 AdWhaleAdView(
   listener: listener,
-  adInfo: AdInfo('placement-uid', AdWhaleAdSize.ADAPTIVE_ANCHOR),
+  adInfo: AdInfo(
+    androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+    iosBannerAdUnitId: 'Admob 배너 unit id', 
+    bannerHeight: AdWhaleAdSize.ADAPTIVE_ANCHOR),
 )
   ..setAdaptiveAnchorWidth(0) // 0이면 디바이스 전체 너비
   ..loadAd();
@@ -146,7 +186,8 @@ import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
 AdWhaleAdView(
   listener: AdWhaleAdViewListener(...),
   adInfo: AdInfo(
-    'placement-uid',              // 필수: Placement UID
+    androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid',
+    iosBannerAdUnitId: 'Admob 배너 unit id',
     AdWhaleAdSize.BANNER_320x50 // 필수: 배너 사이즈
   ),
 )
@@ -212,8 +253,11 @@ class _BannerAdScreenState extends State<BannerAdScreen> {
           print('배너 광고 클릭됨');
         },
       ),
-      adInfo: AdInfo('your-placement-uid', _selectedSize),
-    )
+      adInfo: AdInfo(
+        androidPlacementUid: 'ADwhale 안드로이드 배너 placement uid', 
+        iosBannerAdUnitId: 'Admob 배너 unit id', 
+        bannerHeight: _selectedSize),
+      )
       ..setRegion('서울시 강남구')
       ..setGcoder(37.5665, 126.9780)
       ..setPlacementName('main-banner')

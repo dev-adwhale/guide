@@ -1,5 +1,9 @@
 # 네이티브
 
+{% hint style="danger" %}
+전면은 현재 **Android**에서만 지원되며, iOS 지원은 추후 예정입니다.
+{% endhint %}
+
 {% hint style="info" %}
 네이티브 광고는 앱의 콘텐츠와 자연스럽게 어우러지는 광고 형식입니다. 앱의 디자인과 일치하도록 커스터마이징할 수 있어 사용자 경험을 해치지 않으면서 높은 참여도를 얻을 수 있습니다.
 {% endhint %}
@@ -28,6 +32,7 @@
 
 * 자체 레이아웃 사용
 * 완전한 디자인 제어
+* Android BinderFactory를 통합 커스텀 바인딩
 {% endhint %}
 
 #### 3. 템플릿 네이티브 광고 <a href="#id-2.-initialize" id="id-2.-initialize"></a>

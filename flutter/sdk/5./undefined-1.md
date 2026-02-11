@@ -1,5 +1,9 @@
 # 전면
 
+{% hint style="danger" %}
+전면은 현재 **Android**에서만 지원되며, iOS 지원은 추후 예정입니다.
+{% endhint %}
+
 {% hint style="info" %}
 전면 광고는 앱 화면 전체를 덮는 전면형 광고입니다. 게임 레벨 완료, 콘텐츠 전환 등 자연스러운 타이밍에 노출하여 높은 참여도를 얻을 수 있습니다.
 {% endhint %}
@@ -52,6 +56,7 @@ void _loadInterstitial() {
   )..loadAd();
 }
 
+// 광고 표시
 void _showInterstitial() {
   if (_interstitialAd != null) {
     _interstitialAd!.showAd();
