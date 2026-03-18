@@ -1,4 +1,4 @@
-# 앱 오프닝 광고
+# 앱 오프닝
 
 {% hint style="info" %}
 앱오프닝 광고는 앱이 실행될 때 또는 백그라운드에서 포그라운드로 전환될 때 표시되는 전면 광고입니다. 이 문서는 안드로이드 프로젝트에서 AdWhale Mediation SDK를 사용하여 앱오프닝 광고를 연동하는 방법을 설명합니다.
@@ -766,7 +766,7 @@ private fun AppOpenScreen(
 {% endtab %}
 {% endtabs %}
 
-#### 5. 앱 시작 시 (및 포어그라운드 진입시) 자동 표시 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+#### 6. 앱 시작 시 (및 포어그라운드 진입시) 자동 표시 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 {% hint style="info" %}
 **다음 샘플코드는 앱 상태가 백그라운드에서 포그라운드로 변경될 때 광고를 노출합니다.**
@@ -1240,7 +1240,7 @@ fun AppOpenSampleScreen() {
 {% endtab %}
 {% endtabs %}
 
-#### **6. 주의사항**
+#### **7. 주의사항**
 
 **광고 로드 타이밍**
 
