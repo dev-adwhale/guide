@@ -444,9 +444,9 @@ fun onAdClicked() : Unit // 미디에이션 앱 전환 광고클릭 시
 {% tabs %}
 {% tab title="Java" %}
 ```java
-exitPopupAd.setRegion("서울시 강남구"); // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setGcoder(37.5665, 126.9780); // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setPlacementName("app_transition_main"); // 레벨플레이 placement name 연동 전용 API (옵션)
+transitionPopupAd.setRegion("서울시 강남구"); // 지역 타게팅 전용 API(옵션)
+transitionPopupAd.setGcoder(37.5665, 126.9780); // 지역 타게팅 전용 API(옵션)
+transitionPopupAd.setPlacementName("app_transition_main"); // 레벨플레이 placement name 연동 전용 API (옵션)
 ```
 
 {% hint style="info" %}
@@ -458,9 +458,9 @@ ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)
 
 {% tab title="Kotlin" %}
 ```kotlin
-exitPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setPlacementName("app_transition_main") // 레벨플레이 placement name 연동 전용 API (옵션)
+transitionPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
+transitionPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+transitionPopupAd.setPlacementName("app_transition_main") // 레벨플레이 placement name 연동 전용 API (옵션)
 ```
 
 {% hint style="info" %}
@@ -472,9 +472,9 @@ ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)
 
 {% tab title="Compose" %}
 ```kotlin
-exitPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setPlacementName("app_transition_main") // 레벨플레이 placement name 연동 전용 API (옵션)
+transitionPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
+transitionPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+transitionPopupAd.setPlacementName("app_transition_main") // 레벨플레이 placement name 연동 전용 API (옵션)
 ```
 
 {% hint style="info" %}

@@ -1,22 +1,259 @@
 # 전면
 
-{% hint style="warning" %}
-`targetSdkVersion 35` 환경의 Android 15 기기에서 **전면 광고 일부 화면 잘림 이슈**를 수정했습니다.
-
-Android 15 이상을 타겟팅하는 경우 **2.5.8 이상**을 적용합니다.
+{% hint style="info" %}
+전면 광고는 앱 화면 전체를 덮는 전면형 광고입니다. 게임 레벨 완료, 콘텐츠 전환 등 자연스러운 타이밍에 노출하여 높은 참여도를 얻을 수 있습니다.
 {% endhint %}
 
-전면 생성
+#### **1. 주요특징**
+
+* 화면 전체를 덮는 전면형 광고
+* 사용자 액션 후 자연스러운 타이밍에 노출
+* 이벤트 기반 콜백 시스템으로 광고 상태 추적 가능
+* 다양한 옵션 설정 지원 (placementName, region, gcoder)
+
+#### 2. 기본 구현 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+`AdWhaleMediationInterstitialAd` 클래스를 사용하여 전면 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
+
+{% tabs %}
+{% tab title="Java" %}
+```java
+private AdWhaleMediationInterstitialAd interstitialAd;
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // 1. 인스턴스 생성 (Activity, placementUid)
+    interstitialAd = new AdWhaleMediationInterstitialAd(this, "발급받은 placement uid 값");
+
+    // 2. 리스너 등록
+    interstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
+        @Override public void onAdLoaded() {
+            // 로드 성공
+            // 4. 표시 (로드 완료 후)
+            interstitialAd.showAd(MainActivity.this);
+        }
+
+        @Override public void onAdLoadFailed(int statusCode, String message) {
+            // 로드 실패
+        }
+
+        @Override public void onAdShowFailed(int statusCode, String message) {
+            // 표시 실패
+        }
+
+        @Override public void onAdClicked() {
+            // 클릭
+        }
+
+        @Override public void onAdClosed() {
+            // 닫힘
+        }
+
+        @Override public void onAdShowed() {
+            // 표시됨
+        }
+    });
+
+    // 3. 로드
+    interstitialAd.loadAd();
+}
+
+@Override
+protected void onDestroy() {
+    if (interstitialAd != null) {
+        // 5. 폐기
+        interstitialAd.destroy();
+        interstitialAd = null;
+    }
+    super.onDestroy();
+}
+```
+{% endtab %}
+
+{% tab title="Kotlin" %}
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    private var interstitialAd: AdWhaleMediationInterstitialAd? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // 1. 인스턴스 생성 (Activity, placementUid)
+        interstitialAd = AdWhaleMediationInterstitialAd(
+            this,
+            "발급받은 placement uid 값"
+        )
+
+        // 2. 리스너 등록
+        interstitialAd?.setAdWhaleMediationInterstitialAdListener(
+            object : AdWhaleMediationInterstitialAdListener {
+
+                override fun onAdLoaded() {
+                    // 로드 성공
+                    interstitialAd?.showAd(this@MainActivity)
+                }
+
+                override fun onAdLoadFailed(statusCode: Int, message: String?) {
+                    // 로드 실패
+                }
+
+                override fun onAdShowFailed(statusCode: Int, message: String?) {
+                    // 표시 실패
+                }
+
+                override fun onAdClicked() {
+                    // 클릭
+                }
+
+                override fun onAdClosed() {
+                    // 닫힘
+                }
+
+                override fun onAdShowed() {
+                    // 표시됨
+                }
+            }
+        )
+
+        // 로드
+        interstitialAd?.loadAd()
+    }
+
+    override fun onDestroy() {
+        interstitialAd?.destroy()
+        interstitialAd = null
+        super.onDestroy()
+    }
+}
+```
+{% endtab %}
+
+{% tab title="Compose" %}
+```kotlin
+@Composable
+private fun InterstitialScreen(
+    placementUid: String,
+    placementName: String? = null,
+    region: String? = null,
+    gcoderLat: Double? = null,
+    gcoderLng: Double? = null
+) {
+    // init 완료 여부
+    var isInited by remember { mutableStateOf(false) }
+
+    // 광고 인스턴스
+    var interstitialAd by remember { mutableStateOf<AdWhaleMediationInterstitialAd?>(null) }
+
+    // 2. SDK 초기화: Composable이 최초 구성될 때 한 번
+    LaunchedEffect(Unit) {
+        AdWhaleMediationAds.init(
+            LocalContext.current,
+            object : AdWhaleMediationOnInitCompleteListener {
+                override fun onInitComplete(statusCode: Int, message: String) {
+                    Log.i("MainActivity", "onInitComplete($statusCode, $message)")
+                    isInited = true
+                }
+            }
+        )
+    }
+
+    val activity = LocalContext.current as? ComponentActivity
+
+    LaunchedEffect(isInited) {
+        if (!isInited || activity == null) return@LaunchedEffect
+
+        // 3. 인스턴스 생성 (placementUid)
+        val ad = AdWhaleMediationInterstitialAd(placementUid).apply {
+            if (region != null) setRegion(region)                                         // 지역 타게팅 전용 API(옵션)
+            if (gcoderLat != null && gcoderLng != null) setGcoder(gcoderLat, gcoderLng)   // 지역 타게팅 전용 API(옵션)
+            if (placementName != null) setPlacementName(placementName)                   // 레벨플레이 placement name 연동 전용 API (옵션)
+
+            // 4. 리스너 등록
+            setAdWhaleMediationInterstitialAdListener(object : AdWhaleMediationInterstitialAdListener {
+                override fun onAdLoaded() {
+                    Log.i("MainActivity", "onAdLoaded()")
+                    // 6. 표시 (로드 완료 후)
+                    showAd(activity)
+                }
+
+                override fun onAdLoadFailed(statusCode: Int, message: String) {
+                    Log.e("MainActivity", "onAdLoadFailed($statusCode, $message)")
+                }
+
+                override fun onAdShowed() {
+                    Log.i("MainActivity", "onAdShowed()")
+                }
+
+                override fun onAdShowFailed(statusCode: Int, message: String) {
+                    Log.e("MainActivity", "onAdShowFailed($statusCode, $message)")
+                }
+
+                override fun onAdClosed() {
+                    Log.i("MainActivity", "onAdClosed()")
+                }
+
+                override fun onAdClicked() {
+                    Log.i("MainActivity", "onAdClicked()")
+                }
+            })
+        }
+
+        interstitialAd = ad
+
+        // 5. 로드
+        ad.loadAd()
+    }
+
+    // dispose에서 destroy
+    DisposableEffect(Unit) {
+        onDispose {
+            // 7. 폐기
+            interstitialAd?.destroy()
+            interstitialAd = null
+        }
+    }
+
+    // 간단 UI (수동 show 버튼)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(text = if (isInited) "SDK 초기화 완료" else "SDK 초기화 중...")
+        Button(
+            onClick = { activity?.let { interstitialAd?.showAd(it) } },
+            enabled = isInited && activity != null && interstitialAd != null
+        ) {
+            Text("InterstitialAd 표시")
+        }
+        Button(
+            onClick = { interstitialAd?.loadAd() },
+            enabled = isInited && interstitialAd != null
+        ) {
+            Text("다시 로드")
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+#### 3. API 설명 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
 {% tabs %}
 {% tab title="Java" %}
 **AdWhaleMediationInterstitialAd 클래스 API 설명**
 
 ```java
-public AdWhaleMediationInterstitialAd(String placementUid)
+public AdWhaleMediationInterstitialAd(Activity activity, String placementUid)
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
 
 ```java
 public void setAdWhaleMediationInterstitialAdListener(AdWhaleMediationInterstitialAdListener listener)
@@ -25,61 +262,232 @@ public void setAdWhaleMediationInterstitialAdListener(AdWhaleMediationInterstiti
 <table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationInterstitialAdListener</p></td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
 
 ```java
-public void loadAd() // 미디에이션 전면광고로드
+public void loadAd() // 미디에이션 전면 광고로드
 ```
 
-<pre class="language-java"><code class="lang-java"><strong>public void showAd() // 미디에이션 전면광고로드 후 표시할 때 호출
-</strong></code></pre>
-
 ```java
-public void showAd(Activity activity) // 미디에이션 전면광고로드 후 표시할 때 호출
+public void showAd(Activity activity) // 미디에이션 전면 광고로드 후 표시할 때 호출
 ```
 
 <table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
 
 ```java
-public void destroy() // onDestroy() 시 호출
+public void destroy() // onDestroy() 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
 ```
 
 \
 **AdWhaleMediationInterstitialAdListener 클래스 API 설명**
 
 ```java
-public void onAdLoaded() // 미디에이션 전면광고요청 성공 시
+public void onAdLoaded() // 미디에이션 전면 광고요청 성공 시
 ```
 
 ```java
-public void onAdLoadFailed(int statusCode, String message) // 미디에이션 전면광고요청 실패 시
+public void onAdLoadFailed(int statusCode, String message) // 미디에이션 전면 광고요청 실패 시
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```java
-public void onAdShowed() // 미디에이션 전면광고표시 후
+public void onAdShowed() // 미디에이션 전면 광고표시 후
 ```
 
 ```java
-public void onAdShowFailed(int statusCode, String message) // 미디에이션 전면광고표시 실패 시
+public void onAdShowFailed(int statusCode, String message) // 미디에이션 전면 광고표시 실패 시
 ```
 
 <table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```java
-public void onAdClosed() // 미디에이션 전면광고닫기 시
+public void onAdClosed() // 미디에이션 전면 광고닫기 시
 ```
 
 ```java
-public void onAdClicked() // 미디에이션 전면광고클릭 시
+public void onAdClicked() // 미디에이션 전면 광고클릭 시
+```
+{% endtab %}
+
+{% tab title="Kotlin" %}
+**AdWhaleMediationInterstitialAd 클래스 API 설명**
+
+```kotlin
+AdWhaleMediationInterstitialAd(activity : Activity, placementUid : String)
 ```
 
-**전면 구현 샘플은 아래와 같습니다.**&#x20;
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
 
-<pre class="language-java"><code class="lang-java">import android.os.Bundle;
+```kotlin
+fun setAdWhaleMediationInterstitialAdListener(listener : AdWhaleMediationInterstitialAdListener) : Unit
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener</td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```kotlin
+fun loadAd() : Unit // 미디에이션 전면 광고로드
+```
+
+```kotlin
+fun showAd(activity : Activity) : Unit // 미디에이션 전면 광고로드 후 표시할 때 호출
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
+
+```kotlin
+fun destroy() : Unit // onDestroy() 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+```
+
+\
+**AdWhaleMediationInterstitialAdListener 클래스 API 설명**
+
+```kotlin
+fun onAdLoaded() : Unit // 미디에이션 전면 광고요청 성공 시
+```
+
+```kotlin
+fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면 광고요청 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```kotlin
+fun onAdShowed() : Unit // 미디에이션 전면 광고표시 후
+```
+
+```kotlin
+fun onAdShowFailed(statusCode : Unit, message : String) : Unit // 미디에이션 전면 광고표시 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```kotlin
+fun onAdClosed() : Unit // 미디에이션 전면 광고닫기 시
+```
+
+```kotlin
+fun onAdClicked() : Unit // 미디에이션 전면 광고클릭 시
+```
+{% endtab %}
+
+{% tab title="Compose" %}
+
+
+**AdWhaleMediationInterstitialAd 클래스 API 설명**
+
+```kotlin
+AdWhaleMediationInterstitialAd(activity : Activity, placementUid : String)
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+
+```kotlin
+fun setAdWhaleMediationInterstitialAdListener(listener : AdWhaleMediationInterstitialAdListener) : Unit
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationInterstitialAdListener</p></td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
+
+```kotlin
+fun loadAd() : Unit // 미디에이션 전면 광고로드
+```
+
+```kotlin
+fun showAd(activity : Activity) : Unit // 미디에이션 전면 광고로드 후 표시할 때 호출
+```
+
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
+
+```kotlin
+fun destroy() : Unit // onDestroy() 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+```
+
+\
+**AdWhaleMediationInterstitialAdListener 클래스 API 설명**
+
+```kotlin
+fun onAdLoaded() : Unit // 미디에이션 전면 광고요청 성공 시
+```
+
+```kotlin
+fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면 광고요청 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```kotlin
+fun onAdShowed() : Unit // 미디에이션 전면 광고표시 후
+```
+
+```kotlin
+fun onAdShowFailed(statusCode : Unit, message : String) : Unit // 미디에이션 전면 광고표시 실패 시
+```
+
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+
+```kotlin
+fun onAdClosed() : Unit // 미디에이션 전면 광고닫기 시
+```
+
+```kotlin
+fun onAdClicked() : Unit // 미디에이션 전면 광고클릭 시
+```
+{% endtab %}
+{% endtabs %}
+
+#### 4. 옵션 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+{% tabs %}
+{% tab title="Java" %}
+```java
+interstitialAd.setRegion("서울시 강남구"); // 지역 타게팅 전용 API(옵션)
+interstitialAd.setGcoder(37.5665, 126.9780); // 지역 타게팅 전용 API(옵션)
+interstitialAd.setPlacementName("interstitial_main"); // 레벨플레이 placement name 연동 전용 API (옵션)
+```
+
+{% hint style="info" %}
+ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+{% endtab %}
+
+{% tab title="Kotlin" %}
+```kotlin
+interstitialAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
+interstitialAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+interstitialAd.setPlacementName("interstitial_main") // 레벨플레이 placement name 연동 전용 API (옵션)
+```
+
+{% hint style="info" %}
+ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+{% endtab %}
+
+{% tab title="Compose" %}
+```kotlin
+interstitialAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
+interstitialAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+interstitialAd.setPlacementName("interstitial_main") // 레벨플레이 placement name 연동 전용 API (옵션)
+```
+
+{% hint style="info" %}
+ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+{% endtab %}
+{% endtabs %}
+
+#### 5. 전면 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+다음은 안드로이드에서 전면 광고를 구현하는 완전한 예시입니다.
+
+{% tabs %}
+{% tab title="Java" %}
+```java
+import android.os.Bundle;
 import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAd;
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener;
@@ -88,504 +496,322 @@ import net.adwhale.sdk.utils.AdWhaleLog;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ConstraintLayout root;
+    private AdWhaleMediationInterstitialAd interstitialAd;
 
-<strong>    private AdWhaleMediationInterstitialAd adWhaleMediationInterstitialAd;
-</strong>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        // 로거 설정
+
+        // 1. 로거 설정
         AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
-        
-        // 초기화 코드
+
+        // 2. 초기화 코드
         AdWhaleMediationAds.init(this, new AdWhaleMediationOnInitCompleteListener() {
             @Override
             public void onInitComplete(int statusCode, String message) {
-                Log.i(MainActivity.class.getSimpleName(), ".onInitComplete(" + statusCode + ", " + message + ");");
+                Log.i("MainActivity", "onInitComplete(" + statusCode + ", " + message + ")");
+                createAndLoadInterstitialAd();
             }
         });
+    }
 
-        // 전면광고 생성
-        adWhaleMediationInterstitialAd = new AdWhaleMediationInterstitialAd("발급받은 placement uid 값");
-        
-        // 전면광고 콜백 리스너 등록
-        adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
+    private void createAndLoadInterstitialAd() {
+        // 3. 인스턴스 생성 (placementUid)
+        interstitialAd = new AdWhaleMediationInterstitialAd("발급받은 placement uid 값");
+        interstitialAd.setRegion("서울시 서초구"); // 지역 타게팅 전용 API(옵션)
+        interstitialAd.setGcoder(37.49, 127.02); // 지역 타게팅 전용 API(옵션)
+        interstitialAd.setPlacementName("interstitial-main"); // 레벨플레이 placement name 연동 전용 API (옵션)
+
+        // 4. 리스너 등록
+        interstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
             @Override
             public void onAdLoaded() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdLoaded();");
-                // 전면광고 표시
-                adWhaleMediationInterstitialAd.showAd();
+                Log.i("MainActivity", "onAdLoaded()");
+                // 원하는 시점에 표시 (예: 사용자 액션 후)
+                interstitialAd.showAd(MainActivity.this);
             }
 
             @Override
             public void onAdLoadFailed(int statusCode, String message) {
-                Log.e(MainActivity.class.getSimpleName(), ".onAdLoadFailed(" + statusCode + ", " + message + ");");
+                Log.e("MainActivity", "onAdLoadFailed(" + statusCode + ", " + message + ")");
             }
 
             @Override
             public void onAdShowed() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdShowed();");
+                Log.i("MainActivity", "onAdShowed()");
             }
 
             @Override
             public void onAdShowFailed(int statusCode, String message) {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdShowFailed(" + statusCode + ", " + message + ");");
+                Log.e("MainActivity", "onAdShowFailed(" + statusCode + ", " + message + ")");
             }
 
             @Override
             public void onAdClosed() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdClosed();");
+                Log.i("MainActivity", "onAdClosed()");
             }
-            
+
             @Override
             public void onAdClicked() {
-                Log.i(MainActivity.class.getSimpleName(), ".onAdClicked();");
-            }            
+                Log.i("MainActivity", "onAdClicked()");
+            }
         });
 
-        // 전면광고 로드
-        adWhaleMediationInterstitialAd.loadAd();
-
+        // 5. 로드
+        interstitialAd.loadAd();
     }
-    
-    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
+
+    /** 표시 버튼 등으로 수동 표시할 경우 */
+    private void showInterstitialAd() {
+        if (interstitialAd != null) {
+            interstitialAd.showAd(this);
+        }
+    }
+
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if(adWhaleMediationInterstitialAd != null) {
-            adWhaleMediationInterstitialAd.destroy();        
+        if (interstitialAd != null) {
+            // 6. 폐기
+            interstitialAd.destroy();
+            interstitialAd = null;
         }
-    }    
+        super.onDestroy();
+    }
 }
-</code></pre>
+```
 {% endtab %}
 
 {% tab title="Kotlin" %}
-**AdWhaleMediationInterstitialAd 클래스 API 설명**
-
 ```kotlin
-AdWhaleMediationInterstitialAd(placementUid : String)
-```
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAd
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener
+import net.adwhale.sdk.utils.AdWhaleLog
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+class MainActivity : AppCompatActivity() {
 
-```kotlin
-fun setAdWhaleMediationInterstitialAdListener(listener : AdWhaleMediationInterstitialAdListener) : Unit
-```
+    private var interstitialAd: AdWhaleMediationInterstitialAd? = null
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener</td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
-
-```kotlin
-fun loadAd() : Unit // 미디에이션 전면광고로드
-```
-
-```kotlin
-fun showAd() : Unit // 미디에이션 전면광고로드 후 표시할 때 호출
-```
-
-```kotlin
-fun showAd(activity : Activity) : Unit // 미디에이션 전면광고로드 후 표시할 때 호출
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
-
-```kotlin
-fun destroy() : Unit // onDestroy() 시 호출
-```
-
-
-
-
-
-**AdWhaleMediationInterstitialAdListener 클래스 API 설명**
-
-```kotlin
-fun onAdLoaded() : Unit // 미디에이션 전면광고요청 성공 시
-```
-
-```kotlin
-fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면광고요청 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdShowed() : Unit // 미디에이션 전면광고표시 후
-```
-
-```kotlin
-fun onAdShowFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면광고표시 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdClosed() : Unit // 미디에이션 전면광고닫기 시
-```
-
-```kotlin
-fun onAdClicked() : Unit // 미디에이션 전면광고클릭 시
-```
-
-**전면 구현 샘플은 아래와 같습니다.**&#x20;
-
-```kotlin
-import android.os.Bundle;
-import android.util.Log;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAd;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
-import net.adwhale.sdk.utils.AdWhaleLog;
-
-public class MainActivity : AppCompatActivity() {
-
-    private lateinit var root : ConstraintLayout;
-
-    private lateinit var adWhaleMediationInterstitialAd : AdWhaleMediationInterstitialAd;
-
-    overrider fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 로거 설정
+        // 1. 로거 설정
         AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
-        
-        // 초기화 코드
-        AdWhaleMediationAds.init(this, AdWhaleMediationOnInitCompleteListener {
-            statusCode, message ->
-                Log.i(MainActivity::class.simpleName, ".onInitComplete($statusCode, $message)")
+
+        // 2. 초기화 코드
+        AdWhaleMediationAds.init(this, object : AdWhaleMediationOnInitCompleteListener {
+            override fun onInitComplete(statusCode: Int, message: String) {
+                Log.i("MainActivity", "onInitComplete($statusCode, $message)")
+                createAndLoadInterstitialAd()
+            }
         })
-
-        // 전면광고 생성
-        adWhaleMediationInterstitialAd = AdWhaleMediationInterstitialAd("발급받은 placement uid 값")
-
-        // 전면광고 콜백 리스너 등록
-        adWhaleMediationInterstitialAd.setAdWhaleMediationInterstitialAdListener(
-        
-            object : AdWhaleMediationInterstitialAdListener {
-            
-            override fun onAdLoaded() {
-                Log.i(MainActivity::class.simpleName, ".onAdLoaded()")
-                // 전면광고 표시
-                adWhaleMediationInterstitialAd.showAd()
-            }
-
-            override fun onAdLoadFailed(statusCode : Int, message : String) {
-                Log.e(MainActivity::class.simpleName, ".onAdLoadFailed($statusCode, $message)")
-            }
-
-            override fun onAdShowed() {
-                Log.i(MainActivity::class.simpleName, ".onAdShowed()")
-            }
-
-            override fun onAdShowFailed(statusCode : Int, message : String) {
-                Log.i(MainActivity::class.simpleName, ".onAdShowFailed($statusCode, $message)")
-            }
-
-            override fun onAdClosed() {
-                Log.i(MainActivity::class.simpleName, ".onAdClosed()")
-            }
-
-            override fun onAdClicked() {
-                Log.i(MainActivity::class.simpleName, ".onAdClicked()")
-            }                        
-        });
-
-        // 전면광고 로드
-        adWhaleMediationInterstitialAd.loadAd()
-
     }
-    
-    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy 호출 필요
+
+    private fun createAndLoadInterstitialAd() {
+        // 3. 인스턴스 생성 (placementUid)
+        val ad = AdWhaleMediationInterstitialAd("발급받은 placement uid 값").apply {
+            setRegion("서울시 서초구")          // 지역 타게팅 전용 API(옵션)
+            setGcoder(37.49, 127.02)           // 지역 타게팅 전용 API(옵션)
+            setPlacementName("interstitial-main") // 레벨플레이 placement name 연동 전용 API (옵션)
+
+            // 4. 리스너 등록
+            setAdWhaleMediationInterstitialAdListener(object : AdWhaleMediationInterstitialAdListener {
+                override fun onAdLoaded() {
+                    Log.i("MainActivity", "onAdLoaded()")
+                    // 원하는 시점에 표시 (예: 사용자 액션 후)
+                    showAd(this@MainActivity)
+                }
+
+                override fun onAdLoadFailed(statusCode: Int, message: String) {
+                    Log.e("MainActivity", "onAdLoadFailed($statusCode, $message)")
+                }
+
+                override fun onAdShowed() {
+                    Log.i("MainActivity", "onAdShowed()")
+                }
+
+                override fun onAdShowFailed(statusCode: Int, message: String) {
+                    Log.e("MainActivity", "onAdShowFailed($statusCode, $message)")
+                }
+
+                override fun onAdClosed() {
+                    Log.i("MainActivity", "onAdClosed()")
+                }
+
+                override fun onAdClicked() {
+                    Log.i("MainActivity", "onAdClicked()")
+                }
+            })
+        }
+
+        interstitialAd = ad
+
+        // 5. 로드
+        ad.loadAd()
+    }
+
+    /** 표시 버튼 등으로 수동 표시할 경우 */
+    private fun showInterstitialAd() {
+        interstitialAd?.showAd(this)
+    }
+
     override fun onDestroy() {
+        // 6. 폐기
+        interstitialAd?.destroy()
+        interstitialAd = null
         super.onDestroy()
-        adWhaleMediationInterstitialAd.destroy()
-    }  
+    }
 }
 ```
 {% endtab %}
 
 {% tab title="Compose" %}
-**AdWhaleMediationInterstitialAd 클래스 API 설명**
-
-```kotlin
-AdWhaleMediationInterstitialAd(placementUid : String)
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
-
-```kotlin
-fun setAdWhaleMediationInterstitialAdListener(listener : AdWhaleMediationInterstitialAdListener) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener</td><td>전면 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
-
-```kotlin
-fun loadAd() : Unit // 미디에이션 전면광고로드
-```
-
-```kotlin
-fun showAd() : Unit // 미디에이션 전면광고로드 후 표시할 때 호출
-```
-
-```kotlin
-fun showAd(activity : Activity) : Unit // 미디에이션 전면광고로드 후 표시할 때 호출
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr></tbody></table>
-
-```kotlin
-fun destroy() : Unit // onDestroy() 시 호출
-```
-
-
-
-
-
-**AdWhaleMediationInterstitialAdListener 클래스 API 설명**
-
-```kotlin
-fun onAdLoaded() : Unit // 미디에이션 전면광고요청 성공 시
-```
-
-```kotlin
-fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면광고요청 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdShowed() : Unit // 미디에이션 전면광고표시 후
-```
-
-```kotlin
-fun onAdShowFailed(statusCode : Int, message : String) : Unit // 미디에이션 전면광고표시 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdClosed() : Unit // 미디에이션 전면광고닫기 시
-```
-
-```kotlin
-fun onAdClicked() : Unit // 미디에이션 전면광고클릭 시
-```
-
-**전면 구현 샘플은 아래와 같습니다.**&#x20;
-
 ```kotlin
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAd
 import net.adwhale.sdk.mediation.ads.AdWhaleMediationInterstitialAdListener
+import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener
 import net.adwhale.sdk.utils.AdWhaleLog
 
 class MainActivity : ComponentActivity() {
 
-
-    // Java 가이드와 동일하게 멤버 필드로 유지
-    private var adWhaleMediationInterstitialAd: AdWhaleMediationInterstitialAd? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Java 가이드와 동일: init + 로그 레벨 설정
-        AdWhaleMediationAds.init(this) { statusCode, message ->
-            AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.Verbose)
-            Log.i(MainActivity::class.java.simpleName, ".onInitComplete($statusCode, $message)")
-        }
-
-        val defaultPlacementUid = "발급받은 placement uid 값"
+        // 1. 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
 
         setContent {
-            MaterialTheme {
-                var placementUid by remember { mutableStateOf(defaultPlacementUid) }
-
-                InterstitialScreen(
-                    placementUid = placementUid,
-                    onPlacementUidChange = { placementUid = it },
-                    onRequestAd = { requestInterstitialAd(placementUid) },
-                    onShowAd = { showInterstitialAd() }
-                )
-            }
+            InterstitialScreen(
+                placementUid = "발급받은 placement uid 값",
+                placementName = "interstitial-main",
+                region = "서울시 서초구",
+                gcoderLat = 37.49,
+                gcoderLng = 127.02
+            )
         }
-    }
-
-    /**
-     * Java 가이드의 onCreate 내부 로직과 동일한 흐름:
-     * - AdWhaleMediationInterstitialAd 생성
-     * - Listener 설정
-     * - loadAd() 호출
-     */
-    private fun requestInterstitialAd(placementUid: String) {
-        if (placementUid.isBlank()) {
-            Toast.makeText(applicationContext, "placementUid 를 입력하세요.", Toast.LENGTH_SHORT)
-                .show()
-            return
-        }
-
-        // 기존 객체 정리
-        adWhaleMediationInterstitialAd?.destroy()
-        adWhaleMediationInterstitialAd = null
-
-        // Java 가이드와 동일: 생성자에 placementUid 전달
-        val interstitialAd = AdWhaleMediationInterstitialAd(placementUid)
-        adWhaleMediationInterstitialAd = interstitialAd
-
-        // Java 가이드와 동일한 리스너 구성
-        interstitialAd.setAdWhaleMediationInterstitialAdListener(object :
-            AdWhaleMediationInterstitialAdListener {
-
-            @Override
-            override fun onAdLoaded() {
-                Log.i(MainActivity::class.java.simpleName, ".onAdLoaded()")
-                Toast.makeText(applicationContext, ".onAdLoaded()", Toast.LENGTH_SHORT).show()
-            }
-
-            @Override
-            override fun onAdLoadFailed(statusCode: Int, message: String) {
-                Log.e(MainActivity::class.java.simpleName, ".onAdLoadFailed($statusCode, $message)")
-                Toast.makeText(
-                    applicationContext,
-                    ".onAdLoadFailed(statusCode:$statusCode, message:$message)",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            @Override
-            override fun onAdShowed() {
-                Log.i(MainActivity::class.java.simpleName, ".onAdShowed()")
-                Toast.makeText(applicationContext, ".onAdShowed()", Toast.LENGTH_SHORT).show()
-            }
-
-            @Override
-            override fun onAdShowFailed(statusCode: Int, message: String) {
-                Log.e(MainActivity::class.java.simpleName, ".onAdShowFailed($statusCode, $message)")
-                Toast.makeText(
-                    applicationContext,
-                    ".onAdShowFailed(statusCode:$statusCode, message:$message)",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            @Override
-            override fun onAdClosed() {
-                Log.i(MainActivity::class.java.simpleName, ".onAdClosed()")
-                Toast.makeText(applicationContext, ".onAdClosed()", Toast.LENGTH_SHORT).show()
-            }
-
-            @Override
-            override fun onAdClicked() {
-                Log.i(MainActivity::class.java.simpleName, ".onAdClicked()")
-                // 필요시 Toast 추가 가능
-            }
-        })
-
-        // Java 가이드 동일: loadAd() 호출
-        interstitialAd.loadAd()
-    }
-
-    /**
-     * Java 가이드와 동일한 showAd() 흐름
-     */
-    private fun showInterstitialAd() {
-        val interstitialAd = adWhaleMediationInterstitialAd
-        if (interstitialAd == null) {
-            Toast.makeText(applicationContext, "광고가 아직 로드되지 않았습니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
-        interstitialAd.showAd()
-    }
-
-    /**
-     * 라이프사이클 onDestroy 콜백 시 반드시 destroy() 호출 필요 (Java 가이드 동일)
-     */
-    override fun onDestroy() {
-        if (adWhaleMediationInterstitialAd != null) {
-            adWhaleMediationInterstitialAd?.destroy()
-            adWhaleMediationInterstitialAd = null
-        }
-        super.onDestroy()
     }
 }
 
-/**
- * 기존 activity_programmatic_interstitial_main.xml 을 Compose 로 옮긴 UI
- */
 @Composable
-fun InterstitialScreen(
+private fun InterstitialScreen(
     placementUid: String,
-    onPlacementUidChange: (String) -> Unit,
-    onRequestAd: () -> Unit,
-    onShowAd: () -> Unit
+    placementName: String? = null,
+    region: String? = null,
+    gcoderLat: Double? = null,
+    gcoderLng: Double? = null
 ) {
+    // init 완료 여부
+    var isInited by remember { mutableStateOf(false) }
+
+    // 광고 인스턴스
+    var interstitialAd by remember { mutableStateOf<AdWhaleMediationInterstitialAd?>(null) }
+
+    // 2. SDK 초기화: Composable이 최초 구성될 때 한 번
+    LaunchedEffect(Unit) {
+        AdWhaleMediationAds.init(
+            LocalContext.current,
+            object : AdWhaleMediationOnInitCompleteListener {
+                override fun onInitComplete(statusCode: Int, message: String) {
+                    Log.i("MainActivity", "onInitComplete($statusCode, $message)")
+                    isInited = true
+                }
+            }
+        )
+    }
+
+    val activity = LocalContext.current as? ComponentActivity
+
+    LaunchedEffect(isInited) {
+        if (!isInited || activity == null) return@LaunchedEffect
+
+        // 3. 인스턴스 생성 (placementUid)
+        val ad = AdWhaleMediationInterstitialAd(placementUid).apply {
+            if (region != null) setRegion(region)                                         // 지역 타게팅 전용 API(옵션)
+            if (gcoderLat != null && gcoderLng != null) setGcoder(gcoderLat, gcoderLng)   // 지역 타게팅 전용 API(옵션)
+            if (placementName != null) setPlacementName(placementName)                   // 레벨플레이 placement name 연동 전용 API (옵션)
+
+            // 4. 리스너 등록
+            setAdWhaleMediationInterstitialAdListener(object : AdWhaleMediationInterstitialAdListener {
+                override fun onAdLoaded() {
+                    Log.i("MainActivity", "onAdLoaded()")
+                    // 6. 표시 (로드 완료 후)
+                    showAd(activity)
+                }
+
+                override fun onAdLoadFailed(statusCode: Int, message: String) {
+                    Log.e("MainActivity", "onAdLoadFailed($statusCode, $message)")
+                }
+
+                override fun onAdShowed() {
+                    Log.i("MainActivity", "onAdShowed()")
+                }
+
+                override fun onAdShowFailed(statusCode: Int, message: String) {
+                    Log.e("MainActivity", "onAdShowFailed($statusCode, $message)")
+                }
+
+                override fun onAdClosed() {
+                    Log.i("MainActivity", "onAdClosed()")
+                }
+
+                override fun onAdClicked() {
+                    Log.i("MainActivity", "onAdClicked()")
+                }
+            })
+        }
+
+        interstitialAd = ad
+
+        // 5. 로드
+        ad.loadAd()
+    }
+
+    // dispose에서 destroy
+    DisposableEffect(Unit) {
+        onDispose {
+            // 7. 폐기
+            interstitialAd?.destroy()
+            interstitialAd = null
+        }
+    }
+
+    // 간단 UI (수동 show 버튼)
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
-        horizontalAlignment = Alignment.Start
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = "1. 테스트 전면광고 Placement Uid 입력:",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = placementUid,
-            onValueChange = onPlacementUidChange,
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("placementUid 입력") }
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
+        Text(text = if (isInited) "SDK 초기화 완료" else "SDK 초기화 중...")
         Button(
-            onClick = onRequestAd,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            onClick = { activity?.let { interstitialAd?.showAd(it) } },
+            enabled = isInited && activity != null && interstitialAd != null
         ) {
-            Text(text = "테스트 전면광고 요청")
+            Text("InterstitialAd 표시")
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         Button(
-            onClick = onShowAd,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            onClick = { interstitialAd?.loadAd() },
+            enabled = isInited && interstitialAd != null
         ) {
-            Text(text = "테스트 전면광고 표시")
+            Text("다시 로드")
         }
     }
 }
@@ -593,7 +819,32 @@ fun InterstitialScreen(
 {% endtab %}
 {% endtabs %}
 
+#### **6. 주의사항**
 
+**광고 로드 타이밍**
 
+* 광고는 로드가 완료된 후에만 표시할 수 있습니다.
+* `onAdLoaded()` 이후에만 `showAd(activity)`를 호출하세요.
 
+**광고 표시 조건**
 
+* 레벨 완료, 화면 전환 등 사용자 액션 이후 자연스러운 타이밍에 노출하는 것을 권장합니다. 과도한 노출은 이용 경험을 해칠 수 있습니다.
+* 중복 표시: 이미 표시 중이거나 로드 중일 때 `showAd(activity)`는 무시될 수 있으므로, 콜백 상태를 활용해 제어하세요.
+
+**리스너 정리**
+
+* 컴포넌트가 언마운트될 때 등록한 이벤트 리스너를 반드시 제거해야 합니다.
+
+**리소스 해제**
+
+* `onDestroy()`에서 반드시 `destroy()`를 호출하세요.
+
+**에러 처리**
+
+* `onAdLoadFailed`와 `onAdShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
+* 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+**테스트**
+
+* 개발 환경에서는 테스트용 placement UID를 사용하세요.
+* 실제 배포 전에 다양한 시나리오에서 테스트하세요.
