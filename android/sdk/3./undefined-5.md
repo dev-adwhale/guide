@@ -499,13 +499,29 @@ fun onAdClicked() : Unit // 미디에이션 앱 종료 광고클릭 시
 ```java
 exitPopupAd.setRegion("서울시 강남구"); // 지역 타게팅 전용 API(옵션)
 exitPopupAd.setGcoder(37.5665, 126.9780); // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setPlacementName("app_exit_main"); // 레벨플레이 placement name 연동 전용 API (옵션)
 ```
 
 {% hint style="info" %}
-ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
 
 [https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+
+```java
+exitPopupAd.setPlacementName("app_exit_main");
+```
+
+{% hint style="info" %}
+AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
+{% endhint %}
+
+{% hint style="warning" %}
+LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+
+***
+
+배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
 {% endhint %}
 {% endtab %}
 
@@ -513,13 +529,29 @@ ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)
 ```kotlin
 exitPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
 exitPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+
+```kotlin
 exitPopupAd.setPlacementName("app_exit_main") // 레벨플레이 placement name 연동 전용 API (옵션)
 ```
 
 {% hint style="info" %}
-ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
+{% endhint %}
 
-[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% hint style="warning" %}
+LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+
+***
+
+배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
 {% endhint %}
 {% endtab %}
 
@@ -527,13 +559,29 @@ ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)
 ```kotlin
 exitPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
 exitPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+
+```kotlin
 exitPopupAd.setPlacementName("app_exit_main") // 레벨플레이 placement name 연동 전용 API (옵션)
 ```
 
 {% hint style="info" %}
-ADwhale 에서는 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
+{% endhint %}
 
-[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% hint style="warning" %}
+LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+
+***
+
+배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
 {% endhint %}
 {% endtab %}
 {% endtabs %}
