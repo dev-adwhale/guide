@@ -1,712 +1,218 @@
-# 앱 종료
+# 네이티브(수정)
 
 {% hint style="info" %}
-앱종료광고(Exit Popup Ad)는 사용자가 앱을 종료하려 할 때(예: 백키 입력) 노출되는 팝업형 광고입니다. 종료 확인 다이얼로그 대신 또는 함께 사용하여 이탈 전 마지막 노출 기회를 제공합니다.
+네이티브 광고는 앱의 콘텐츠와 자연스럽게 어우러지는 광고 형식입니다. 앱의 디자인과 일치하도록 커스터마이징할 수 있어 사용자 경험을 해치지 않으면서 높은 참여도를 얻을 수 있습니다.
 {% endhint %}
 
 #### **1. 주요특징**
 
-* 앱 종료 시점(백키 등)에 노출되는 팝업형 광고
-* 메인/보조 버튼 텍스트 및 설명 문구 커스터마이징 지원 (일부 광고 소스에만 적용되며, 타게팅 설정을 지원하지 않는 경우 적용되지 않을 수 있습니다.)
-* 다양한 옵션 설정 지원 (placementName, region, gcoder)
-* 로드, 표시, 닫힘 등 이벤트 기반 콜백 시스템으로 광고 상태 추적 가능
+* 앱 콘텐츠와 자연스럽게 통합
+* **커스텀 바인딩**과 **고정 템플릿** 두 가지 방식 지원
+* 템플릿 타입: SMALL, MEDIUM, FULLSCREEN
+* 스타일(색상·폰트·크기 등) 커스터마이징 가능
 
-#### 2. 기본 구현 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+#### 2. 네이티브 광고 타입 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
-`AdWhaleMediationExitPopupAd` 클래스를 사용하여 앱 종료 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
+네이티브 광고는 두 가지 방식으로 구현할 수 있습니다:
+
+{% hint style="info" %}
+**템플릿 네이티브 광고**&#x20;
+
+```java
+// SMALL 네이티브 템플릿 적용 예시코드
+AdWhaleMediationNativeAdView nativeAdView = new AdWhaleMediationNativeAdView(this);
+nativeAdView.loadAdWithTemplate(ADWHALE_NATIVE_TEMPLATE.SMALL);
+```
+
+* SDK에서 제공하는 템플릿 사용
+* `SMALL`, `MEDIUM`, `FULLSCREEN` 타입 지원
+* 스타일 커스터마이징 가능
+{% endhint %}
+
+{% hint style="info" %}
+**커스텀 바인딩 네이티브 광고**
+
+```java
+// 커스텀 바인딩 네이티브 적용 예시코드
+AdWhaleMediationNativeAdView nativeAdView = new AdWhaleMediationNativeAdView(this);
+AdWhaleNativeAdBinder binder = 
+    new AdWhaleNativeAdBinder.Builder(this, R.layout.custom_native_ad_layout)
+        .setIconViewId(R.id.view_icon)
+        .setTitleViewId(R.id.view_title)
+        .setBodyTextViewId(R.id.view_body)
+        .setCallToActionViewId(R.id.button_cta)
+        .setMediaViewGroupId(R.id.view_media)
+        .build();
+nativeAdView.loadAdWithBinder(binder);
+```
+
+* 자체 레이아웃 사용
+* 완전한 디자인 제어
+* Android `AdWhaleNativeBinder`를 통합 커스텀 바인딩
+{% endhint %}
+
+#### 3. 템플릿 네이티브 광고 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+템플릿 네이티브 광고는 다음 세 가지 타입을 지원합니다:
+
+<table><thead><tr><th width="139.9375">타입</th><th>값</th><th>설명</th></tr></thead><tbody><tr><td>SMALL</td><td><code>ADWHALE_NATIVE_TEMPLATE.small</code></td><td>작은 크기의 네이티브 광고</td></tr><tr><td>MEDIUM</td><td><code>ADWHALE_NATIVE_TEMPLATE.medium</code></td><td>중간 크기의 네이티브 광고</td></tr><tr><td>FULLSCREEN</td><td><code>ADWHALE_NATIVE_TEMPLATE.fullscreen</code></td><td>전체 화면 네이티브 광고</td></tr></tbody></table>
+
+**템플릿 네이티브 광고 기본 구현 샘플코드**
 
 {% tabs %}
 {% tab title="Java" %}
 ```java
-private AdWhaleMediationExitPopupAd exitPopupAd;
-private boolean isLoaded = false;
-
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    // 1. 인스턴스 생성 (placementUid)
-    exitPopupAd = new AdWhaleMediationExitPopupAd("발급받은 placement uid 값");
-
-    // 2. 리스너 등록
-    exitPopupAd.setAdWhaleMediationExitPopupAdListener(new AdWhaleMediationExitPopupAdListener() {
-        @Override public void onAdLoaded() { 
-            // 로드 성공
-            isLoaded = true;
-        }
-        
-        @Override public void onAdLoadFailed(int statusCode, String message) { 
-            // 로드 실패 
-            isLoaded = false;
-        }
-        
-        @Override public void onAdShowed() { 
-            // 표시됨
-            isLoaded = false;
-        }
-        
-        @Override public void onAdShowFailed(int statusCode, String message) { 
-            // 표시 실패
-            isLoaded = false;
-        }
-        
-        @Override public void onAdClicked() { 
-            // 클릭 
-            isLoaded = false;
-        }
-        
-        @Override public void onAdClosed(ADWHALE_POPUP_AD_CLOSE_REASON reason) { 
-            // 닫힘 (사유 포함)
-            isLoaded = false;
-        }
-    });
-
-    // 3. 로드
-    exitPopupAd.loadAd();
-}
-
-@Override
-public boolean onKeyDown(int keyCode, KeyEvent event) {
-    if (keyCode == KeyEvent.KEYCODE_BACK) {
-        if(isLoaded){
-            // 4. 표시 (onAdLoaded 이후, 예: 백키 입력 시)
-            exitPopupAd.showAd(activity, getSupportFragmentManager());        
-        }
-        return true;
-    }
-    return super.onKeyDown(keyCode, event);
-}
-
-@Override
-protected void onResume() {
-    if (exitPopupAd != null)
-        exitPopupAd.resume(this); // 필수 호출
-    super.onResume();
-}
-
-@Override
-protected void onDestroy() {
-    if (exitPopupAd != null) {
-        // 5. 폐기
-        exitPopupAd.destroy();
-        exitPopupAd = null;
-    }
-    super.onDestroy();
-}
-```
-{% endtab %}
-
-{% tab title="Kotlin" %}
-```kotlin
-private var exitPopupAd: AdWhaleMediationExitPopupAd? = null
-private var isLoaded: Boolean = false
-    
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    // 1. 인스턴스 생성
-    exitPopupAd = AdWhaleMediationExitPopupAd("발급받은 placement uid 값")
-
-    // 2. 리스너 등록
-    exitPopupAd?.setAdWhaleMediationExitPopupAdListener(
-        object : AdWhaleMediationExitPopupAdListener {
-
-            override fun onAdLoaded() {
-                isLoaded = true
-            }
-
-            override fun onAdLoadFailed(statusCode: Int, message: String?) {
-                isLoaded = false
-            }
-
-            override fun onAdShowed() {
-                isLoaded = false
-            }
-
-            override fun onAdShowFailed(statusCode: Int, message: String?) {
-                isLoaded = false
-            }
-
-            override fun onAdClicked() {
-                isLoaded = false
-            }
-
-            override fun onAdClosed(reason: ADWHALE_POPUP_AD_CLOSE_REASON?) {
-                isLoaded = false
-            }
-        }
-    )
-
-    // 3. 로드
-    exitPopupAd?.loadAd()
-}
-
-override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-    if (keyCode == KeyEvent.KEYCODE_BACK) {
-        if (isLoaded) {
-            // 4. 광고 표시
-            exitPopupAd?.showAd(this, supportFragmentManager)
-        } else {
-            finish()
-        }
-        return true
-    }
-    return super.onKeyDown(keyCode, event)
-}
-
-override fun onResume() {
-    super.onResume()
-    exitPopupAd?.resume(this) // 필수 호출
-}
-
-override fun onDestroy() {
-    exitPopupAd?.destroy()
-    exitPopupAd = null
-    super.onDestroy()
-}
-```
-{% endtab %}
-
-{% tab title="Compose" %}
-```kotlin
-@Composable
-fun ExitPopupAdSample() {
-
-    val context = LocalContext.current
-    val activity = context as Activity
-    val fragmentManager = (activity as AppCompatActivity).supportFragmentManager
-
-    var isLoaded by remember { mutableStateOf(false) }
-
-    // recomposition 방지
-    val exitPopupAd = remember {
-        // 1. 인스턴스 생성 (placementUid)
-        AdWhaleMediationExitPopupAd("발급받은 placement uid 값")
-    }
-
-    DisposableEffect(Unit) {
-
-        // 2. 리스너 등록
-        exitPopupAd.setAdWhaleMediationExitPopupAdListener(
-            object : AdWhaleMediationExitPopupAdListener {
-
-                override fun onAdLoaded() {
-                    isLoaded = true
-                }
-
-                override fun onAdLoadFailed(statusCode: Int, message: String?) {
-                    isLoaded = false
-                }
-
-                override fun onAdShowed() {
-                    isLoaded = false
-                }
-
-                override fun onAdShowFailed(statusCode: Int, message: String?) {
-                    isLoaded = false
-                }
-
-                override fun onAdClicked() {
-                    isLoaded = false
-                }
-
-                override fun onAdClosed(reason: ADWHALE_POPUP_AD_CLOSE_REASON?) {
-                    isLoaded = false
-                }
-            }
-        )
-
-        // 3. 로드
-        exitPopupAd.loadAd()
-
-        onDispose {
-            // 5. 폐기
-            exitPopupAd.destroy()
-        }
-    }
-
-    // Compose 방식 Back 처리
-    BackHandler {
-        if (isLoaded) {
-            // 4. 표시
-            exitPopupAd.showAd(activity, fragmentManager)
-        } else {
-            activity.finish()
-        }
-    }
-}
-```
-{% endtab %}
-{% endtabs %}
-
-#### 3. API 설명 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
-
-{% tabs %}
-{% tab title="Java" %}
-**AdWhaleMediationExitPopupAd 클래스 API 설명**
-
-```java
-public AdWhaleMediationExitPopupAd(String placementUid)
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
-
-```java
-public void setAdWhaleMediationExitPopupAdListener(AdWhaleMediationExitPopupAdListener listener)
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationExitPopupAdListener</p></td><td>앱 종료 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
-
-```java
-public void loadAd() // 미디에이션 앱 종료 광고로드
-```
-
-```java
-public void showAd(Activity activity, FragmentManager fragmentManager) // 미디에이션 앱 종료 광고로드 후 표시할 때 호출
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>androidx.fragment.app.FragmentManager</td><td>Android FragmentManager 클래스</td></tr></tbody></table>
-
-```java
-public void setCustomizeButtonText(String primaryButtonText, String secondaryButtonText)
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>종료 팝업의 메인 버튼 텍스트에 넣을 커스텀 문구</td></tr><tr><td>String</td><td>종료 팝업의 보조 버튼 텍스트에 넣을 커스텀 문구</td></tr></tbody></table>
-
-```java
-public void setCustomDescription(String descriptionText)
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>종료 팝업의 설명 텍스트에 넣을 커스텀 문구</td></tr></tbody></table>
-
-```java
-public void resume() // onResume() 시 호출
-```
-
-```java
-public void destroy() // onDestroy() 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
-```
-
-\
-**AdWhaleMediationExitPopupAdListener 클래스 API 설명**
-
-```java
-public void onAdLoaded() // 미디에이션 앱 종료 광고요청 성공 시
-```
-
-```java
-public void onAdLoadFailed(int statusCode, String message) // 미디에이션 앱 종료 광고요청 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```java
-public void onAdShowed() // 미디에이션 앱 종료 광고표시 후
-```
-
-```java
-public void onAdShowFailed(int statusCode, String message) // 미디에이션 앱 종료 광고표시 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```java
-public void onAdClosed(ADWHALE_POPUP_AD_CLOSE_REASON adwhaleExitPopupAdCloseReason) // 미디에이션 앱 종료 광고닫기. 닫힘 사유 전달
-```
-
-
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>ADWHALE_POPUP_AD_CLOSE_REASON</p></td><td>닫힘 사유 (사유 종류: UNKNOWN, PRIMARY_BUTTON, SECONDARY_BUTTON, OUTSIDE_TOUCH, BACK_PRESS, TODAY_DISMISS, AMBIGUOUS_CANCEL)<br><strong>* 닫힘 사유 콜백 시 파라미터값은 광고 소스, 광고 네트워크 마다 조금씩 상이할 수 있습니다.</strong></td></tr></tbody></table>
-
-
-
-```java
-public void onAdClicked() // 미디에이션 앱 종료 광고클릭 시
-```
-{% endtab %}
-
-{% tab title="Kotlin" %}
-**AdWhaleMediationExitPopupAd 클래스 API 설명**
-
-```kotlin
-AdWhaleMediationExitPopupAd(placementUid : String)
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
-
-```kotlin
-fun setAdWhaleMediationExitPopupAdListener(listener : AdWhaleMediationExitPopupAdListener) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationExitPopupAdListener</p></td><td>앱 종료 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
-
-```kotlin
-fun loadAd() : Unit // 미디에이션 앱 종료 광고로드
-```
-
-```kotlin
-fun showAd(activity : Activity, fragmentManager : FragmentManager) : Unit // 미디에이션 앱 종료 광고로드 후 표시할 때 호출
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>androidx.fragment.app.FragmentManager</td><td>Android FragmentManager 클래스</td></tr></tbody></table>
-
-```kotlin
-fun setCustomizeButtonText(primaryButtonText : String, secondaryButtonText : String) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>종료 팝업의 메인 버튼 텍스트에 넣을 커스텀 문구</td></tr><tr><td>String</td><td>종료 팝업의 보조 버튼 텍스트에 넣을 커스텀 문구</td></tr></tbody></table>
-
-```kotlin
-fun setCustomDescription(descriptionText : String) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>종료 팝업의 설명 텍스트에 넣을 커스텀 문구</td></tr></tbody></table>
-
-```kotlin
-fun resume() : Unit // onResume() 시 호출
-```
-
-```kotlin
-fun destroy() : Unit // onDestroy() 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
-```
-
-\
-**AdWhaleMediationExitPopupAdListener 클래스 API 설명**
-
-```kotlin
-fun onAdLoaded() : Unit // 미디에이션 앱 종료 광고요청 성공 시
-```
-
-```kotlin
-fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 앱 종료 광고요청 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdShowed() : Unit // 미디에이션 앱 종료 광고표시 후
-```
-
-```kotlin
-fun onAdShowFailed(statusCode : Unit, message : String) : Unit // 미디에이션 앱 종료 광고표시 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdClosed(adwhaleExitPopupAdCloseReason : ADWHALE_POPUP_AD_CLOSE_REASON) // 미디에이션 앱 종료 광고닫기. 닫힘 사유 전달
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>ADWHALE_POPUP_AD_CLOSE_REASON</p></td><td>닫힘 사유 (사유 종류: UNKNOWN, PRIMARY_BUTTON, SECONDARY_BUTTON, OUTSIDE_TOUCH, BACK_PRESS, TODAY_DISMISS, AMBIGUOUS_CANCEL)<br><strong>* 닫힘 사유 콜백 시 파라미터값은 광고 소스, 광고 네트워크 마다 조금씩 상이할 수 있습니다.</strong></td></tr></tbody></table>
-
-```kotlin
-fun onAdClicked() : Unit // 미디에이션 앱 종료 광고클릭 시
-```
-{% endtab %}
-
-{% tab title="Compose" %}
-**AdWhaleMediationExitPopupAd 클래스 API 설명**
-
-```kotlin
-AdWhaleMediationExitPopupAd(placementUid : String)
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
-
-```kotlin
-fun setAdWhaleMediationExitPopupAdListener(listener : AdWhaleMediationExitPopupAdListener) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>AdWhaleMediationExitPopupAdListener</p></td><td>앱 종료 미디에이션 광고 호출 콜백 리스너</td></tr></tbody></table>
-
-```kotlin
-fun loadAd() : Unit // 미디에이션 앱 종료 광고로드
-```
-
-```kotlin
-fun showAd(activity : Activity, fragmentManager : FragmentManager) : Unit // 미디에이션 앱 종료 광고로드 후 표시할 때 호출
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>androidx.fragment.app.FragmentManager</td><td>Android FragmentManager 클래스</td></tr></tbody></table>
-
-```kotlin
-fun setCustomizeButtonText(primaryButtonText : String, secondaryButtonText : String) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>종료 팝업의 메인 버튼 텍스트에 넣을 커스텀 문구</td></tr><tr><td>String</td><td>종료 팝업의 보조 버튼 텍스트에 넣을 커스텀 문구</td></tr></tbody></table>
-
-```kotlin
-fun setCustomDescription(descriptionText : String) : Unit
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>종료 팝업의 설명 텍스트에 넣을 커스텀 문구</td></tr></tbody></table>
-
-```kotlin
-fun resume() : Unit // onResume() 시 호출
-```
-
-```kotlin
-fun destroy() : Unit // onDestroy() 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
-```
-
-\
-**AdWhaleMediationExitPopupAdListener 클래스 API 설명**
-
-```kotlin
-fun onAdLoaded() : Unit // 미디에이션 앱 종료 광고요청 성공 시
-```
-
-```kotlin
-fun onAdLoadFailed(statusCode : Int, message : String) : Unit // 미디에이션 앱 종료 광고요청 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdShowed() : Unit // 미디에이션 앱 종료 광고표시 후
-```
-
-```kotlin
-fun onAdShowFailed(statusCode : Unit, message : String) : Unit // 미디에이션 앱 종료 광고표시 실패 시
-```
-
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
-
-```kotlin
-fun onAdClosed(adwhaleExitPopupAdCloseReason : ADWHALE_POPUP_AD_CLOSE_REASON) // 미디에이션 앱 종료 광고닫기. 닫힘 사유 전달
-```
-
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td><p>net.adwhale.sdk.mediation.ads.</p><p>ADWHALE_POPUP_AD_CLOSE_REASON</p></td><td>닫힘 사유 (사유 종류: UNKNOWN, PRIMARY_BUTTON, SECONDARY_BUTTON, OUTSIDE_TOUCH, BACK_PRESS, TODAY_DISMISS, AMBIGUOUS_CANCEL)<br><strong>* 닫힘 사유 콜백 시 파라미터값은 광고 소스, 광고 네트워크 마다 조금씩 상이할 수 있습니다.</strong></td></tr></tbody></table>
-
-```kotlin
-fun onAdClicked() : Unit // 미디에이션 앱 종료 광고클릭 시
-```
-{% endtab %}
-{% endtabs %}
-
-#### 4. 닫힘 사유 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
-
-{% hint style="info" %}
-&#x20;닫힘 사유 콜백 시 파라미터값은 광고 소스, 광고 네트워크 마다 조금씩 상이할 수 있습니다.
-{% endhint %}
-
-<table><thead><tr><th width="425.625">값</th><th>설명</th></tr></thead><tbody><tr><td><code>ADWHALE_POPUP_AD_CLOSE_REASON.UNKNOWN</code></td><td>알 수 없음</td></tr><tr><td><code>ADWHALE_POPUP_AD_CLOSE_REASON.PRIMARY_BUTTON</code></td><td>메인 버튼 터치</td></tr><tr><td><code>ADWHALE_POPUP_AD_CLOSE_REASON.SECONDARY_BUTTON</code></td><td>보조 버튼 터치</td></tr><tr><td><code>ADWHALE_POPUP_AD_CLOSE_REASON.OUTSIDE_TOUCH</code></td><td>영역 외 터치</td></tr><tr><td><code>ADWHALE_POPUP_AD_CLOSE_REASON.BACK_PRESS</code></td><td>백키 입력</td></tr><tr><td><code>ADWHALE_POPUP_AD_CLOSE_REASON.TODAY_DISMISS</code></td><td>당일 일회 노출 등으로 닫힘</td></tr><tr><td><code>ADWHALE_POPUP_AD_CLOSE_REASON.AMBIGUOUS_CANCEL</code></td><td>기타 취소</td></tr></tbody></table>
-
-#### 5. 옵션 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
-
-{% tabs %}
-{% tab title="Java" %}
-```java
-exitPopupAd.setRegion("서울시 강남구"); // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setGcoder(37.5665, 126.9780); // 지역 타게팅 전용 API(옵션)
-```
-
-{% hint style="info" %}
-AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
-
-[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
-{% endhint %}
-
-```java
-exitPopupAd.setPlacementName("app_exit_main");
-```
-
-{% hint style="info" %}
-AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
-{% endhint %}
-
-{% hint style="warning" %}
-LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
-설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
-
-***
-
-배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
-{% endhint %}
-{% endtab %}
-
-{% tab title="Kotlin" %}
-```kotlin
-exitPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
-```
-
-{% hint style="info" %}
-AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
-
-[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
-{% endhint %}
-
-```kotlin
-exitPopupAd.setPlacementName("app_exit_main") // 레벨플레이 placement name 연동 전용 API (옵션)
-```
-
-{% hint style="info" %}
-AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
-{% endhint %}
-
-{% hint style="warning" %}
-LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
-설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
-
-***
-
-배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
-{% endhint %}
-{% endtab %}
-
-{% tab title="Compose" %}
-```kotlin
-exitPopupAd.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
-exitPopupAd.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
-```
-
-{% hint style="info" %}
-AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
-
-[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
-{% endhint %}
-
-```kotlin
-exitPopupAd.setPlacementName("app_exit_main") // 레벨플레이 placement name 연동 전용 API (옵션)
-```
-
-{% hint style="info" %}
-AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
-{% endhint %}
-
-{% hint style="warning" %}
-LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
-설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
-
-***
-
-배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
-{% endhint %}
-{% endtab %}
-{% endtabs %}
-
-#### 6. 앱 종료 광고 샘플코드 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
-
-다음은 안드로이드에서 앱 종료 광고를 구현하는 완전한 예시입니다.
-
-{% tabs %}
-{% tab title="Java" %}
-```java
-import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import net.adwhale.sdk.mediation.ads.ADWHALE_POPUP_AD_CLOSE_REASON;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationExitPopupAd;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationExitPopupAdListener;
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener;
-import net.adwhale.sdk.utils.AdWhaleLog;
-
 public class MainActivity extends AppCompatActivity {
 
-    private AdWhaleMediationExitPopupAd exitPopupAd;
+    private AdWhaleMediationNativeAdView nativeAdView;
+    private FrameLayout nativeAdContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        nativeAdContainer = findViewById(R.id.nativeAdContainer);
+
+        // 1. 로거 설정
         AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
 
+        // 2. 초기화 코드
         AdWhaleMediationAds.init(this, new AdWhaleMediationOnInitCompleteListener() {
             @Override
             public void onInitComplete(int statusCode, String message) {
                 Log.i("MainActivity", "onInitComplete(" + statusCode + ", " + message + ")");
-                createAndLoadExitPopupAd();
+                createAndLoadNativeTemplateAd();
             }
         });
     }
 
-    private void createAndLoadExitPopupAd() {
-        exitPopupAd = new AdWhaleMediationExitPopupAd("발급받은 placement uid 값");
-        exitPopupAd.setCustomizeButtonText("취소", "종료");
-        exitPopupAd.setCustomDescription("한 번 더 눌러 종료");
-        exitPopupAd.setAdWhaleMediationExitPopupAdListener(new AdWhaleMediationExitPopupAdListener() {
+    private void createAndLoadNativeTemplateAd() {
+
+        // 3. 인스턴스 생성
+        nativeAdView = new AdWhaleMediationNativeAdView(this);
+        nativeAdView.setPlacementUid("발급받은 placement uid 값");
+
+        // 4. 리스너 등록
+        nativeAdView.setAdWhaleMediationNativeAdViewListener(
+                new AdWhaleMediationNativeAdViewListener() {
+
             @Override
-            public void onAdLoaded() {
-                Log.i("MainActivity", "onAdLoaded()");
+            public void onNativeAdLoaded() {
+                Log.i("MainActivity", "onNativeAdLoaded()");
+                // 8. 광고 표시
+                nativeAdView.show();
             }
+
             @Override
-            public void onAdLoadFailed(int statusCode, String message) {
-                Log.e("MainActivity", "onAdLoadFailed(" + statusCode + ", " + message + ")");
+            public void onNativeAdFailedToLoad(int errorCode, String errorMessage) {
+                Log.e("MainActivity",
+                        "onNativeAdFailedToLoad(" + errorCode + ", " + errorMessage + ")");
             }
+
             @Override
-            public void onAdShowed() {
-                Log.i("MainActivity", "onAdShowed()");
+            public void onNativeAdShowFailed(int errorCode, String errorMessage) {
+                Log.e("MainActivity",
+                        "onNativeAdShowFailed(" + errorCode + ", " + errorMessage + ")");
             }
+
             @Override
-            public void onAdShowFailed(int statusCode, String message) {
-                Log.e("MainActivity", "onAdShowFailed(" + statusCode + ", " + message + ")");
+            public void onNativeAdClicked() {
+                Log.i("MainActivity", "onNativeAdClicked()");
             }
+
             @Override
-            public void onAdClicked() {
-                Log.i("MainActivity", "onAdClicked()");
-            }
-            @Override
-            public void onAdClosed(ADWHALE_POPUP_AD_CLOSE_REASON reason) {
-                Log.i("MainActivity", "onAdClosed(" + reason.getCloseReasonTypeString() + ")");
+            public void onNativeAdClosed() {
+                Log.i("MainActivity", "onNativeAdClosed()");
             }
         });
-        exitPopupAd.loadAd();
+
+        // 5. 스타일 적용 (선택)
+        AdWhaleMediationNativeTemplateStyle style =
+                new AdWhaleMediationNativeTemplateStyle.Builder()
+                        .withMainBackgroundColor(
+                                new ColorDrawable(Color.parseColor("#2C2C2C")))
+                        // 헤드라인(Primary)
+                        .withPrimaryTextTypefaceColor(Color.WHITE)
+                        .withPrimaryTextTypeface(Typeface.DEFAULT_BOLD)
+                        .withPrimaryTextBackgroundColor(
+                                new ColorDrawable(Color.parseColor("#4CAF50")))
+                        .withPrimaryTextSize(15.0f)
+
+                        // 세컨더리(Secondary)
+                        .withSecondaryTextTypefaceColor(Color.parseColor("#CCCCCC"))
+                        .withSecondaryTextTypeface(Typeface.DEFAULT)
+                        .withSecondaryTextBackgroundColor(
+                                new ColorDrawable(Color.TRANSPARENT))
+                        .withSecondaryTextSize(13.0f)
+
+                        // 바디(Tertiary)
+                        .withTertiaryTextTypefaceColor(Color.parseColor("#AAAAAA"))
+                        .withTertiaryTextTypeface(Typeface.DEFAULT)
+                        .withTertiaryTextBackgroundColor(
+                                new ColorDrawable(Color.TRANSPARENT))
+                        .withTertiaryTextSize(12.0f)
+
+                        // CTA 버튼
+                        .withCallToActionTypefaceColor(Color.WHITE)
+                        .withCallToActionTextTypeface(Typeface.DEFAULT_BOLD)
+                        .withCallToActionTextSize(14.0f)
+                        .withCallToActionBackgroundColor(
+                                new ColorDrawable(Color.parseColor("#4CAF50")))
+                        .build();
+
+        nativeAdView.setTemplateStyle(style);
+
+        // 6. addView 전에 기존 뷰 제거 (중복 방지)
+        nativeAdContainer.removeAllViews();
+
+        // LayoutParams 명시적으로 지정 (권장)
+        FrameLayout.LayoutParams params =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        nativeAdContainer.addView(nativeAdView, params);
+
+        // 7. 광고 로드
+        nativeAdView.loadAdWithTemplate(ADWHALE_NATIVE_TEMPLATE.SMALL);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (exitPopupAd != null) exitPopupAd.resume(this);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (exitPopupAd != null) {
-                exitPopupAd.showAd(this, getSupportFragmentManager());
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
+    // 라이프사이클 onDestroy 콜백 시 반드시 onDestroy()가 있는 release() 호출 필요
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if (exitPopupAd != null) {
-            exitPopupAd.destroy();
-            exitPopupAd = null;
+        if (nativeAdView != null) {
+            nativeAdView.destroy();
+            nativeAdView = null;
         }
+        super.onDestroy();
     }
 }
+```
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/nativeContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 ```
 {% endtab %}
 
 {% tab title="Kotlin" %}
 ```kotlin
-import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
-import androidx.appcompat.app.AppCompatActivity
-import net.adwhale.sdk.mediation.ads.ADWHALE_POPUP_AD_CLOSE_REASON
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationExitPopupAd
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationExitPopupAdListener
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener
-import net.adwhale.sdk.utils.AdWhaleLog
-
 class MainActivity : AppCompatActivity() {
 
-    private var exitPopupAd: AdWhaleMediationExitPopupAd? = null
+    private var nativeAdView: AdWhaleMediationNativeAdView? = null
+    private lateinit var nativeAdContainer: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        nativeAdContainer = findViewById(R.id.nativeAdContainer)
 
         // 1. 로거 설정
         AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
@@ -715,244 +221,252 @@ class MainActivity : AppCompatActivity() {
         AdWhaleMediationAds.init(this, object : AdWhaleMediationOnInitCompleteListener {
             override fun onInitComplete(statusCode: Int, message: String) {
                 Log.i("MainActivity", "onInitComplete($statusCode, $message)")
-                createAndLoadExitPopupAd()
+                createAndLoadNativeTemplateAd()
             }
         })
     }
 
-    private fun createAndLoadExitPopupAd() {
-        // 3. 인스턴스 생성 (placementUid)
-        val ad = AdWhaleMediationExitPopupAd("발급받은 placement uid 값").apply {
-            setRegion("서울시 강남구")            // 지역 타게팅 전용 API(옵션)
-            setGcoder(37.5665, 126.9780)       // 지역 타게팅 전용 API(옵션)
-            setPlacementName("exit_popup_main") // 레벨플레이 placement name 연동 전용 API (옵션)
+    private fun createAndLoadNativeTemplateAd() {
 
-            setCustomizeButtonText("취소", "종료")       // (옵션)
-            setCustomDescription("한 번 더 눌러 종료")   // (옵션)
+        // 3. 인스턴스 생성
+        nativeAdView = AdWhaleMediationNativeAdView(this).apply {
+
+            setPlacementUid("발급받은 placement uid 값")
 
             // 4. 리스너 등록
-            setAdWhaleMediationExitPopupAdListener(object : AdWhaleMediationExitPopupAdListener {
-                override fun onAdLoaded() {
-                    Log.i("MainActivity", "onAdLoaded()")
-                }
+            setAdWhaleMediationNativeAdViewListener(
+                object : AdWhaleMediationNativeAdViewListener {
 
-                override fun onAdLoadFailed(statusCode: Int, message: String) {
-                    Log.e("MainActivity", "onAdLoadFailed($statusCode, $message)")
-                }
+                    override fun onNativeAdLoaded() {
+                        Log.i("MainActivity", "onNativeAdLoaded()")
+                        // 8. 광고 표시
+                        show()
+                    }
 
-                override fun onAdShowed() {
-                    Log.i("MainActivity", "onAdShowed()")
-                }
+                    override fun onNativeAdFailedToLoad(
+                        errorCode: Int,
+                        errorMessage: String?
+                    ) {
+                        Log.e(
+                            "MainActivity",
+                            "onNativeAdFailedToLoad($errorCode, $errorMessage)"
+                        )
+                    }
 
-                override fun onAdShowFailed(statusCode: Int, message: String) {
-                    Log.e("MainActivity", "onAdShowFailed($statusCode, $message)")
-                }
+                    override fun onNativeAdShowFailed(
+                        errorCode: Int,
+                        errorMessage: String?
+                    ) {
+                        Log.e(
+                            "MainActivity",
+                            "onNativeAdShowFailed($errorCode, $errorMessage)"
+                        )
+                    }
 
-                override fun onAdClicked() {
-                    Log.i("MainActivity", "onAdClicked()")
-                }
+                    override fun onNativeAdClicked() {
+                        Log.i("MainActivity", "onNativeAdClicked()")
+                    }
 
-                override fun onAdClosed(reason: ADWHALE_POPUP_AD_CLOSE_REASON) {
-                    Log.i("MainActivity", "onAdClosed(${reason.getCloseReasonTypeString()})")
-                    if (reason == ADWHALE_POPUP_AD_CLOSE_REASON.SECONDARY_BUTTON) finish()
+                    override fun onNativeAdClosed() {
+                        Log.i("MainActivity", "onNativeAdClosed()")
+                    }
                 }
-            })
+            )
+
+            // 5. 스타일 적용 (선택)
+            val style = AdWhaleMediationNativeTemplateStyle.Builder()
+                .withMainBackgroundColor(
+                    ColorDrawable(Color.parseColor("#2C2C2C"))
+                )
+                // Primary
+                .withPrimaryTextTypefaceColor(Color.WHITE)
+                .withPrimaryTextTypeface(Typeface.DEFAULT_BOLD)
+                .withPrimaryTextBackgroundColor(
+                    ColorDrawable(Color.parseColor("#4CAF50"))
+                )
+                .withPrimaryTextSize(15.0f)
+                // Secondary
+                .withSecondaryTextTypefaceColor(Color.parseColor("#CCCCCC"))
+                .withSecondaryTextTypeface(Typeface.DEFAULT)
+                .withSecondaryTextBackgroundColor(ColorDrawable(Color.TRANSPARENT))
+                .withSecondaryTextSize(13.0f)
+                // Tertiary
+                .withTertiaryTextTypefaceColor(Color.parseColor("#AAAAAA"))
+                .withTertiaryTextTypeface(Typeface.DEFAULT)
+                .withTertiaryTextBackgroundColor(ColorDrawable(Color.TRANSPARENT))
+                .withTertiaryTextSize(12.0f)
+                // CTA
+                .withCallToActionTypefaceColor(Color.WHITE)
+                .withCallToActionTextTypeface(Typeface.DEFAULT_BOLD)
+                .withCallToActionTextSize(14.0f)
+                .withCallToActionBackgroundColor(
+                    ColorDrawable(Color.parseColor("#4CAF50"))
+                )
+                .build()
+
+            setTemplateStyle(style)
         }
 
-        exitPopupAd = ad
+        // 6. addView 전에 기존 뷰 제거 (중복 방지)
+        nativeAdContainer.removeAllViews()
 
-        // 5. 로드
-        ad.loadAd()
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        nativeAdContainer.addView(nativeAdView, params)
+
+        // 7. 광고 로드
+        nativeAdView?.loadAdWithTemplate(ADWHALE_NATIVE_TEMPLATE.SMALL)
     }
 
-    override fun onResume() {
-        super.onResume()
-        exitPopupAd?.resume(this)
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // 6. 표시 (종료 시도 시점)
-            exitPopupAd?.showAd(this, supportFragmentManager)
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
-    }
-
+    // 라이프사이클 onDestroy 콜백 시 반드시 release() 호출 필요
     override fun onDestroy() {
-        // 7. 폐기
-        exitPopupAd?.destroy()
-        exitPopupAd = null
+        nativeAdView?.destroy()
+        nativeAdView = null
         super.onDestroy()
     }
 }
+```
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/nativeContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 ```
 {% endtab %}
 
 {% tab title="Compose" %}
 ```kotlin
-import android.os.Bundle
-import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import net.adwhale.sdk.mediation.ads.ADWHALE_POPUP_AD_CLOSE_REASON
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationAds
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationExitPopupAd
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationExitPopupAdListener
-import net.adwhale.sdk.mediation.ads.AdWhaleMediationOnInitCompleteListener
-import net.adwhale.sdk.utils.AdWhaleLog
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // 1. 로거 설정
-        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
-
-        setContent {
-            ExitPopupScreen(
-                placementUid = "발급받은 placement uid 값",
-                placementName = "exit_popup_main",
-                region = "서울시 강남구",
-                gcoderLat = 37.5665,
-                gcoderLng = 126.9780
-            )
-        }
-    }
-}
-
 @Composable
-private fun ExitPopupScreen(
-    placementUid: String,
-    placementName: String? = null,
-    region: String? = null,
-    gcoderLat: Double? = null,
-    gcoderLng: Double? = null
+fun NativeTemplateScreen(
+    placementUid: String
 ) {
-    // init 완료 여부
+    val context = LocalContext.current
+    val activity = context as? ComponentActivity ?: return
+
+    var nativeAdView by remember { mutableStateOf<AdWhaleMediationNativeAdView?>(null) }
     var isInited by remember { mutableStateOf(false) }
 
-    // 광고 인스턴스
-    var exitPopupAd by remember { mutableStateOf<AdWhaleMediationExitPopupAd?>(null) }
-
-    // 2. SDK 초기화: Composable이 최초 구성될 때 한 번
+    // 1. 로거 설정
     LaunchedEffect(Unit) {
-        // 주의: init은 보통 Activity에서 1회만 하는 게 권장.
-        AdWhaleMediationAds.init(
-            LocalContext.current,
-            object : AdWhaleMediationOnInitCompleteListener {
-                override fun onInitComplete(statusCode: Int, message: String) {
-                    Log.i("MainActivity", "onInitComplete($statusCode, $message)")
-                    isInited = true
-                }
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+    }
+
+    // 2. 초기화 코드
+    LaunchedEffect(Unit) {
+        AdWhaleMediationAds.init(activity, object : AdWhaleMediationOnInitCompleteListener {
+            override fun onInitComplete(statusCode: Int, message: String) {
+                Log.i("NativeTemplateScreen", "onInitComplete($statusCode, $message)")
+                isInited = true
             }
-        )
+        })
     }
 
-    val activity = LocalContext.current as? ComponentActivity
+    if (!isInited) return
 
-    LaunchedEffect(isInited) {
-        if (!isInited || activity == null) return@LaunchedEffect
+    AndroidView(
+        factory = {
 
-        // 3. 인스턴스 생성 (placementUid)
-        val ad = AdWhaleMediationExitPopupAd(placementUid).apply {
-            if (region != null) setRegion(region)                                         // 지역 타게팅 전용 API(옵션)
-            if (gcoderLat != null && gcoderLng != null) setGcoder(gcoderLat, gcoderLng)   // 지역 타게팅 전용 API(옵션)
-            if (placementName != null) setPlacementName(placementName)                    // 레벨플레이 placement name 연동 전용 API (옵션)
+            // 3. 인스턴스 생성
+            AdWhaleMediationNativeAdView(it).apply {
 
-            setCustomizeButtonText("취소", "종료") // (옵션)
-            setCustomDescription("한 번 더 눌러 종료") // (옵션)
+                setPlacementUid(placementUid)
 
-            // 4. 리스너 등록
-            setAdWhaleMediationExitPopupAdListener(object : AdWhaleMediationExitPopupAdListener {
-                override fun onAdLoaded() {
-                    Log.i("MainActivity", "onAdLoaded()")
-                }
+                // 4. 리스너 등록
+                setAdWhaleMediationNativeAdViewListener(
+                    object : AdWhaleMediationNativeAdViewListener {
 
-                override fun onAdLoadFailed(statusCode: Int, message: String) {
-                    Log.e("MainActivity", "onAdLoadFailed($statusCode, $message)")
-                }
+                        override fun onNativeAdLoaded() {
+                            Log.i("NativeTemplateScreen", "onNativeAdLoaded()")
+                            // 8. 광고 표시
+                            show()
+                        }
 
-                override fun onAdShowed() {
-                    Log.i("MainActivity", "onAdShowed()")
-                }
+                        override fun onNativeAdFailedToLoad(
+                            errorCode: Int,
+                            errorMessage: String?
+                        ) {
+                            Log.e(
+                                "NativeTemplateScreen",
+                                "onNativeAdFailedToLoad($errorCode, $errorMessage)"
+                            )
+                        }
 
-                override fun onAdShowFailed(statusCode: Int, message: String) {
-                    Log.e("MainActivity", "onAdShowFailed($statusCode, $message)")
-                }
+                        override fun onNativeAdShowFailed(
+                            errorCode: Int,
+                            errorMessage: String?
+                        ) {
+                            Log.e(
+                                "NativeTemplateScreen",
+                                "onNativeAdShowFailed($errorCode, $errorMessage)"
+                            )
+                        }
 
-                override fun onAdClicked() {
-                    Log.i("MainActivity", "onAdClicked()")
-                }
+                        override fun onNativeAdClicked() {
+                            Log.i("NativeTemplateScreen", "onNativeAdClicked()")
+                        }
 
-                override fun onAdClosed(reason: ADWHALE_POPUP_AD_CLOSE_REASON) {
-                    Log.i("MainActivity", "onAdClosed(${reason.getCloseReasonTypeString()})")
-                    if (reason == ADWHALE_POPUP_AD_CLOSE_REASON.SECONDARY_BUTTON) activity.finish()
-                }
-            })
+                        override fun onNativeAdClosed() {
+                            Log.i("NativeTemplateScreen", "onNativeAdClosed()")
+                        }
+                    }
+                )
+
+                // 5. 스타일 적용 (선택)
+                val style = AdWhaleMediationNativeTemplateStyle.Builder()
+                    .withMainBackgroundColor(
+                        ColorDrawable(Color.parseColor("#2C2C2C"))
+                    )
+                    // Primary
+                    .withPrimaryTextTypefaceColor(Color.WHITE)
+                    .withPrimaryTextTypeface(Typeface.DEFAULT_BOLD)
+                    .withPrimaryTextBackgroundColor(
+                        ColorDrawable(Color.parseColor("#4CAF50"))
+                    )
+                    .withPrimaryTextSize(15.0f)
+                    // Secondary
+                    .withSecondaryTextTypefaceColor(Color.parseColor("#CCCCCC"))
+                    .withSecondaryTextTypeface(Typeface.DEFAULT)
+                    .withSecondaryTextBackgroundColor(
+                        ColorDrawable(Color.TRANSPARENT)
+                    )
+                    .withSecondaryTextSize(13.0f)
+                    // Tertiary
+                    .withTertiaryTextTypefaceColor(Color.parseColor("#AAAAAA"))
+                    .withTertiaryTextTypeface(Typeface.DEFAULT)
+                    .withTertiaryTextBackgroundColor(
+                        ColorDrawable(Color.TRANSPARENT)
+                    )
+                    .withTertiaryTextSize(12.0f)
+                    // CTA
+                    .withCallToActionTypefaceColor(Color.WHITE)
+                    .withCallToActionTextTypeface(Typeface.DEFAULT_BOLD)
+                    .withCallToActionTextSize(14.0f)
+                    .withCallToActionBackgroundColor(
+                        ColorDrawable(Color.parseColor("#4CAF50"))
+                    )
+                    .build()
+
+                setTemplateStyle(style)
+
+                nativeAdView = this
+
+                // 7. 광고 로드
+                loadAdWithTemplate(ADWHALE_NATIVE_TEMPLATE.SMALL)
+            }
         }
+    )
 
-        exitPopupAd = ad
-
-        // 5. 로드
-        ad.loadAd()
-    }
-
-    // 백키에서 표시
-    BackHandler(enabled = isInited && activity != null && exitPopupAd != null) {
-        activity?.let { act ->
-            exitPopupAd?.showAd(act, act.supportFragmentManager)
-        }
-    }
-
-    // dispose에서 destroy
+    // 라이프사이클 dispose 시 destroy 호출
     DisposableEffect(Unit) {
         onDispose {
-            // 7. 폐기
-            exitPopupAd?.destroy()
-            exitPopupAd = null
-        }
-    }
-
-    // 간단 UI (수동 show 버튼)
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(text = if (isInited) "SDK 초기화 완료" else "SDK 초기화 중...")
-        Button(
-            onClick = {
-                activity?.let { act ->
-                    exitPopupAd?.showAd(act, act.supportFragmentManager)
-                }
-            },
-            enabled = isInited && activity != null && exitPopupAd != null
-        ) {
-            Text("ExitPopupAd 표시")
-        }
-        Button(
-            onClick = { exitPopupAd?.loadAd() },
-            enabled = isInited && exitPopupAd != null
-        ) {
-            Text("다시 로드")
+            nativeAdView?.destroy()
+            nativeAdView = null
         }
     }
 }
@@ -960,33 +474,682 @@ private fun ExitPopupScreen(
 {% endtab %}
 {% endtabs %}
 
-#### **7. 주의사항**
+**템플릿 스타일 옵션 샘플코드(Builder 전체)**
+
+{% tabs %}
+{% tab title="Java" %}
+```java
+AdWhaleMediationNativeTemplateStyle style =
+        new AdWhaleMediationNativeTemplateStyle.Builder()
+                .withMainBackgroundColor(
+                        new ColorDrawable(Color.parseColor("#F5F5F5")))
+                .withPrimaryTextTypefaceColor(Color.parseColor("#1A1A1A"))
+                .withPrimaryTextTypeface(Typeface.DEFAULT_BOLD)
+                .withPrimaryTextBackgroundColor(
+                        new ColorDrawable(Color.parseColor("#E8F5E8")))
+                .withPrimaryTextSize(20f)
+
+                .withSecondaryTextTypefaceColor(Color.parseColor("#2E7D32"))
+                .withSecondaryTextTypeface(Typeface.DEFAULT)
+                .withSecondaryTextBackgroundColor(
+                        new ColorDrawable(Color.parseColor("#F1F8E9")))
+                .withSecondaryTextSize(16f)
+
+                .withTertiaryTextTypefaceColor(Color.parseColor("#424242"))
+                .withTertiaryTextTypeface(Typeface.DEFAULT)
+                .withTertiaryTextBackgroundColor(
+                        new ColorDrawable(Color.parseColor("#FAFAFA")))
+                .withTertiaryTextSize(14f)
+
+                .withCallToActionTypefaceColor(Color.WHITE)
+                .withCallToActionTextTypeface(Typeface.DEFAULT_BOLD)
+                .withCallToActionTextSize(18f)
+                .withCallToActionBackgroundColor(
+                        new ColorDrawable(Color.parseColor("#FF6B35")))
+                .build();
+```
+{% endtab %}
+
+{% tab title="Kotlin" %}
+```kotlin
+val style = AdWhaleMediationNativeTemplateStyle.Builder()
+    .withMainBackgroundColor(ColorDrawable(Color.parseColor("#F5F5F5")))
+    .withPrimaryTextTypefaceColor(Color.parseColor("#1A1A1A"))
+    .withPrimaryTextTypeface(Typeface.DEFAULT_BOLD)
+    .withPrimaryTextBackgroundColor(ColorDrawable(Color.parseColor("#E8F5E8")))
+    .withPrimaryTextSize(20f)
+
+    .withSecondaryTextTypefaceColor(Color.parseColor("#2E7D32"))
+    .withSecondaryTextTypeface(Typeface.DEFAULT)
+    .withSecondaryTextBackgroundColor(ColorDrawable(Color.parseColor("#F1F8E9")))
+    .withSecondaryTextSize(16f)
+
+    .withTertiaryTextTypefaceColor(Color.parseColor("#424242"))
+    .withTertiaryTextTypeface(Typeface.DEFAULT)
+    .withTertiaryTextBackgroundColor(ColorDrawable(Color.parseColor("#FAFAFA")))
+    .withTertiaryTextSize(14f)
+
+    .withCallToActionTypefaceColor(Color.WHITE)
+    .withCallToActionTextTypeface(Typeface.DEFAULT_BOLD)
+    .withCallToActionTextSize(18f)
+    .withCallToActionBackgroundColor(ColorDrawable(Color.parseColor("#FF6B35")))
+    .build()
+```
+{% endtab %}
+{% endtabs %}
+
+#### 4. 커스텀 네이티브 광고 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+커스텀 네이티브 광고는 사용자가 직접 정의한 커스텀 레이아웃을 사용하여 광고를 표시합니다.
+
+**커스텀 네이티브 광고 기본 구현 샘플코드**
+
+{% tabs %}
+{% tab title="Java" %}
+```java
+public class MainActivity extends AppCompatActivity {
+
+    private AdWhaleMediationNativeAdView nativeAdView;
+    private FrameLayout nativeAdContainer;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        nativeAdContainer = findViewById(R.id.nativeAdContainer);
+
+        // 1. 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None);
+
+        // 2. 초기화 코드
+        AdWhaleMediationAds.init(this, new AdWhaleMediationOnInitCompleteListener() {
+            @Override
+            public void onInitComplete(int statusCode, String message) {
+                Log.i("MainActivity", "onInitComplete(" + statusCode + ", " + message + ")");
+                createAndLoadNativeBinderAd();
+            }
+        });
+    }
+
+    private void createAndLoadNativeBinderAd() {
+
+        // 3. 인스턴스 생성
+        nativeAdView = new AdWhaleMediationNativeAdView(this);
+        nativeAdView.setPlacementUid("발급받은 placement uid 값");
+
+        // 4. 리스너 등록
+        nativeAdView.setAdWhaleMediationNativeAdViewListener(
+                new AdWhaleMediationNativeAdViewListener() {
+
+                    @Override
+                    public void onNativeAdLoaded() {
+                        Log.i("MainActivity", "onNativeAdLoaded()");
+                        // 8. 광고 표시
+                        nativeAdView.show();
+                    }
+
+                    @Override
+                    public void onNativeAdFailedToLoad(int errorCode, String errorMessage) {
+                        Log.e("MainActivity",
+                                "onNativeAdFailedToLoad(" + errorCode + ", " + errorMessage + ")");
+                    }
+
+                    @Override
+                    public void onNativeAdShowFailed(int errorCode, String errorMessage) {
+                        Log.e("MainActivity",
+                                "onNativeAdShowFailed(" + errorCode + ", " + errorMessage + ")");
+                    }
+
+                    @Override
+                    public void onNativeAdClicked() {
+                        Log.i("MainActivity", "onNativeAdClicked()");
+                    }
+
+                    @Override
+                    public void onNativeAdClosed() {
+                        Log.i("MainActivity", "onNativeAdClosed()");
+                    }
+                });
+
+        // 5. 커스텀 바인딩용 Binder 생성
+        AdWhaleNativeAdBinder binder =
+                new AdWhaleNativeAdBinder.Builder(
+                        this,
+                        R.layout.custom_native_ad_main_layout)
+                        .setIconViewId(R.id.main_view_icon)
+                        .setTitleViewId(R.id.main_view_title)
+                        .setBodyTextViewId(R.id.main_view_body)
+                        .setCallToActionViewId(R.id.main_button_cta)
+                        .setMediaViewGroupId(R.id.main_view_media)
+                        .build();
+
+        // 6. addView 전에 기존 뷰 제거 (중복 방지)
+        nativeAdContainer.removeAllViews();
+
+        // LayoutParams 명시적으로 지정 (권장)
+        FrameLayout.LayoutParams params =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        nativeAdContainer.addView(nativeAdView, params);
+
+        // 7. 광고 로드
+        nativeAdView.loadAdWithBinder(binder);
+    }
+
+    // 라이프사이클 onDestroy 콜백 시 반드시 destroy() 호출
+    @Override
+    protected void onDestroy() {
+        if (nativeAdView != null) {
+            nativeAdView.destroy();
+            nativeAdView = null;
+        }
+        super.onDestroy();
+    }
+}
+```
+
+**커스텀 레이아웃 파일 생성**
+
+`android/app/src/main/res/layout/custom_native_ad_main_layout.xml` 파일을 생성합니다:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    android:elevation="4dp">
+
+    <!-- 앱 아이콘 -->
+    <ImageView
+        android:id="@+id/main_view_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/main_view_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/main_view_title" />
+
+    <!-- 제목 -->
+    <TextView
+        android:id="@+id/main_view_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/main_view_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="광고 제목입니다" />
+
+    <!-- 설명 -->
+    <TextView
+        android:id="@+id/main_view_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:ellipsize="end"
+        android:lines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/main_view_title"
+        app:layout_constraintTop_toBottomOf="@id/main_view_title"
+        tools:text="광고 설명입니다. 이 앱을 다운로드하세요!" />
+
+    <!-- CTA 버튼 -->
+    <Button
+        android:id="@+id/main_button_cta"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:backgroundTint="#009688"
+        android:textColor="@android:color/white"
+        android:text="설치하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_view_body" />
+
+    <!-- 미디어 뷰 -->
+    <FrameLayout
+        android:id="@+id/main_view_media"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/main_button_cta" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+{% endtab %}
+
+{% tab title="Kotlin" %}
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    private var nativeAdView: AdWhaleMediationNativeAdView? = null
+    private lateinit var nativeAdContainer: FrameLayout
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        nativeAdContainer = findViewById(R.id.nativeAdContainer)
+
+        // 1. 로거 설정
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+
+        // 2. 초기화 코드
+        AdWhaleMediationAds.init(this, object : AdWhaleMediationOnInitCompleteListener {
+            override fun onInitComplete(statusCode: Int, message: String) {
+                Log.i("MainActivity", "onInitComplete($statusCode, $message)")
+                createAndLoadNativeBinderAd()
+            }
+        })
+    }
+
+    private fun createAndLoadNativeBinderAd() {
+
+        // 3. 인스턴스 생성
+        nativeAdView = AdWhaleMediationNativeAdView(this).apply {
+
+            setPlacementUid("발급받은 placement uid 값")
+
+            // 4. 리스너 등록
+            setAdWhaleMediationNativeAdViewListener(
+                object : AdWhaleMediationNativeAdViewListener {
+
+                    override fun onNativeAdLoaded() {
+                        Log.i("MainActivity", "onNativeAdLoaded()")
+                        // 8. 광고 표시
+                        show()
+                    }
+
+                    override fun onNativeAdFailedToLoad(
+                        errorCode: Int,
+                        errorMessage: String?
+                    ) {
+                        Log.e(
+                            "MainActivity",
+                            "onNativeAdFailedToLoad($errorCode, $errorMessage)"
+                        )
+                    }
+
+                    override fun onNativeAdShowFailed(
+                        errorCode: Int,
+                        errorMessage: String?
+                    ) {
+                        Log.e(
+                            "MainActivity",
+                            "onNativeAdShowFailed($errorCode, $errorMessage)"
+                        )
+                    }
+
+                    override fun onNativeAdClicked() {
+                        Log.i("MainActivity", "onNativeAdClicked()")
+                    }
+
+                    override fun onNativeAdClosed() {
+                        Log.i("MainActivity", "onNativeAdClosed()")
+                    }
+                }
+            )
+        }
+
+        // 5. 커스텀 바인딩용 Binder 생성
+        val binder = AdWhaleNativeAdBinder.Builder(
+            this,
+            R.layout.custom_native_ad_main_layout
+        )
+            .setIconViewId(R.id.main_view_icon)
+            .setTitleViewId(R.id.main_view_title)
+            .setBodyTextViewId(R.id.main_view_body)
+            .setCallToActionViewId(R.id.main_button_cta)
+            .setMediaViewGroupId(R.id.main_view_media)
+            .build()
+
+        // 6. addView 전에 기존 뷰 제거 (중복 방지)
+        nativeAdContainer.removeAllViews()
+
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        nativeAdContainer.addView(nativeAdView, params)
+
+        // 7. 광고 로드
+        nativeAdView?.loadAdWithBinder(binder)
+    }
+
+    // 라이프사이클 onDestroy 콜백 시 반드시 destroy() 호출
+    override fun onDestroy() {
+        nativeAdView?.destroy()
+        nativeAdView = null
+        super.onDestroy()
+    }
+}
+```
+
+**커스텀 레이아웃 파일 생성**
+
+`android/app/src/main/res/layout/custom_native_ad_main_layout.xml` 파일을 생성합니다:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    android:elevation="4dp">
+
+    <!-- 앱 아이콘 -->
+    <ImageView
+        android:id="@+id/main_view_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/main_view_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/main_view_title" />
+
+    <!-- 제목 -->
+    <TextView
+        android:id="@+id/main_view_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/main_view_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="광고 제목입니다" />
+
+    <!-- 설명 -->
+    <TextView
+        android:id="@+id/main_view_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:ellipsize="end"
+        android:lines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/main_view_title"
+        app:layout_constraintTop_toBottomOf="@id/main_view_title"
+        tools:text="광고 설명입니다. 이 앱을 다운로드하세요!" />
+
+    <!-- CTA 버튼 -->
+    <Button
+        android:id="@+id/main_button_cta"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:backgroundTint="#009688"
+        android:textColor="@android:color/white"
+        android:text="설치하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_view_body" />
+
+    <!-- 미디어 뷰 -->
+    <FrameLayout
+        android:id="@+id/main_view_media"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/main_button_cta" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+{% endtab %}
+
+{% tab title="Compose" %}
+```kotlin
+@Composable
+fun NativeCustomBindingScreen(
+    placementUid: String
+) {
+    val context = LocalContext.current
+    val activity = context as? ComponentActivity ?: return
+
+    var nativeAdView by remember { mutableStateOf<AdWhaleMediationNativeAdView?>(null) }
+    var isInited by remember { mutableStateOf(false) }
+
+    // 1. 로거 설정
+    LaunchedEffect(Unit) {
+        AdWhaleLog.setLogLevel(AdWhaleLog.LogLevel.None)
+    }
+
+    // 2. 초기화 코드
+    LaunchedEffect(Unit) {
+        AdWhaleMediationAds.init(activity, object : AdWhaleMediationOnInitCompleteListener {
+            override fun onInitComplete(statusCode: Int, message: String) {
+                Log.i("NativeCustomBindingScreen", "onInitComplete($statusCode, $message)")
+                isInited = true
+            }
+        })
+    }
+
+    if (!isInited) return
+
+    AndroidView(
+        factory = { ctx ->
+
+            // 3. 인스턴스 생성
+            AdWhaleMediationNativeAdView(ctx).apply {
+
+                setPlacementUid(placementUid)
+
+                // 4. 리스너 등록
+                setAdWhaleMediationNativeAdViewListener(
+                    object : AdWhaleMediationNativeAdViewListener {
+
+                        override fun onNativeAdLoaded() {
+                            Log.i("NativeCustomBindingScreen", "onNativeAdLoaded()")
+                            // 8. 광고 표시
+                            show()
+                        }
+
+                        override fun onNativeAdFailedToLoad(
+                            errorCode: Int,
+                            errorMessage: String?
+                        ) {
+                            Log.e(
+                                "NativeCustomBindingScreen",
+                                "onNativeAdFailedToLoad($errorCode, $errorMessage)"
+                            )
+                        }
+
+                        override fun onNativeAdShowFailed(
+                            errorCode: Int,
+                            errorMessage: String?
+                        ) {
+                            Log.e(
+                                "NativeCustomBindingScreen",
+                                "onNativeAdShowFailed($errorCode, $errorMessage)"
+                            )
+                        }
+
+                        override fun onNativeAdClicked() {
+                            Log.i("NativeCustomBindingScreen", "onNativeAdClicked()")
+                        }
+
+                        override fun onNativeAdClosed() {
+                            Log.i("NativeCustomBindingScreen", "onNativeAdClosed()")
+                        }
+                    }
+                )
+
+                // 5. 커스텀 바인딩용 Binder 생성
+                val binder = AdWhaleNativeAdBinder.Builder(
+                    ctx,
+                    R.layout.custom_native_ad_main_layout
+                )
+                    .setIconViewId(R.id.main_view_icon)
+                    .setTitleViewId(R.id.main_view_title)
+                    .setBodyTextViewId(R.id.main_view_body)
+                    .setCallToActionViewId(R.id.main_button_cta)
+                    .setMediaViewGroupId(R.id.main_view_media)
+                    .build()
+
+                nativeAdView = this
+
+                // 7. 광고 로드
+                loadAdWithBinder(binder)
+            }
+        }
+    )
+
+    // 라이프사이클 dispose 시 destroy 호출
+    DisposableEffect(Unit) {
+        onDispose {
+            nativeAdView?.destroy()
+            nativeAdView = null
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+#### 5. 옵션 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+{% tabs %}
+{% tab title="Java" %}
+```java
+nativeAdView.setRegion("서울시 강남구"); // 지역 타게팅 전용 API(옵션)
+nativeAdView.setGcoder(37.5665, 126.9780); // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+
+```java
+nativeAdView.setPlacementName("native_main");
+```
+
+{% hint style="info" %}
+AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
+{% endhint %}
+
+{% hint style="warning" %}
+LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+
+***
+
+배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
+{% endhint %}
+{% endtab %}
+
+{% tab title="Kotlin" %}
+```kotlin
+nativeAdView.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
+nativeAdView.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+
+```kotlin
+nativeAdView.setPlacementName("native_main")
+```
+
+{% hint style="info" %}
+AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
+{% endhint %}
+
+{% hint style="warning" %}
+LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+
+***
+
+배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
+{% endhint %}
+{% endtab %}
+
+{% tab title="Compose" %}
+```kotlin
+nativeAdView.setRegion("서울시 강남구") // 지역 타게팅 전용 API(옵션)
+nativeAdView.setGcoder(37.5665, 126.9780) // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(Region, Gcoder)를 선택적으로 입력받고 있습니다. setRegion() 과 setGcoder() 관련 자세한 구현 방법은 아래 링크를 참고하세요.
+
+[https://adwhale.gitbook.io/sdk-android-appendix/adwhale](https://adwhale.gitbook.io/sdk-android-appendix/adwhale)
+{% endhint %}
+
+```kotlin
+nativeAdView.setPlacementName("native_main")
+```
+
+{% hint style="info" %}
+AdWhale SDK는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때, `setPlacementName()` API를 통해 설정할 수 있습니다.
+{% endhint %}
+
+{% hint style="warning" %}
+LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement에 설정된 **보상 금액, 노출 제한 등의 설정이 적용된 광고**가 노출됩니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+
+***
+
+배너 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
+{% endhint %}
+{% endtab %}
+{% endtabs %}
+
+#### **6. 주의사항**
 
 **광고 로드 타이밍**
 
-* 광고는 로드가 완료된 후에만 표시할 수 있습니다.
-* `onAdLoaded()` 이후에만 `showAd(activity, fragmentManager)`를 호출하세요.
+* `loadAd()`를 호출한 후 `onLoaded` 이벤트가 발생해야 `showAd()`를 호출할 수 있습니다.
+* 광고가 로드되기 전에 `showAd()`를 호출하면 표시되지 않습니다.
 
-**광고 표시 조건**
+**FULLSCREEN 템플릿**
 
-* 백키 입력 등 앱 종료 시도 시점에 노출하는 것을 권장합니다. 과도한 노출은 이용 경험을 해칠 수 있습니다.
-* 중복 표시: 이미 표시 중이거나 로드 중일 때 `showAd(activity)`는 무시될 수 있으므로, 콜백 상태를 활용해 제어하세요.
-* **FragmentManager**: `showAd(Activity, FragmentManager)`에 전달하는 FragmentManager는 해당 Activity의 `getSupportFragmentManager()`(또는 `supportFragmentManager`)를 사용하세요.
+* FULLSCREEN 템플릿은 모달이나 별도 화면에서 사용하는 것을 권장합니다.
+* 일반 뷰에 표시하면 레이아웃 문제가 발생할 수 있습니다.
 
-**리스너 정리**
+**스타일 커스터마이징**
 
-* 컴포넌트가 언마운트될 때 등록한 이벤트 리스너를 반드시 제거해야 합니다.
-
-**리소스 해제**
-
-* `onDestroy()`에서 반드시 `destroy()`를 호출하세요.
+* 템플릿 스타일은 광고 로드 전에 설정해야 합니다.
+* 스타일을 변경하려면 컴포넌트를 재생성하세요.
 
 **에러 처리**
 
-* `onAdFailedToLoad`와 `onAdShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
+* `onLoadFailed`와 `onShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
 
 **테스트**
 
 * 개발 환경에서는 테스트용 placement UID를 사용하세요.
-* 실제 배포 전에 다양한 시나리오에서 테스트하세요.
+* 다양한 템플릿 타입과 스타일을 테스트하세요.
