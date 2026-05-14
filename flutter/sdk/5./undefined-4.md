@@ -25,6 +25,7 @@
 * SDK에서 제공하는 템플릿 사용
 * SMALL, MEDIUM, FULLSCREEN 타입 지원
 * 스타일 커스터마이징 가능
+* **해당 기능은 Android 만 지원합니다. (iOS는 추후 지원 예정)**
 {% endhint %}
 
 {% hint style="info" %}
@@ -32,7 +33,7 @@
 
 * 자체 레이아웃 사용
 * 완전한 디자인 제어
-* Android BinderFactory를 통합 커스텀 바인딩
+* **Android/iOS BinderFactory 를 통합 커스텀 바인딩 (커스텀 뷰를 직접 구현 후 MainActivity 또는 AppDelegate 연결 수작업 필요)**
 {% endhint %}
 
 #### 3. 템플릿 네이티브 광고 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
@@ -175,14 +176,18 @@ class AdWhaleNativeTemplateStyle {
 
 커스텀 네이티브 광고는 사용자가 직접 정의한 커스텀 레이아웃을 사용하여 광고를 표시합니다.
 
-`factoryId`를 사용하여 MainActivity에서 등록한 BinderFactory를 통해 커스텀 레이아웃을 연결합니다.
+{% hint style="info" %}
+**중요**
 
-**Android MainActivity 에서 BinderFactory 등록**
+**`factoryId`를 사용하여 MainActivity(Android Java or Kotlin) / AppDelegate(iOS Swift)에서 등록한 BinderFactory를 통해 커스텀 레이아웃을 연결합니다.**
+{% endhint %}
+
+{% tabs %}
+{% tab title="Android Java" %}
+**1) Android MainActivity 에서 BinderFactory 등록**
 
 `android/app/src/main/java/.../MainActivity.kt` (또는 `.java`) 파일에서 BinderFactory를 등록합니다:
 
-{% tabs %}
-{% tab title="Java" %}
 ```java
 package com.example.app;
 
@@ -211,40 +216,8 @@ public class MainActivity extends FlutterFragmentActivity {
     }
 }
 ```
-{% endtab %}
 
-{% tab title="Kotlin" %}
-```kotlin
-package com.example.app
-
-import android.os.Bundle
-import io.flutter.embedding.android.FlutterActivity
-import net.adwhale.sdk.mediation.binder.SimpleBinderFactory
-import net.adwhale.sdk.mediation.binder.AdwhaleMediationBinderFactoryRegistry
-
-class MainActivity: FlutterFragmentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // Register BinderFactory for custom binding (factoryId: app_custom)
-        AdWhaleSdkFlutterPlugin.registerBinderFactory(
-                "app_custom",
-                new SimpleBinderFactory(
-                        R.layout.custom_native_ad_main_layout,
-                        R.id.main_view_icon,
-                        R.id.main_view_title,
-                        R.id.main_view_body,
-                        R.id.main_button_cta,
-                        R.id.main_view_media
-                )
-        )
-    }
-}
-```
-{% endtab %}
-{% endtabs %}
-
-**커스텀 레이아웃 파일 생성**
+**2) 커스텀 레이아웃 파일 생성**
 
 `android/app/src/main/res/layout/custom_native_ad_main_layout.xml` 파일을 생성합니다:
 
@@ -324,6 +297,244 @@ class MainActivity: FlutterFragmentActivity() {
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
+{% endtab %}
+
+{% tab title="Android Kotlin" %}
+**1) Android MainActivity 에서 BinderFactory 등록**
+
+`android/app/src/main/java/.../MainActivity.kt` (또는 `.java`) 파일에서 BinderFactory를 등록합니다:
+
+```kotlin
+package com.example.app
+
+import android.os.Bundle
+import io.flutter.embedding.android.FlutterActivity
+import net.adwhale.sdk.mediation.binder.SimpleBinderFactory
+import net.adwhale.sdk.mediation.binder.AdwhaleMediationBinderFactoryRegistry
+
+class MainActivity: FlutterFragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Register BinderFactory for custom binding (factoryId: app_custom)
+        AdWhaleSdkFlutterPlugin.registerBinderFactory(
+                "app_custom",
+                new SimpleBinderFactory(
+                        R.layout.custom_native_ad_main_layout,
+                        R.id.main_view_icon,
+                        R.id.main_view_title,
+                        R.id.main_view_body,
+                        R.id.main_button_cta,
+                        R.id.main_view_media
+                )
+        )
+    }
+}
+```
+
+**2) 커스텀 레이아웃 파일 생성**
+
+`android/app/src/main/res/layout/custom_native_ad_main_layout.xml` 파일을 생성합니다:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    android:elevation="4dp">
+
+    <!-- 앱 아이콘 -->
+    <ImageView
+        android:id="@+id/main_view_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/main_view_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/main_view_title" />
+
+    <!-- 제목 -->
+    <TextView
+        android:id="@+id/main_view_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/main_view_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="광고 제목입니다" />
+
+    <!-- 설명 -->
+    <TextView
+        android:id="@+id/main_view_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:ellipsize="end"
+        android:lines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/main_view_title"
+        app:layout_constraintTop_toBottomOf="@id/main_view_title"
+        tools:text="광고 설명입니다. 이 앱을 다운로드하세요!" />
+
+    <!-- CTA 버튼 -->
+    <Button
+        android:id="@+id/main_button_cta"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:backgroundTint="#009688"
+        android:textColor="@android:color/white"
+        android:text="설치하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_view_body" />
+
+    <!-- 미디어 뷰 -->
+    <FrameLayout
+        android:id="@+id/main_view_media"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/main_button_cta" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+{% endtab %}
+
+{% tab title="iOS Swift" %}
+**1) iOS AppDelegate 에서 BinderFactory 등록**
+
+`ios/Runner/AppDelegate.swift` 파일에서 BinderFactory를 등록합니다:
+
+```swift
+import AdWhaleSDK
+import adwhale_sdk_flutter
+import Flutter
+import UIKit
+
+@main
+@objc class AppDelegate: FlutterAppDelegate {
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    // Dart `AdWhaleNativeCustomView(factoryId: 'app_custom')` 와 동일한 id로 등록
+    AdWhaleSdkFlutterPlugin.registerNativeAdViewFactory(
+      "app_custom",
+      factory: AdWhaleBlockNativeAdViewFactory { frame in
+        ExampleCustomNativeAdView(frame: frame)
+      }
+    )
+    GeneratedPluginRegistrant.register(with: self)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+}
+
+```
+
+**2) 커스텀 레이아웃 파일 생성**
+
+`ios/Runner/ExampleCustomNativeAdView.swift` 파일을 생성합니다:
+
+```swift
+import AdWhaleSDK
+import UIKit
+
+/// 샘플: AdWhale iOS SDK는 고정 레이아웃이 없으므로, 앱이 `AdWhaleNativeAdView`를 상속해
+/// 필수 에셋 뷰를 구현합니다. `AppDelegate`에서 `factoryId` `app_custom`으로 팩토리를 등록합니다.
+final class ExampleCustomNativeAdView: AdWhaleNativeAdView {
+  private let titleLbl = UILabel()
+  private let bodyLbl = UILabel()
+  private let ctaBtn = UIButton(type: .system)
+  private let profileNameLbl = UILabel()
+  private let profileIcon = UIImageView()
+  private let whaleMediaView = AdWhaleMediaView()
+
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    buildLayout()
+  }
+
+  required init?(coder: NSCoder) {
+    super.init(coder: coder)
+    buildLayout()
+  }
+
+  private func buildLayout() {
+    backgroundColor = .secondarySystemBackground
+    titleLbl.font = .boldSystemFont(ofSize: 16)
+    titleLbl.numberOfLines = 2
+    bodyLbl.font = .systemFont(ofSize: 14)
+    bodyLbl.numberOfLines = 3
+    bodyLbl.textColor = .secondaryLabel
+    profileNameLbl.font = .systemFont(ofSize: 12)
+    profileIcon.contentMode = .scaleAspectFill
+    profileIcon.clipsToBounds = true
+    profileIcon.layer.cornerRadius = 20
+    ctaBtn.titleLabel?.font = .boldSystemFont(ofSize: 14)
+    whaleMediaView.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      whaleMediaView.heightAnchor.constraint(equalToConstant: 180),
+    ])
+
+    let profileRow = UIStackView(arrangedSubviews: [profileIcon, profileNameLbl])
+    profileRow.axis = .horizontal
+    profileRow.spacing = 8
+    profileRow.alignment = .center
+    profileIcon.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      profileIcon.widthAnchor.constraint(equalToConstant: 40),
+      profileIcon.heightAnchor.constraint(equalToConstant: 40),
+    ])
+
+    let stack = UIStackView(arrangedSubviews: [
+      titleLbl,
+      bodyLbl,
+      whaleMediaView,
+      profileRow,
+      ctaBtn,
+    ])
+    stack.axis = .vertical
+    stack.spacing = 8
+    stack.translatesAutoresizingMaskIntoConstraints = false
+    addSubview(stack)
+    NSLayoutConstraint.activate([
+      stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+      stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+      stack.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+      stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+    ])
+  }
+
+  override func adTitleLabel() -> UILabel { titleLbl }
+  override func adBodyLabel() -> UILabel { bodyLbl }
+  override func adCallToActionButton() -> UIButton { ctaBtn }
+  override func adProfileNameLabel() -> UILabel { profileNameLbl }
+  override func adProfileIconView() -> UIImageView { profileIcon }
+  override func adMediaView() -> AdWhaleMediaView { whaleMediaView }
+}
+```
+
+**3) Runner 타깃 Compile Sources 추가**
+
+위 Swift 파일들 `ios/Runner/AppDelegate.Aswift` `ios/Runner/ExampleCustomNativeAdView.swift` 을 Runner 타깃 Compile Sources에 추가합니다:
+
+<figure><img src="../../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+{% endtab %}
+{% endtabs %}
 
 **Flutter에서 factoryId 사용**
 
