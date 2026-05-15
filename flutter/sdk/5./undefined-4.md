@@ -1,7 +1,9 @@
 # 네이티브
 
 {% hint style="danger" %}
-전면은 현재 **Android**에서만 지원되며, iOS 지원은 추후 예정입니다.
+템플릿 네이티브 광고는 현재 **Android**에서만 지원되며, iOS 지원은 추후 예정입니다.
+
+**(커스텀 네이티브 광고는 Android / iOS 모두 사용 가능합니다.)**
 {% endhint %}
 
 {% hint style="info" %}

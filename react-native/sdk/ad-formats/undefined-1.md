@@ -21,6 +21,7 @@
 * SDK에서 제공하는 템플릿 사용
 * SMALL, MEDIUM, FULLSCREEN 타입 지원
 * 스타일 커스터마이징 가능
+* **해당 기능은 Android 만 지원합니다. (iOS는 추후 지원 예정)**
 {% endhint %}
 
 {% hint style="info" %}
@@ -28,6 +29,7 @@
 
 * 자체 레이아웃 사용
 * 완전한 디자인 제어
+* **Android/iOS BinderFactory 를 통합 커스텀 바인딩 (커스텀 뷰를 직접 구현 후 MainActivity 또는 AppDelegate 연결 수작업 필요)**
 {% endhint %}
 
 #### 3. 템플릿 네이티브 광고 <a href="#id-2.-initialize" id="id-2.-initialize"></a>

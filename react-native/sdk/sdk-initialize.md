@@ -1,4 +1,4 @@
-# 2. SDK 초기화 및 구현
+# 2. SDK 초기화, 로거설정, GDPR 설정
 
 #### 1. 초기화 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 

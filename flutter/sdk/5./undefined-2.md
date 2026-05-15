@@ -1,9 +1,5 @@
 # 전면
 
-{% hint style="danger" %}
-전면은 현재 **Android**에서만 지원되며, iOS 지원은 추후 예정입니다.
-{% endhint %}
-
 {% hint style="info" %}
 전면 광고는 앱 화면 전체를 덮는 전면형 광고입니다. 게임 레벨 완료, 콘텐츠 전환 등 자연스러운 타이밍에 노출하여 높은 참여도를 얻을 수 있습니다.
 {% endhint %}
@@ -19,8 +15,7 @@
 
 전면 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
 
-```dart
-import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
+<pre class="language-dart"><code class="lang-dart">import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
 
 const String PLACEMENT_UID = 'your-placement-uid';
 
@@ -34,8 +29,8 @@ void _loadInterstitial() {
       onLoaded: () {
         print('전면 광고 로드 성공');
       },
-      onLoadFailed: (errorCode, errorMessage) {
-        print('전면 광고 로드 실패: $errorCode, $errorMessage');
+<strong>      onLoadFailed: (errorCode, errorMessage) {
+</strong>        print('전면 광고 로드 실패: $errorCode, $errorMessage');
         _interstitialAd = null;
       },
       onShowed: () {
@@ -62,7 +57,7 @@ void _showInterstitial() {
     _interstitialAd!.showAd();
   }
 }
-```
+</code></pre>
 
 #### 3. 이벤트 리스너 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 

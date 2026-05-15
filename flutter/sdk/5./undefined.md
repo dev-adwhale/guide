@@ -1,9 +1,5 @@
 # 앱 오프닝
 
-{% hint style="danger" %}
-앱오프닝 광고는 현재 **Android**에서만 지원되며, iOS 지원은 추후 예정입니다.
-{% endhint %}
-
 {% hint style="info" %}
 앱오프닝 광고는 앱이 실행될 때 또는 백그라운드에서 포그라운드로 전환될 때 표시되는 전면 광고입니다. 이 문서는 Flutter 프로젝트에서 AdWhale Mediation SDK를 사용하여 앱오프닝 광고를 연동하는 방법을 설명합니다.
 {% endhint %}
@@ -67,7 +63,7 @@ void _showAppOpen() {
 
 `AdWhaleAppOpenAdLoadCallback` 은 다음 이벤트를 지원합니다:
 
-<table><thead><tr><th width="209.69140625">이벤트</th><th width="188.94921875">설명</th><th>파라미터</th></tr></thead><tbody><tr><td><code>onLoaded</code></td><td>광고 로드 성공 시 호출</td><td>없음</td></tr><tr><td><code>onLoadFailed</code></td><td>광고 로드 실패 시 호출</td><td><code>String errorCode</code>, <br><code>String errorMessage</code><br></td></tr><tr><td><code>onShowed</code></td><td>광고 표시 성공 시 호출</td><td>없음</td></tr><tr><td><code>onShowFailed</code></td><td>광고 표시 실패 시 호출</td><td><code>String errorCode</code>, <br><code>String errorMessage</code><br></td></tr><tr><td><code>onDismissed</code></td><td>광고가 닫힐 때 호출</td><td>없음</td></tr><tr><td><code>onClicked</code></td><td>광고가 클릭될 때 호출</td><td>없음</td></tr></tbody></table>
+<table><thead><tr><th width="209.69140625">이벤트</th><th width="188.94921875">설명</th><th>파라미터</th></tr></thead><tbody><tr><td><code>onLoaded</code></td><td>광고 로드 성공 시 호출</td><td>없음</td></tr><tr><td><code>onLoadFailed</code></td><td>광고 로드 실패 시 호출</td><td><code>String errorCode</code>, <br><code>String errorMessage</code></td></tr><tr><td><code>onShowed</code></td><td>광고 표시 성공 시 호출</td><td>없음</td></tr><tr><td><code>onShowFailed</code></td><td>광고 표시 실패 시 호출</td><td><code>String errorCode</code>, <br><code>String errorMessage</code></td></tr><tr><td><code>onDismissed</code></td><td>광고가 닫힐 때 호출</td><td>없음</td></tr><tr><td><code>onClicked</code></td><td>광고가 클릭될 때 호출</td><td>없음</td></tr></tbody></table>
 
 #### 4. 옵션 설정 <a href="#id-2.-initialize" id="id-2.-initialize"></a>
 
