@@ -117,7 +117,7 @@
     * [전면](react-native/sdk/5./undefined-2.md)
     * [보상형](react-native/sdk/5./undefined-3.md)
     * [네이티브](react-native/sdk/5./undefined-4.md)
-    * [앱 종료](react-native/sdk/5./undefined-5.md)
+    * [앱 종료 팝업](react-native/sdk/5./undefined-5.md)
     * [앱 내 화면 전환](react-native/sdk/5./undefined-6.md)
   * [6. Sample Project](react-native/sdk/6.-sample-project.md)
   * [7. ChangeLog](react-native/sdk/7.-changelog.md)
