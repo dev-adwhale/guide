@@ -27,17 +27,3 @@ void main() {
   }
 }
 ```
-
-{% tabs %}
-{% tab title="초기화" %}
-###
-{% endtab %}
-
-{% tab title="로거설정" %}
-###
-{% endtab %}
-
-{% tab title="GDPR/COPPA 설정" %}
-####
-{% endtab %}
-{% endtabs %}
