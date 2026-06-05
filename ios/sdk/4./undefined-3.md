@@ -82,6 +82,105 @@ rewardAd.show(self)
 {% endtab %}
 {% endtabs %}
 
+### 보상형 SSV(서버 사이드 검증) <a href="#id-2.-initialize" id="id-2.-initialize"></a>
+
+보상형 SSV 는 서버에서 리워드 검증 및 지급을 제공하기 위한 기능입니다. 광고 네트워크가 퍼블리셔 서버로 직접 postback(콜백)을 보내며, ADWhale 은 이를 위해 `setUserId` / `setCustomData` 두 개의 API 를 제공합니다.
+
+{% hint style="warning" %}
+**지원 범위: AdMob / AdManager 만 지원합니다.**&#x20;
+
+보상형(Rewarded)·보상형 전면(RewardedInterstitial) 광고에서 AdMob(SSV, Server-Side Verification) 으로만 동작합니다. 그 외 네트워크에서 두 메서드는 **무시(no-op)** 되며 아무 동작도 하지 않습니다.
+{% endhint %}
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+let customData: [String: String] = [
+    "custom_test_key": "custom_test_value",
+    "os": "iOS"
+]
+adWhaleMediationRewardAd.setCustomData(customData) // custom data (json 직렬화 문자열 처리)
+adWhaleMediationRewardAd.setUserId("test_user_id") // 앱 사용자 id
+```
+
+{% hint style="info" %}
+**호출 타이밍**
+
+* `AdWhaleRewardAd()` 이후 `showAd()` 직전까지 **언제든** 호출할 수 있습니다.
+* **권장: `loadAd()` 호출 전**에 세팅하세요.
+* 여러 번 호출하면 **마지막 값이 적용**됩니다.
+* `showAd()` 이후 호출은 이미 표시 중인 광고에는 반영되지 않습니다.
+
+***
+
+**대시보드 사전 설정 (필수)**
+
+대시보드의 SSV callback URL 등록이 선행되지 않으면 postback 이 발생하지 않습니다. **AdMob / AdManager 대시보드에서 해당 보상형 ad unit 별로 SSV callback URL 을 먼저 등록**해야 합니다.
+
+* AdMob 공식 가이드: [https://developers.google.com/admob/ios/ssv](https://developers.google.com/admob/ios/ssv?hl=ko)
+
+***
+
+**customData JSON 직렬화 주의**
+
+AdMob SSV 의 `custom_data` 는 **단일 문자열** 필드입니다. AdWhale 은 전달받은 `Map<String,String>` 을 JSON 으로 직렬화해 싣습니다.
+
+```swift
+// 내부 처리 (참고)
+String(data: JSONSerialization.data(withJSONObject: customData), encoding: .utf8)
+```
+
+* 퍼블리셔 서버는 postback 의 `custom_data` 값을 **JSON 으로 파싱**해야 key/value 를 얻을 수 있습니다.
+* AdMob 이 `custom_data` 길이 상한을 공식적으로 명시하진 않지만, 실무상 **200자 정도를 넘기면 잘림**이 보고된 사례가 있으니 길이에 유의하세요.
+{% endhint %}
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+NSDictionary<NSString *, NSString *> *customData = @{
+    @"custom_test_key": @"custom_test_value",
+    @"os": @"iOS"
+};
+[adWhaleMediationRewardAd setCustomData:customData]; // custom data (json 직렬화 문자열 처리)
+[adWhaleMediationRewardAd setUserId:@"test_user_id"]; // 앱 사용자 id
+```
+
+{% hint style="info" %}
+**호출 타이밍**
+
+* `AdWhaleRewardAd()` 이후 `showAd()` 직전까지 **언제든** 호출할 수 있습니다.
+* **권장: `loadAd()` 호출 전**에 세팅하세요.
+* 여러 번 호출하면 **마지막 값이 적용**됩니다.
+* `showAd()` 이후 호출은 이미 표시 중인 광고에는 반영되지 않습니다.
+
+***
+
+**대시보드 사전 설정 (필수)**
+
+대시보드의 SSV callback URL 등록이 선행되지 않으면 postback 이 발생하지 않습니다. **AdMob / AdManager 대시보드에서 해당 보상형 ad unit 별로 SSV callback URL 을 먼저 등록**해야 합니다.
+
+* AdMob 공식 가이드: [https://developers.google.com/admob/ios/ssv](https://developers.google.com/admob/ios/ssv?hl=ko)
+
+***
+
+**customData JSON 직렬화 주의**
+
+AdMob SSV 의 `custom_data` 는 **단일 문자열** 필드입니다. AdWhale 은 전달받은 `Map<String,String>` 을 JSON 으로 직렬화해 싣습니다.
+
+```objective-c
+// 내부 처리 (참고)
+[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:customData
+                                                               options:0
+                                                                 error:nil]
+                      encoding:NSUTF8StringEncoding]
+```
+
+* 퍼블리셔 서버는 postback 의 `custom_data` 값을 **JSON 으로 파싱**해야 key/value 를 얻을 수 있습니다.
+* AdMob 이 `custom_data` 길이 상한을 공식적으로 명시하진 않지만, 실무상 **200자 정도를 넘기면 잘림**이 보고된 사례가 있으니 길이에 유의하세요.
+{% endhint %}
+{% endtab %}
+{% endtabs %}
+
 ### Reward Delegate 설명
 
 보상형 광고의 상태 변화는 Delegate를 통해 전달됩니다.

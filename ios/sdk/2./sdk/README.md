@@ -26,4 +26,4 @@ CocoaPods 정책 변경에 따라,\
 **Swift Package Manager(SPM) 사용을 권장**드립니다.
 {% endhint %}
 
-### 최신 SDK Version : 1.0.4
+### 최신 SDK Version : 1.0.7
