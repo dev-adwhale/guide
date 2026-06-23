@@ -135,7 +135,3 @@
 ## UNITY
 
 * [AdMob SDK 연동 가이드](unity/admob-sdk.md)
-
-***
-
-* [Ad Network Gradle Builder](ad-network-gradle-builder.md)
