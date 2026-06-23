@@ -175,7 +175,7 @@ AdWhaleRewardAd.loadAd('your-placement-uid', {
 AdWhaleRewardAd.setUserId('test_user_id');
 AdWhaleRewardAd.setCustomData({
   custom_test_key: 'custom_test_value',
-  os: 'Android',
+  os: 'ReactNative',
 });
 AdWhaleRewardAd.loadAd('your-placement-uid');
 ```
