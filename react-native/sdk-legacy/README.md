@@ -1,6 +1,0 @@
----
-hidden: true
----
-
-# SDK 적용 가이드(안드로이드)Legacy
-
