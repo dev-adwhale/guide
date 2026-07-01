@@ -25,7 +25,7 @@ protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     // 1. 인스턴스 생성 (Activity, placementUid)
-    interstitialAd = new AdWhaleMediationInterstitialAd(this, "발급받은 placement uid 값");
+    interstitialAd = new AdWhaleMediationInterstitialAd("발급받은 placement uid 값");
 
     // 2. 리스너 등록
     interstitialAd.setAdWhaleMediationInterstitialAdListener(new AdWhaleMediationInterstitialAdListener() {
@@ -83,10 +83,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // 1. 인스턴스 생성 (Activity, placementUid)
-        interstitialAd = AdWhaleMediationInterstitialAd(
-            this,
-            "발급받은 placement uid 값"
-        )
+        interstitialAd = AdWhaleMediationInterstitialAd("발급받은 placement uid 값")
 
         // 2. 리스너 등록
         interstitialAd?.setAdWhaleMediationInterstitialAdListener(
@@ -250,10 +247,10 @@ private fun InterstitialScreen(
 **AdWhaleMediationInterstitialAd 클래스 API 설명**
 
 ```java
-public AdWhaleMediationInterstitialAd(Activity activity, String placementUid)
+public AdWhaleMediationInterstitialAd(String placementUid)
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
 
 ```java
 public void setAdWhaleMediationInterstitialAdListener(AdWhaleMediationInterstitialAdListener listener)
@@ -311,10 +308,10 @@ public void onAdClicked() // 미디에이션 전면 광고클릭 시
 **AdWhaleMediationInterstitialAd 클래스 API 설명**
 
 ```kotlin
-AdWhaleMediationInterstitialAd(activity : Activity, placementUid : String)
+AdWhaleMediationInterstitialAd(placementUid : String)
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
 
 ```kotlin
 fun setAdWhaleMediationInterstitialAdListener(listener : AdWhaleMediationInterstitialAdListener) : Unit
@@ -374,10 +371,10 @@ fun onAdClicked() : Unit // 미디에이션 전면 광고클릭 시
 **AdWhaleMediationInterstitialAd 클래스 API 설명**
 
 ```kotlin
-AdWhaleMediationInterstitialAd(activity : Activity, placementUid : String)
+AdWhaleMediationInterstitialAd(placementUid : String)
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>android.app.Activity</td><td>Android Activity 클래스</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>String</td><td>placementUid 값(발급 필요)</td></tr></tbody></table>
 
 ```kotlin
 fun setAdWhaleMediationInterstitialAdListener(listener : AdWhaleMediationInterstitialAdListener) : Unit
