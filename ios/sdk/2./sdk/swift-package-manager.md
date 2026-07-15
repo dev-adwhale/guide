@@ -15,7 +15,7 @@
        ```
        https://github.com/dev-adwhale/AdWhaleMediationAdapterSPM.git
        ```
-3. 사용할 AdWhale Swift 패키지의 버전을 선택합니다. (최신 SDK 버전: 1.0.4)
+3. 사용할 AdWhale Swift 패키지의 버전을 선택합니다. (최신 SDK 버전: 1.0.8)
 {% endhint %}
 
 #### `-ObjC` 플래그 추가 안내

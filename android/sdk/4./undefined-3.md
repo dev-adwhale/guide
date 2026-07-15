@@ -622,9 +622,9 @@ adWhaleMediationRewardAd.setUserId("test_user_id"); // 앱 사용자 id
 {% hint style="info" %}
 **호출 타이밍**
 
-* `new AdWhaleMediationRewardAd(...)` 이후 `loadAd()` 직전까지 **언제든** 호출할 수 있습니다.
+* `new AdWhaleMediationRewardAd(...)` 이후 `showAd()` 직전까지 **언제든** 호출할 수 있습니다.
 * 여러 번 호출하면 **마지막 값이 적용**됩니다.
-* `loadAd()` 이후 호출은 반영되지 않습니다.
+* `showAd()` 이후 호출은 반영되지 않습니다.
 
 ***
 
@@ -663,9 +663,9 @@ adWhaleMediationRewardAd.setUserId("test_user_id") // 앱 사용자 id
 {% hint style="info" %}
 **호출 타이밍**
 
-* `AdWhaleMediationRewardAd(...)` 이후 `loadAd()` 직전까지 **언제든** 호출할 수 있습니다.
+* `AdWhaleMediationRewardAd(...)` 이후 `showAd()` 직전까지 **언제든** 호출할 수 있습니다.
 * 여러 번 호출하면 **마지막 값이 적용**됩니다.
-* `loadAd()` 이후 호출은 반영되지 않습니다.
+* `showAd()` 이후 호출은 반영되지 않습니다.
 
 ***
 
@@ -704,9 +704,9 @@ adWhaleMediationRewardAd.setUserId("test_user_id") // 앱 사용자 id
 {% hint style="info" %}
 **호출 타이밍**
 
-* `AdWhaleMediationRewardAd(...)` 이후 `loadAd()` 직전까지 **언제든** 호출할 수 있습니다.
+* `AdWhaleMediationRewardAd(...)` 이후 `showAd()` 직전까지 **언제든** 호출할 수 있습니다.
 * 여러 번 호출하면 **마지막 값이 적용**됩니다.
-* `loadAd()` 이후 호출은 반영되지 않습니다.
+* `showAd()` 이후 호출은 반영되지 않습니다.
 
 ***
 
