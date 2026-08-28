@@ -284,7 +284,7 @@ public void onAdShowFailed(int statusCode, String message) // 미디에이션 �
 ```
 
 {% hint style="info" %}
-ㅇ
+**onAdShowFailed  후처리 가이드**
 
 * 광고 표시 실패 시 onAdShowFailed가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
 *   표시할 광고가 준비되지 않은 상태에서 `showAd(activity, fragmentManager)` 를 호출하면 **`onAdShowFailed` 가 발생합니다.**
@@ -912,6 +912,26 @@ private fun TransitionPopupScreen(
 
 * `onAdFailedToLoad`와 `onAdShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+**onAdShowFailed  후처리 가이드**
+
+* 광고 표시 실패 시 onAdShowFailed가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+*   표시할 광고가 준비되지 않은 상태에서 `showAd(activity, fragmentManager)` 를 호출하면 **`onAdShowFailed` 가 발생합니다.**
+
+    ```
+    statusCode : 200
+    message    : "No transition popup ad is ready to show."
+    ```
+
+    앱 내 화면 전환 광고는 노출에 실패해도 앱의 흐름은 계속 진행되어야 합니다. 이 콜백에서 원래 하려던 동작(앱 종료 / 화면 이동)을 이어서 수행하세요.
+
+    ```java
+    @Override
+    public void onAdShowFailed(int statusCode, String message) {
+        Log.w("Ad", "show failed: " + statusCode + " " + message);
+        proceedWithoutAd();   // 광고 없이 원래 흐름 진행
+    }
+    ```
 
 **테스트**
 

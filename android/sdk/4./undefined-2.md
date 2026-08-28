@@ -912,6 +912,27 @@ private fun InterstitialScreen(
 * `onAdLoadFailed`와 `onAdShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
 
+**onAdShowFailed  후처리 가이드**
+
+* 광고 표시 실패 시 onAdShowFailed가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+*   표시할 광고가 준비되지 않은 상태에서 `showAd(activity)` 를 호출하면 **`onAdShowFailed` 가 발생합니다.**
+
+    ```
+    statusCode : 200
+    message    : "No interstitial ad is ready to show."
+    ```
+
+    사용자가 버튼을 누른 직후에 아무 반응이 없으면 "버튼이 먹지 않는" 것처럼 보이므로, 이 콜백에서 로딩 표시를 내리거나 다음 화면으로 넘기는 등의 후처리를 해 주세요.
+
+    ```java
+    @Override
+    public void onAdShowFailed(int statusCode, String message) {
+        Log.w("Interstitial", "show failed: " + statusCode + " " + message);
+        hideLoading();
+        goToNextScreen();   // 광고 없이 진행
+    }
+    ```
+
 **테스트**
 
 * 개발 환경에서는 테스트용 placement UID를 사용하세요.

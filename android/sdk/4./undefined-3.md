@@ -1126,6 +1126,32 @@ private fun RewardScreen(
 * `onAdFailedToLoad`와 `onFailedToShow` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
 
+**onFailedToShow  후처리 가이드**
+
+* 광고 표시 실패 시 onFailedToShow가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+*   표시할 광고가 준비되지 않은 상태에서 `showAd(activity, listener)` 를 호출하면 `AdWhaleMediationFullScreenContentCallback` 의 **`onFailedToShow` 가 발생합니다.**
+
+    ```
+    statusCode : 200
+    message    : "No rewarded ad is ready to show."
+    ```
+
+    보상형은 사용자가 **"광고 보고 보상 받기"** 를 누른 직후이므로, 아무 반응이 없으면 보상이 지급되지 않은 것으로 오해합니다. 이 콜백에서 반드시 안내를 노출하세요.
+
+    ```java
+    rewardAd.setAdWhaleMediationFullScreenContentCallback(
+        new AdWhaleMediationFullScreenContentCallback() {
+            @Override
+            public void onFailedToShow(int statusCode, String message) {
+                hideLoading();
+                showToast("잠시 후 다시 시도해 주세요.");
+            }
+            // ...
+        });
+    ```
+
+    `onFailedToShow` 가 발생한 경우 **보상은 지급되지 않습니다.** `onUserRewarded` 만을 보상 지급의 기준으로 사용하세요.
+
 **테스트**
 
 * 개발 환경에서는 테스트용 placement UID를 사용하세요.
