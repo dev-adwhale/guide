@@ -1152,19 +1152,14 @@ LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placem
 **onNativeAdFailedToLoad  후처리 가이드**
 
 * onNativeAdFailedToLoad는 **워터폴이 모두 소진됐을 때 1회만** 발생합니다. 개별 광고 네트워크의 실패로는 발생하지 않습니다.
-* 기존에 노출 중인 광고가 있다면 그 광고 노출은 유지되지만, 자동 갱신은 멈춥니다. 광고 갱신을 재개하려면 `loadAdWithBinder()` 또는 `loadAdWithTemplate()` 를 다시 호출하세요. `show()` 만 다시 호출해도 재개되지 않습니다.
+* 기존에 노출 중인 광고가 있다면 그 광고 노출은 유지되지만, 자동 갱신은 멈춥니다. 광고 갱신을 재개하려면 `커스텀네이티브이면-loadAdWithBinder()` 또는 `템플릿네이티브이면-loadAdWithTemplate()` 를 다시 호출하세요. `show()` 만 다시 호출해도 재개되지 않습니다.
 * **`onNativeAdFailedToLoad` 에서 무조건 광고 영역을 숨기지 마세요.** 이 콜백은 갱신 실패에서도 발생하며, 그때는 이전 광고가 그대로 노출 중입니다. 광고 영역을 `GONE` 으로 만들면 **노출 중인 광고를 스스로 가리게 됩니다.**
 
 **onNativeAdShowFailed  후처리 가이드**
 
 * `onNativeAdShowFailed` 는 로깅 · 지표 수집 용도로만 사용하시길 권장합니다.
 * 광고 표시 실패 시 onNativeAdShowFailed가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
-*   표시할 광고가 준비되지 않은 상태에서 `showAd(activity)` 를 호출하면 **`onNativeAdShowFailed` 가 발생합니다.**
-
-    ```
-    템플릿 : "Ad is not loaded yet. Please call loadAdWithTemplate() first."
-    커스텀 : "Ad is not loaded yet. Please call loadAdWithBinder() first."
-    ```
+*   표시할 광고가 준비되지 않은 상태에서 `show()` 를 호출하면 **`onNativeAdShowFailed` 가 발생합니다.**
 
 
 
