@@ -1146,7 +1146,7 @@ LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placem
 
 **에러 처리**
 
-* `onLoadFailed`와 `onShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
+* &#x20; `NativeAdFailedToLoad` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
 
 **onNativeAdFailedToLoad  후처리 가이드**
@@ -1165,15 +1165,7 @@ LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placem
     커스텀 : "Ad is not loaded yet. Please call loadAdWithBinder() first."
     ```
 
-    이 콜백에서 후처리를 해 주세요.
 
-    ```java
-    @Override
-    public void onNativeAdShowFailed(int statusCode, String message) {
-        Log.w("Native", "show failed: " + statusCode + " " + message);
-        // TODO 후처리
-    }
-    ```
 
 **테스트**
 
