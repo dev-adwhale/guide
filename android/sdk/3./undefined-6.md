@@ -273,7 +273,7 @@ public void onAdLoaded() // 미디에이션 앱 전환 광고요청 성공 시
 public void onAdLoadFailed(int statusCode, String message) // 미디에이션 앱 전환 광고요청 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="122.30078125">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 연동 오류(placementUid 오설정 등)</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>Internal error occurred...</code></mark> = 연동 오류 메시지</p><p>또는</p><p><mark style="color:red;"><code>Mediation network error occurred...</code></mark> = 최초 로드에서 광고를 채우지 못함(워터폴 모두 소진)<br>또는 <br><mark style="color:red;"><code>Mediation network error occurred...Previous ad is still showing</code></mark> = 갱신 중 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr></tbody></table>
 
 ```java
 public void onAdShowed() // 미디에이션 앱 전환 광고표시 후
@@ -283,7 +283,29 @@ public void onAdShowed() // 미디에이션 앱 전환 광고표시 후
 public void onAdShowFailed(int statusCode, String message) // 미디에이션 앱 전환 광고표시 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+{% hint style="info" %}
+ㅇ
+
+* 광고 표시 실패 시 onAdShowFailed가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+*   표시할 광고가 준비되지 않은 상태에서 `showAd(activity, fragmentManager)` 를 호출하면 **`onAdShowFailed` 가 발생합니다.**
+
+    ```
+    statusCode : 200
+    message    : "No transition popup ad is ready to show."
+    ```
+
+    앱 내 화면 전환 광고는 노출에 실패해도 앱의 흐름은 계속 진행되어야 합니다. 이 콜백에서 원래 하려던 동작(앱 종료 / 화면 이동)을 이어서 수행하세요.
+
+    ```java
+    @Override
+    public void onAdShowFailed(int statusCode, String message) {
+        Log.w("Ad", "show failed: " + statusCode + " " + message);
+        proceedWithoutAd();   // 광고 없이 원래 흐름 진행
+    }
+    ```
+{% endhint %}
+
+<table data-header-hidden><thead><tr><th width="127.9140625">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 아직 로딩 중에 show 호출 시</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td>연동 오류 메시지</td></tr></tbody></table>
 
 ```java
 public void onAdClosed(ADWHALE_POPUP_AD_CLOSE_REASON adwhaleExitPopupAdCloseReason) // 미디에이션 앱 전환 광고닫기. 닫힘 사유 전달

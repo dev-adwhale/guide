@@ -249,7 +249,15 @@ public void onAdLoaded() // 배너 광고요청 성공 시
 public void onAdLoadFailed(int statusCode, String message) // 미디에이션 배너광고요청 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>초기화 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+{% hint style="info" %}
+**onAdLoadFailed  후처리 가이드**
+
+* onAdLoadFailed는 **워터폴이 모두 소진됐을 때 1회만** 발생합니다. 개별 광고 네트워크의 실패로는 발생하지 않습니다.
+* 기존에 노출 중인 광고가 있다면 그 광고 노출은 유지되지만, 자동 갱신은 멈춥니다. 광고 갱신을 재개하려면 `loadAd()` 를 다시 호출하세요.
+* **`onAdLoadFailed` 에서 무조건 광고 영역을 숨기지 마세요.** 이 콜백은 갱신 실패에서도 발생하며, 그때는 이전 광고가 그대로 노출 중입니다. 광고 영역을 `GONE` 으로 만들면 **노출 중인 광고를 스스로 가리게 됩니다.**
+{% endhint %}
+
+<table data-header-hidden><thead><tr><th width="132.26953125">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 연동 오류(placementUid 오설정 등)</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>Internal error occurred...</code></mark> = 연동 오류 메시지</p><p>또는</p><p><mark style="color:red;"><code>Mediation network error occurred...</code></mark> = 최초 로드에서 광고를 채우지 못함(워터폴 모두 소진)<br>또는 <br><mark style="color:red;"><code>Mediation network error occurred...Previous ad is still showing</code></mark> = 갱신 중 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr></tbody></table>
 
 ```java
 public void onAdClicked() // 배너 클릭 시

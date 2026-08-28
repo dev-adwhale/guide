@@ -295,10 +295,10 @@ public void setAdWhaleMediationFullScreenContentCallback(AdWhaleMediationFullScr
 <table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationFullScreenContentCallback</td><td>보상형 미디에이션 광고 콜백 리스너</td></tr></tbody></table>
 
 ```java
-public void loadAd(AdWhaleMediationRewardAdLoadCallback listener) // 미디에이션 보상형 광고로드
+public void loadAd(AdWhaleMediationRewardedAdLoadCallback listener) // 미디에이션 보상형 광고로드
 ```
 
-<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationRewardAdLoadCallback</td><td>보상형 미디에이션 광고 로드 콜백 리스너</td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="352">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>net.adwhale.sdk.mediation.ads.AdWhaleMediationRewardedAdLoadCallback</td><td>보상형 미디에이션 광고 로드 콜백 리스너</td></tr></tbody></table>
 
 ```java
 public void showAd(Activity activity, AdWhaleMediationUserEarnedRewardListener listener) // 미디에이션 보상형 광고로드 후 표시할 때 호출
@@ -311,7 +311,7 @@ public void destroy() // onDestroy() 시 호출 혹은 더 이상 광고를 요�
 ```
 
 \
-**AdWhaleMediationRewardAdLoadCallback 클래스 API 설명**
+**AdWhaleMediationRewardedAdLoadCallback 클래스 API 설명**
 
 ```java
 public void onAdLoaded(AdWhaleMediationRewardAd ad, String message) // 미디에이션 보상형 광고요청 성공 시
@@ -323,7 +323,7 @@ public void onAdLoaded(AdWhaleMediationRewardAd ad, String message) // 미디에
 public void onAdFailedToLoad(int statusCode, String message) // 미디에이션 보상형 광고요청 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="123.40234375">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 연동 오류(placementUid 오설정 등)</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>Internal error occurred...</code></mark> = 연동 오류 메시지</p><p>또는</p><p><mark style="color:red;"><code>Mediation network error occurred...</code></mark> = 최초 로드에서 광고를 채우지 못함(워터폴 모두 소진)<br>또는 <br><mark style="color:red;"><code>Mediation network error occurred...Previous ad is still showing</code></mark> = 갱신 중 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr></tbody></table>
 
 **AdWhaleMediationFullScreenContentCallback 클래스 API 설명**
 
@@ -335,7 +335,35 @@ public void onAdShowed() // 미디에이션 보상형 광고표시 후
 public void onFailedToShow(int statusCode, String message) // 미디에이션 보상형 광고표시 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+{% hint style="info" %}
+**onFailedToShow  후처리 가이드**
+
+* 광고 표시 실패 시 onFailedToShow가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+*   표시할 광고가 준비되지 않은 상태에서 `showAd(activity, listener)` 를 호출하면 `AdWhaleMediationFullScreenContentCallback` 의 **`onFailedToShow` 가 발생합니다.**
+
+    ```
+    statusCode : 200
+    message    : "No rewarded ad is ready to show."
+    ```
+
+    보상형은 사용자가 **"광고 보고 보상 받기"** 를 누른 직후이므로, 아무 반응이 없으면 보상이 지급되지 않은 것으로 오해합니다. 이 콜백에서 반드시 안내를 노출하세요.
+
+    ```java
+    rewardAd.setAdWhaleMediationFullScreenContentCallback(
+        new AdWhaleMediationFullScreenContentCallback() {
+            @Override
+            public void onFailedToShow(int statusCode, String message) {
+                hideLoading();
+                showToast("잠시 후 다시 시도해 주세요.");
+            }
+            // ...
+        });
+    ```
+
+    `onFailedToShow` 가 발생한 경우 **보상은 지급되지 않습니다.** `onUserRewarded` 만을 보상 지급의 기준으로 사용하세요.
+{% endhint %}
+
+<table data-header-hidden><thead><tr><th width="130.2421875">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 아직 로딩 중에 show 호출 시</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td>연동 오류 메시지</td></tr></tbody></table>
 
 ```java
 public void onAdDismissed() // 미디에이션 보상형 광고닫기 시
