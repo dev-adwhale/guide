@@ -1157,6 +1157,7 @@ LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placem
 
 **onNativeAdShowFailed  후처리 가이드**
 
+* `onNativeAdShowFailed` 는 로깅 · 지표 수집 용도로만 사용하시길 권장합니다.
 * 광고 표시 실패 시 onNativeAdShowFailed가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
 *   표시할 광고가 준비되지 않은 상태에서 `showAd(activity)` 를 호출하면 **`onNativeAdShowFailed` 가 발생합니다.**
 
