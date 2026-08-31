@@ -923,8 +923,19 @@ class _FullscreenNativeAdModalState extends State<FullscreenNativeAdModal> {
 
 #### 에러 처리 <a href="#id-6___562" id="id-6___562"></a>
 
-* `onLoadFailed`와 `onShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
+* `onLoadFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+#### **onLoadFailed  후처리 가이드**
+
+* `onLoadFailed`는 **워터폴이 모두 소진됐을 때 1회만** 발생합니다. 개별 광고 네트워크의 실패로는 발생하지 않습니다.
+* 기존에 노출 중인 광고가 있다면 그 광고 노출은 유지되지만, 자동 갱신은 멈춥니다. 광고 갱신을 재개하려면 로드를 다시 호출하세요.
+
+#### **onShowFailed  후처리 가이드**
+
+* `onShowFailed` 는 로깅 · 지표 수집 용도로만 사용하시길 권장합니다.
+* 광고 표시 실패 시 `onShowFailed`가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+* 표시할 광고가 준비되지 않은 상태에서 `showAd()` 를 호출하면 **`onShowFailed` 가 발생합니다.**
 
 #### 테스트 <a href="#id-7__567" id="id-7__567"></a>
 

@@ -364,6 +364,26 @@ class _RewardAdScreenState extends State<RewardAdScreen> {
 * `onLoadFailed`와 `onShowFailed` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
 
+#### **onShowFailed  후처리 가이드**
+
+* 광고 표시 실패 시 `x`가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+* 표시할 광고가 준비되지 않은 상태에서 `showAd()` 를 호출하면 **`onShowFailed` 가 발생합니다.**
+*   보상형은 사용자가 **"광고 보고 보상 받기"** 를 누른 직후이므로, 아무 반응이 없으면 보상이 지급되지 않은 것으로 오해합니다. 이 콜백에서 반드시 안내를 노출하세요.
+
+    ```dart
+    onShowFailed: (errorCode, errorMessage) {
+      print('보상형 광고 표시 실패: $errorCode, $errorMessage');
+      setState(() {
+        _rewardAd = null;
+        _isLoaded = false;
+      });
+      hideLoading(); // 예시코드: 로드 숨김처리
+      showToast("잠시 후 다시 시도해 주세요."); // 예시코드: 재시도 요청 토스트
+    }
+    ```
+
+    `onShowFailed` 가 발생한 경우 **보상은 지급되지 않습니다.** `onUserRewarded` 만을 보상 지급의 기준으로 사용하세요.
+
 #### 테스트 <a href="#id-7__511" id="id-7__511"></a>
 
 * 개발 환경에서는 테스트용 placement UID를 사용하세요.
