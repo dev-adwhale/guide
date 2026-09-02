@@ -280,6 +280,12 @@ export default TransitionPopupAdScreen;
 * `onShowFailed` 시 네이티브 인스턴스가 정리될 수 있으므로, 필요 시 `loadAd()`를 다시 호출하세요.
 * `onClosed`의 `reasonId`, `reasonMessage`로 사용자가 종료·취소했는지 분기할 수 있습니다.
 
+#### onShowFailed  후처리 가이드
+
+* 광고 표시 실패 시 `onShowFailed`가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
+* 표시할 광고가 준비되지 않은 상태에서 `showAd()` 를 호출하면 **`onShowFailed` 가 발생합니다.**
+* 앱 내 화면 전환 광고는 노출에 실패해도 앱의 흐름은 계속 진행되어야 합니다. 이 콜백에서 원래 하려던 동작(앱 종료 / 화면 이동)을 이어서 수행하세요.
+
 #### **테스트**
 
 * 개발 환경에서는 테스트용 Placement UID를 사용하세요.
