@@ -55,6 +55,7 @@
   * [5. Sample Project](ios/sdk/5.-sample-project.md)
   * [6. Changelog](ios/sdk/6.-changelog.md)
 * [SDK 연동 가이드(리뉴얼)](ios/sdk-1/README.md)
+  * [들어가기 전에](ios/sdk-1/undefined.md)
   * [1. 요구사항 및 사용권한(주현 확인)](ios/sdk-1/1..md)
   * [2. 프로젝트 설정](ios/sdk-1/2./README.md)
     * [SDK 설치](ios/sdk-1/2./sdk/README.md)
