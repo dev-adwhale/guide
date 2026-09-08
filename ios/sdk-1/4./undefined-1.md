@@ -1,252 +1,448 @@
 # 배너
 
 {% hint style="info" %}
-* AdWhale SDK를 프로젝트에 추가 해야합니다.
-* Banner Ad용으로 발급받은 Ad Unit ID를 사용합니다.
-* 광고를 요청하기 전에 SDK 초기화를 진행합니다.
+배너 광고는 앱 화면의 특정 영역에 표시되는 직사각형 광고입니다. 사용자가 앱을 사용하는 동안 지속적으로 노출되어 높은 노출 빈도를 제공합니다.
 {% endhint %}
 
-### BannerAd 설정
+#### 1. 주요특징
 
-#### 1. 광고 단위 설정
+* 다양한 사이즈 지원 (320x50, 320x100, 300x250, 250x250, ADAPTIVE\_ANCHOR)
+* 자동 로드 및 자동 갱신 기능
+* 간단한 뷰 기반 구현 (`UIView` 서브클래스)
+* 일반 배너 / 프리로드 배너 모두 지원
+* 코드(Programmatic) / Storyboard 방식 모두 지원
+* 이벤트 기반 델리게이트 콜백으로 광고 상태 추적
 
-배너 광고용으로 발급받은 `ad unit ID`를 사용하여 광고 단위를 설정하세요.
+| 항목      | 내용                                                |
+| ------- | ------------------------------------------------- |
+| 항목      | 내용                                                |
+| 클래스     | AdWhaleMediationAdView                            |
+| 지원 네트워크 | AdMob, AdManager, AdFit, Admize, Cauly, Levelplay |
+| 노출      | show()                                            |
+
+#### 2. 기본 구현 샘플코드
+
+`AdWhaleMediationAdView` 클래스를 사용하여 배너 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
 
 {% tabs %}
 {% tab title="Swift" %}
 ```swift
-bannerView.setAdUnitID("배너 광고 AD_UNIT_ID 입력")
+final class BannerViewController: UIViewController, AdWhaleMediationAdViewDelegate {
+
+    // 1. 인스턴스 생성
+    private let bannerView = AdWhaleMediationAdView()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // 2. 화면 계층에 추가 (★ loadAd() 보다 먼저)
+        view.addSubview(bannerView)
+
+        // 3. 지면 등록 (placementUid)
+        bannerView.placementUid = "발급받은 PLACEMENT_UID 값"
+
+        // 4. 배너 사이즈 설정
+        bannerView.bannerSize = .banner320x50
+
+        // 5. 델리게이트 등록
+        bannerView.delegate = self
+
+        // 6. 로드 (성공 시 자동 노출)
+        bannerView.loadAd()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        bannerView.resume()   // 자동 갱신 재개
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        bannerView.pause()    // 자동 갱신 일시정지
+    }
+
+    deinit {
+        // 7. 폐기
+        bannerView.destroy()
+    }
+
+    // MARK: - AdWhaleMediationAdViewDelegate
+
+    func adViewDidReceiveAd(_ adView: AdWhaleMediationAdView) {
+        // 로드 성공 (직후 자동 노출됨)
+    }
+
+    func adView(_ adView: AdWhaleMediationAdView,
+                didFailToLoadWithError statusCode: Int, message: String) {
+        // 로드 실패
+    }
+
+    func adViewDidClick(_ adView: AdWhaleMediationAdView) {
+        // 클릭
+    }
+}
+```
+{% endtab %}
+
+{% tab title="SwiftUI" %}
+```swift
+// 배너는 UIView 이므로 UIViewRepresentable 로 감싸 사용합니다.
+struct BannerRepresentable: UIViewRepresentable {
+
+    let placementUid: String
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    func makeUIView(context: Context) -> UIView {
+        let container = UIView()
+
+        // 1. 인스턴스 생성
+        let banner = AdWhaleMediationAdView()
+
+        // 2. 지면 등록 / 3. 사이즈 설정 / 4. 델리게이트 등록
+        banner.placementUid = placementUid
+        banner.bannerSize = .banner320x50
+        banner.delegate = context.coordinator
+
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(banner)   // ★ loadAd() 보다 먼저
+        NSLayoutConstraint.activate([
+            banner.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            banner.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+        ])
+        context.coordinator.banner = banner
+
+        // 5. 로드 — 뷰가 window 계층에 붙은 다음 프레임에 호출
+        DispatchQueue.main.async { banner.loadAd() }
+        return container
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) { }
+
+    // 6. 폐기
+    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
+        coordinator.banner?.destroy()
+    }
+
+    final class Coordinator: NSObject, AdWhaleMediationAdViewDelegate {
+        var banner: AdWhaleMediationAdView?
+
+        func adViewDidReceiveAd(_ adView: AdWhaleMediationAdView) { }
+
+        func adView(_ adView: AdWhaleMediationAdView,
+                    didFailToLoadWithError statusCode: Int, message: String) { }
+
+        func adViewDidClick(_ adView: AdWhaleMediationAdView) { }
+    }
+}
+
+struct ContentView: View {
+    var body: some View {
+        VStack {
+            Spacer()
+            BannerRepresentable(placementUid: "발급받은 PLACEMENT_UID 값")
+                .frame(width: 320, height: 50)
+        }
+    }
+}
 ```
 {% endtab %}
 
 {% tab title="Objective-C" %}
 ```objective-c
-[_bannerView setAdUnitID:@"배너 광고 AD_UNIT_ID 입력"];
+@interface BannerViewController () <AdWhaleMediationAdViewDelegate>
+@property (nonatomic, strong) AdWhaleMediationAdView *bannerView;
+@end
+
+@implementation BannerViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    // 1. 인스턴스 생성
+    self.bannerView = [[AdWhaleMediationAdView alloc] init];
+
+    // 2. 화면 계층에 추가 (★ loadAd 보다 먼저)
+    [self.view addSubview:self.bannerView];
+
+    // 3. 지면 등록 (placementUid)
+    self.bannerView.placementUid = @"발급받은 PLACEMENT_UID 값";
+
+    // 4. 배너 사이즈 설정
+    self.bannerView.bannerSize = AdWhaleBannerSizeBanner320x50;
+
+    // 5. 델리게이트 등록
+    [self.bannerView setAdWhaleMediationAdViewDelegate:self];
+
+    // 6. 로드 (성공 시 자동 노출)
+    [self.bannerView loadAd];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.bannerView resume];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.bannerView pause];
+}
+
+- (void)dealloc {
+    // 7. 폐기
+    [self.bannerView destroy];
+}
+
+// 로드 성공 (직후 자동 노출)
+- (void)adViewDidReceiveAd:(AdWhaleMediationAdView *)adView { }
+
+// 로드 실패
+- (void)adView:(AdWhaleMediationAdView *)adView
+didFailToLoadWithError:(NSInteger)statusCode message:(NSString *)message { }
+
+// 클릭
+- (void)adViewDidClick:(AdWhaleMediationAdView *)adView { }
+
+@end
 ```
 {% endtab %}
 {% endtabs %}
 
-#### 2. 배너 사이즈 설정
+{% hint style="danger" %}
+**호출 순서가 중요합니다.** `addSubview(...)` → `loadAd()` 순서를 지키세요.\
+Cauly 등 일부 네트워크는 responder chain 으로 부모 `UIViewController` 를 찾기 때문에\
+화면에 붙기 전에 로드하면 그 네트워크가 실패합니다.
+{% endhint %}
 
-배너 광고의 크기를 설정합니다.
+#### 3. API 설명
 
-선택한 배너 사이즈에 맞춰 배너 뷰의 높이 및 레이아웃을 구성해야 합니다.
+**AdWhaleMediationAdView 클래스 API 설명**
 
-{% tabs %}
-{% tab title="Swift" %}
 ```swift
-bannerView.setAdSize(.banner)
+public init()   // UIView 기본 이니셜라이저
 ```
-{% endtab %}
 
-{% tab title="Objective-C" %}
-```objective-c
-[_bannerView setAdSize:AdWhaleAdSizeBanner];
-```
-{% endtab %}
-{% endtabs %}
-
-| **AdWhaleAdSize(Swift)** | **AdWhaleAdSize(ObjC)**      | **Size (width \* height)** |
-| ------------------------ | ---------------------------- | -------------------------- |
-| .banner                  | AdWhaleAdSizeBanner          | 320 \*50                   |
-| .largeBanner             | AdWhaleAdSizeLargeBanner     | 320 \* 100                 |
-| .mediumRectangle         | AdWhaleAdSizeMediumRectangle | 300 \* 250                 |
-
-#### 3. RootViewController 설정
-
-배너 광고의 기준이 되는 ViewController를 설정합니다.
-
-{% tabs %}
-{% tab title="Swift" %}
 ```swift
-bannerView.setRootViewController(self)
+public var placementUid: String   // 지면 등록
 ```
-{% endtab %}
 
-{% tab title="Objective-C" %}
-```objective-c
-[_bannerView setRootViewController:self];
-```
-{% endtab %}
-{% endtabs %}
+| 파라미터 타입 | 파라미터 값                |
+| ------- | --------------------- |
+| 파라미터 타입 | 파라미터 값                |
+| String  | placementUid 값(발급 필요) |
 
-#### 4. Delegate 설정
-
-배너 광고의 이벤트는 **Delegate를 통해 전달**됩니다.
-
-{% tabs %}
-{% tab title="Swift" %}
 ```swift
-bannerView.setDelegate(self)
+public var bannerSize: AdWhaleBannerSize   // 미디에이션 배너 사이즈 설정
 ```
-{% endtab %}
 
-{% tab title="Objective-C" %}
-```objective-c
-[_bannerView setDelegate:self];
-```
-{% endtab %}
-{% endtabs %}
+| 파라미터 타입           | 파라미터 값                                                                                            |
+| ----------------- | ------------------------------------------------------------------------------------------------- |
+| 파라미터 타입           | 파라미터 값                                                                                            |
+| AdWhaleBannerSize | 배너 광고 사이즈(사이즈 종류: .banner320x50, .banner320x100, .banner300x250, .banner250x250, .adaptiveAnchor) |
 
-#### 5. 광고 요청
-
-설정된 정보(AdSize, Ad Unit ID 등)를 기준으로\
-배너 광고를 요청(load)합니다.
-
-광고 요청 결과는 Delegate 메서드를 통해 전달됩니다.
-
-{% tabs %}
-{% tab title="Swift" %}
 ```swift
-bannerView.load()
+public weak var delegate: AdWhaleMediationAdViewDelegate?   // 콜백 델리게이트 (Swift)
 ```
-{% endtab %}
 
-{% tab title="Objective-C" %}
-```objective-c
-[self.bannerView load];
+| 파라미터 타입                        | 파라미터 값                  |
+| ------------------------------ | ----------------------- |
+| 파라미터 타입                        | 파라미터 값                  |
+| AdWhaleMediationAdViewDelegate | 배너 미디에이션 광고 호출 콜백 델리게이트 |
+
+```swift
+public var adaptiveAnchorWidth: Int   // 디바이스 width 입력. ADAPTIVE_ANCHOR 적응형 배너 적용 시
 ```
-{% endtab %}
-{% endtabs %}
 
-### Banner Delegate 설명
+| 파라미터 타입 | 파라미터 값                                             |
+| ------- | -------------------------------------------------- |
+| 파라미터 타입 | 파라미터 값                                             |
+| Int     | <p>배너 너비(pt) 입력<br>0을 입력할 경우 디바이스 전체 가로 길이 적용됨</p> |
 
-배너 광고의 상태 변화는 Delegate를 통해 전달됩니다.
+```swift
+public func loadAd()    // 미디에이션 배너 광고 로드 (성공 시 자동 노출)
+```
 
-| Delegate 메서드                  | 설명                                |
-| ----------------------------- | --------------------------------- |
-| bannerViewDidReceiveAd        | 배너 광고가 성공적으로 로드되었을 때 호출됩니다.       |
-| didFailToReceiveAdWithError   | 배너 광고 로드에 실패했을 때 호출됩니다.           |
-| bannerViewWillPresentScreen   | 배너 광고 클릭으로 전체 화면이 표시되기 직전에 호출됩니다. |
-| bannerViewDidRecordImpression | 배너 광고가 화면에 노출되었을 때 호출됩니다.         |
-| bannerViewWillDismissScreen   | 배너 광고로 열린 화면이 닫히기 직전에 호출됩니다.      |
-| bannerViewDidDismissScreen    | 배너 광고로 열린 화면이 완전히 닫힌 후 호출됩니다.     |
+```swift
+public func resume()    // 화면 복귀(viewWillAppear 등) 시 호출 필요 — 자동 갱신 재개
+```
+
+```swift
+public func pause()     // 화면 이탈(viewWillDisappear 등) 시 호출 필요 — 자동 갱신 일시정지
+```
+
+```swift
+public func stop()      // 갱신을 완전히 멈출 때 호출 (재개는 loadAd())
+```
+
+```swift
+public func destroy()   // deinit 시 호출 필요 — 리소스 해제
+```
+
+```swift
+public override var intrinsicContentSize: CGSize   // 배너 고유 크기 제공
+```
+
+**AdWhaleMediationAdViewDelegate 프로토콜 API 설명**
+
+<table><thead><tr><th width="412.59375">델리게이트 메서드</th><th>호출 시점</th></tr></thead><tbody><tr><td>델리게이트 메서드</td><td>호출 시점</td></tr><tr><td>adViewDidReceiveAd(_:)</td><td>광고 로드 성공</td></tr><tr><td>adView(_<em>:didFailToLoadWithError:message:</em>)</td><td>광고 로드 실패</td></tr><tr><td>adViewDidClick(_:)</td><td>클릭</td></tr></tbody></table>
+
+```swift
+func adViewDidReceiveAd(_ adView: AdWhaleMediationAdView)   // 배너 광고요청 성공 시
+```
+
+```swift
+func adView(_ adView: AdWhaleMediationAdView,
+            didFailToLoadWithError statusCode: Int, message: String)   // 미디에이션 배너 광고요청 실패 시
+```
 
 {% hint style="info" %}
-배너 광고는 화면 상단 또는 하단에 **뷰(View) 형태로 표시**됩니다.\
-배너 광고를 사용하기 위해 `AdWhaleBannerAd` 뷰를 생성하거나 Storyboard에 배치한 뒤,\
-Ad Unit ID와 Delegate를 설정하고 `load()`를 호출하여 광고를 요청합니다.
+**`didFailToLoadWithError` 후처리 가이드**
 
-배너 광고는 광고가 로드된 이후,\
-배너 뷰가 포함된 화면이 유지되는 동안 지속적으로 노출됩니다.
+* 이 콜백은 **워터폴이 모두 소진됐을 때 1회만** 발생합니다. 개별 광고 네트워크의 실패로는 발생하지 않습니다.
+* 기존에 노출 중인 광고가 있다면 그 광고 노출은 유지되지만, 자동 갱신은 멈춥니다. 광고 갱신을 재개하려면 `loadAd()` 를 다시 호출하세요.
+* **이 콜백에서 무조건 광고 영역을 숨기지 마세요.** 갱신 실패에서도 발생하며, 그때는 이전 광고가 그대로 노출 중입니다. 광고 영역을 `isHidden = true` 로 만들면 **노출 중인 광고를 스스로 가리게 됩니다.**
 {% endhint %}
 
-### 배너 광고 구현 샘플
+<table data-header-hidden><thead><tr><th width="132.26953125">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 연동 오류(placementUid 오설정 등)</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>Internal error occurred...</code></mark> = 연동 오류 메시지</p><p>또는</p><p><mark style="color:red;"><code>Mediation network error occurred...</code></mark> = 최초 로드에서 광고를 채우지 못함(워터폴 모두 소진)<br>또는 <br><mark style="color:red;"><code>Mediation network error occurred...Previous ad is still showing</code></mark> = 갱신 중 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr></tbody></table>
 
-#### 1. Storyboard 방식
+```swift
+@objc optional func adViewDidClick(_ adView: AdWhaleMediationAdView)   // 배너 클릭 시
+```
+
+#### 4. 배너 사이즈
+
+배너 광고는 다음 사이즈를 지원합니다:
+
+<table><thead><tr><th width="181.7578125">사이즈</th><th width="310.55859375">값</th><th width="107.5546875">사이즈 별 높이</th><th>설명</th></tr></thead><tbody><tr><td>사이즈</td><td>값</td><td>사이즈 별 높이</td><td>설명</td></tr><tr><td>320x50</td><td><code>AdWhaleBannerSize.BANNER320x50</code></td><td>50</td><td>표준 배너 (Banner)</td></tr><tr><td>320x100</td><td><code>AdWhaleBannerSize.BANNER320x100</code></td><td>100</td><td>큰 배너 (Large Banner)</td></tr><tr><td>300x250</td><td><code>AdWhaleBannerSize.BANNER300x250</code></td><td>250</td><td>중간 직사각형 (Medium Rectangle)</td></tr><tr><td>250x250</td><td><code>AdWhaleBannerSize.BANNER250x250</code></td><td>250</td><td>정사각형 (Square)</td></tr><tr><td>ADAPTIVE_ANCHOR</td><td><code>AdWhaleBannerSize.ADAPTIVE_ANCHOR</code></td><td>50</td><td>적응형 앵커 배너(기기 너비 x 50)</td></tr></tbody></table>
+
+**사용 예시**
 
 {% tabs %}
 {% tab title="Swift" %}
 ```swift
-import UIKit
-import AdWhaleSDK
+// 320x50 (표준 배너) 사용 예:
+bannerView.bannerSize = .banner320x50
 
-class ViewController: UIViewController {
-    @IBOutlet var bannerView: AdWhaleBannerAd!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // BannerView Setting
-        bannerView.setAdUnitID("배너 광고 AD_UNIT_ID 입력")
-        bannerView.setAdSize(.banner)
-        bannerView.setRootViewController(self)
-        bannerView.setDelegate(self)
-        
-        // Banner Ad Request
-        bannerView.load()
-    }
-}
+// 320x100 (큰 배너) 사용 예:
+bannerView.bannerSize = .banner320x100
 
-// MARK: BannerAd Delegate
-extension ViewController: AdWhaleBannerDelegate {
-    func bannerViewDidReceiveAd(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewDidReceiveAd")
-    }
-    
-    func bannerView(_ bannerView: AdWhaleSDK.AdWhaleBannerAd, didFailToReceiveAdWithError error: Error) {
-        print("ViewController didFailToReceiveAdWithError: \(error.localizedDescription)")
-    }
-    
-    func bannerViewDidRecordImpression(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewDidRecordImpression")
-    }
-    
-    func bannerViewWillPresentScreen(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewWillPresentScreen")
-    }
-    
-    func bannerViewWillDismissScreen(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewWillDismissScreen")
-    }
-    
-    func bannerViewDidDismissScreen(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewDidDismissScreen")
-    }
-}
+// 300x250 (중간 직사각형) 사용 예:
+bannerView.bannerSize = .banner300x250
+
+// 250x250 (정사각형) 사용 예:
+bannerView.bannerSize = .banner250x250
+
+// ADAPTIVE_ANCHOR (적응형 앵커 배너) 사용 예:
+bannerView.bannerSize = .adaptiveAnchor
+bannerView.adaptiveAnchorWidth = 0   // 0 = 디바이스 전체 가로 길이
+```
+{% endtab %}
+
+{% tab title="SwiftUI" %}
+```swift
+// UIViewRepresentable 내부에서 동일하게 설정합니다.
+banner.bannerSize = .banner320x50        // 320x50 (표준 배너)
+banner.bannerSize = .banner320x100       // 320x100 (큰 배너)
+banner.bannerSize = .banner300x250       // 300x250 (중간 직사각형)
+banner.bannerSize = .banner250x250       // 250x250 (정사각형)
+
+banner.bannerSize = .adaptiveAnchor      // 적응형 앵커 배너
+banner.adaptiveAnchorWidth = 0           // 0 = 디바이스 전체 가로 길이
 ```
 {% endtab %}
 
 {% tab title="Objective-C" %}
 ```objective-c
-#import "ViewController.h"
-@import AdWhaleSDK;
+// 320x50 (표준 배너) 사용 예:
+bannerView.bannerSize = AdWhaleBannerSizeBanner320x50;
 
-@interface ViewController () <AdWhaleBannerDelegate>
+// 320x100 (큰 배너) 사용 예:
+bannerView.bannerSize = AdWhaleBannerSizeBanner320x100;
 
-@property (nonatomic, strong) IBOutlet AdWhaleBannerAd *bannerView;
+// 300x250 (중간 직사각형) 사용 예:
+bannerView.bannerSize = AdWhaleBannerSizeBanner300x250;
 
-@end
+// 250x250 (정사각형) 사용 예:
+bannerView.bannerSize = AdWhaleBannerSizeBanner250x250;
 
-@implementation ViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    // BannerView Setting
-    [_bannerView setAdUnitID:@"배너 광고 AD_UNIT_ID 입력"];
-    [_bannerView setAdSize:AdWhaleAdSizeBanner];
-    [_bannerView setRootViewController:self];
-    [_bannerView setDelegate:self];
-    
-    // Banner Ad Request
-    [self.bannerView load];
-}
-
-#pragma mark - BannerAd Delegate
-- (void)bannerViewDidReceiveAd:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewDidReceiveAd");
-}
-
-- (void)bannerView:(AdWhaleBannerAd *)bannerView didFailToReceiveAdWithError:(NSError *)error {
-    NSLog(@"ViewController didFailToReceiveAdWithError: %@", error.localizedDescription);
-}
-
-- (void)bannerViewDidRecordImpression:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewDidRecordImpression");
-}
-
-- (void)bannerViewWillPresentScreen:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewWillPresentScreen");
-}
-
-- (void)bannerViewWillDismissScreen:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewWillDismissScreen");
-}
-
-- (void)bannerViewDidDismissScreen:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewDidDismissScreen");
-}
-
-@end
+// ADAPTIVE_ANCHOR (적응형 앵커 배너) 사용 예:
+bannerView.bannerSize = AdWhaleBannerSizeAdaptiveAnchor;
+bannerView.adaptiveAnchorWidth = 0;   // 0 = 디바이스 전체 가로 길이
 ```
 {% endtab %}
 {% endtabs %}
 
+#### 5. 옵션 설정
 
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+bannerView.region = "서울시 강남구"                                // 지역 타게팅 전용 API(옵션)
+bannerView.setGeocoder(latitude: 37.5665, longitude: 126.9780)   // 지역 타게팅 전용 API(옵션)
+```
 
-#### 2. 프로그램 코드 방식
+{% hint style="info" %}
+AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
+{% endhint %}
+
+```swift
+// 레벨플레이 placement name 연동 전용 API (옵션).
+// placementName 값은 LevelPlay 콘솔에서 설정한 이름
+bannerView.placementName = "app_open_main"
+```
+
+{% hint style="warning" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+{% endhint %}
+{% endtab %}
+
+{% tab title="SwiftUI" %}
+```swift
+bannerView.region = "서울시 강남구"                                // 지역 타게팅 전용 API(옵션)
+bannerView.setGeocoder(latitude: 37.5665, longitude: 126.9780)   // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
+{% endhint %}
+
+```swift
+// 레벨플레이 placement name 연동 전용 API (옵션).
+// placementName 값은 LevelPlay 콘솔에서 설정한 이름
+bannerView.placementName = "app_open_main"
+```
+
+{% hint style="warning" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+{% endhint %}
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objective-c
+bannerView.region = @"서울시 강남구";                          // 지역 타게팅 전용 API(옵션)
+[bannerView setGeocoderWithLatitude:37.5665 longitude:126.9780];  // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
+{% endhint %}
+
+```objective-c
+// 레벨플레이 placement name 연동 전용 API (옵션).
+// placementName 값은 LevelPlay 콘솔에서 설정한 이름
+bannerView.placementName = @"app_open_main";                   // 레벨플레이 placement name (옵션)
+```
+
+{% hint style="warning" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+{% endhint %}
+{% endtab %}
+{% endtabs %}
+
+#### 6. 배너 광고 Programmatic 샘플코드
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -254,121 +450,369 @@ extension ViewController: AdWhaleBannerDelegate {
 import UIKit
 import AdWhaleSDK
 
-class ViewController: UIViewController {
-    var bannerView: AdWhaleBannerAd?
-    
+final class BannerViewController: UIViewController, AdWhaleMediationAdViewDelegate {
+
+    private let bannerView = AdWhaleMediationAdView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let frame = CGRect(x: 0,
-                           y: 500,
-                           width: UIScreen.main.bounds.width,
-                           height: 50)
-        
-        bannerView = AdWhaleBannerAd(frame: frame)
-        view.addSubview(bannerView)
-        
-        // BannerView Setting
-        bannerView?.setAdSize(.banner)
-        bannerView?.setAdUnitID("배너 광고 AD_UNIT_ID 입력")
-        bannerView?.setRootViewController(self)
-        bannerView?.setDelegate(self)
-        
-        // Banner Ad Request
-        bannerView.load()
-    }
-}
 
-// MARK: BannerAd Delegate
-extension ViewController: AdWhaleBannerDelegate {
-    func bannerViewDidReceiveAd(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewDidReceiveAd")
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bannerView)                       // ① 화면에 추가
+        NSLayoutConstraint.activate([
+            bannerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            bannerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        ])
+
+        bannerView.placementUid = "발급받은 PLACEMENT_UID 값"   // ②
+        bannerView.bannerSize = .banner320x50                  // ③
+        bannerView.delegate = self                             // ④
+        bannerView.loadAd()                                    // ⑤
     }
-    
-    func bannerView(_ bannerView: AdWhaleSDK.AdWhaleBannerAd, didFailToReceiveAdWithError error: Error) {
-        print("ViewController didFailToReceiveAdWithError: \(error.localizedDescription)")
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        bannerView.resume()
     }
-    
-    func bannerViewDidRecordImpression(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewDidRecordImpression")
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        bannerView.pause()
     }
-    
-    func bannerViewWillPresentScreen(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewWillPresentScreen")
+
+    deinit {
+        bannerView.destroy()
     }
-    
-    func bannerViewWillDismissScreen(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewWillDismissScreen")
+
+    // MARK: - AdWhaleMediationAdViewDelegate
+
+    func adViewDidReceiveAd(_ adView: AdWhaleMediationAdView) {
+        print("배너 로드 성공 — 자동 노출됨")
     }
-    
-    func bannerViewDidDismissScreen(_ bannerView: AdWhaleSDK.AdWhaleBannerAd) {
-        print("ViewController bannerViewDidDismissScreen")
+
+    func adView(_ adView: AdWhaleMediationAdView,
+                didFailToLoadWithError statusCode: Int, message: String) {
+        if statusCode == 300, message.contains("Previous ad is still showing.") {
+            // 이번 갱신만 실패했고 광고는 계속 노출 중 → 아무것도 하지 않는다
+            return
+        }
+        print("배너 로드 실패 (\(statusCode)): \(message)")
+    }
+
+    func adViewDidClick(_ adView: AdWhaleMediationAdView) {
+        print("배너 클릭")
     }
 }
 ```
 {% endtab %}
 
+{% tab title="SwiftUI" %}
+```swift
+import SwiftUI
+import UIKit
+import AdWhaleSDK
+
+struct BannerRepresentable: UIViewRepresentable {
+
+    let placementUid: String
+    let bannerSize: AdWhaleBannerSize
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    func makeUIView(context: Context) -> UIView {
+        let container = UIView()
+
+        let banner = AdWhaleMediationAdView()
+        banner.placementUid = placementUid
+        banner.bannerSize = bannerSize
+        banner.placementName = "banner_main"
+        banner.delegate = context.coordinator
+        banner.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(banner)                  // ① 화면에 추가
+        NSLayoutConstraint.activate([
+            banner.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            banner.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+        ])
+        context.coordinator.banner = banner
+
+        // ② 뷰가 window 계층에 붙은 다음 프레임에 로드
+        DispatchQueue.main.async { banner.loadAd() }
+        return container
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) { }
+
+    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
+        coordinator.banner?.destroy()
+    }
+
+    final class Coordinator: NSObject, AdWhaleMediationAdViewDelegate {
+        var banner: AdWhaleMediationAdView?
+
+        func adViewDidReceiveAd(_ adView: AdWhaleMediationAdView) {
+            print("배너 로드 성공 — 자동 노출됨")
+        }
+
+        func adView(_ adView: AdWhaleMediationAdView,
+                    didFailToLoadWithError statusCode: Int, message: String) {
+            if statusCode == 300, message.contains("Previous ad is still showing.") { return }
+            print("배너 로드 실패 (\(statusCode)): \(message)")
+        }
+
+        func adViewDidClick(_ adView: AdWhaleMediationAdView) {
+            print("배너 클릭")
+        }
+    }
+}
+
+struct BannerScreen: View {
+    @Environment(\.scenePhase) private var scenePhase
+
+    var body: some View {
+        VStack {
+            Spacer()
+            BannerRepresentable(placementUid: "발급받은 PLACEMENT_UID 값",
+                                bannerSize: .banner320x50)
+                .frame(width: 320, height: 50)
+        }
+    }
+}
+```
+
+{% hint style="warning" %}
+SwiftUI 는 `viewWillAppear` / `viewWillDisappear` 가 없습니다.\
+자동 갱신 제어(`resume()` / `pause()`)가 필요하면 `Coordinator` 에 배너 참조를 보관해 두고\
+`.onAppear` / `.onDisappear` 또는 `scenePhase` 변화에서 호출하세요.
+{% endhint %}
+{% endtab %}
+
 {% tab title="Objective-C" %}
 ```objective-c
-#import "ViewController.h"
-@import AdWhaleSDK;
-
-@interface ViewController () <AdWhaleBannerDelegate>
-
-@property (nonatomic, strong) AdWhaleBannerAd *bannerView;
-
+@interface BannerViewController () <AdWhaleMediationAdViewDelegate>
+@property (nonatomic, strong) AdWhaleMediationAdView *bannerView;
 @end
 
-@implementation ViewController
+@implementation BannerViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    // BannerView Create
-    CGRect frame = CGRectMake(0,
-                              500,
-                              UIScreen.mainScreen.bounds.size.width,
-                              50);
-    self.bannerView = [[AdWhaleBannerAd alloc] initWithFrame:frame];
+
+    self.bannerView = [[AdWhaleMediationAdView alloc] init];
+    self.bannerView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.bannerView];
-    
-    // BannerView Setting
-    [_bannerView setAdSize:AdWhaleAdSizeBanner];
-    [_bannerView setAdUnitID:@"배너 광고 AD_UNIT_ID 입력"];
-    [_bannerView setRootViewController:self];
-    [_bannerView setDelegate:self];
-    
-    // Banner Ad Request
-    [self.bannerView load];
+    [NSLayoutConstraint activateConstraints:@[
+        [self.bannerView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [self.bannerView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+    ]];
+
+    self.bannerView.placementUid = @"발급받은 PLACEMENT_UID 값";
+    self.bannerView.bannerSize = AdWhaleBannerSizeBanner320x50;
+    [self.bannerView setAdWhaleMediationAdViewDelegate:self];
+    [self.bannerView loadAd];
 }
 
-#pragma mark - BannerAd Delegate
-- (void)bannerViewDidReceiveAd:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewDidReceiveAd");
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.bannerView resume];
 }
 
-- (void)bannerView:(AdWhaleBannerAd *)bannerView didFailToReceiveAdWithError:(NSError *)error {
-    NSLog(@"ViewController didFailToReceiveAdWithError: %@", error.localizedDescription);
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.bannerView pause];
 }
 
-- (void)bannerViewDidRecordImpression:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewDidRecordImpression");
+- (void)dealloc {
+    [self.bannerView destroy];
 }
 
-- (void)bannerViewWillPresentScreen:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewWillPresentScreen");
+- (void)adViewDidReceiveAd:(AdWhaleMediationAdView *)adView {
+    NSLog(@"배너 로드 성공");
 }
 
-- (void)bannerViewWillDismissScreen:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewWillDismissScreen");
-}
-
-- (void)bannerViewDidDismissScreen:(AdWhaleBannerAd *)bannerView {
-    NSLog(@"ViewController bannerViewDidDismissScreen");
+- (void)adView:(AdWhaleMediationAdView *)adView
+didFailToLoadWithError:(NSInteger)statusCode message:(NSString *)message {
+    if (statusCode == 300 && [message containsString:@"Previous ad is still showing."]) {
+        return;
+    }
+    NSLog(@"배너 로드 실패 (%ld): %@", (long)statusCode, message);
 }
 
 @end
 ```
 {% endtab %}
 {% endtabs %}
+
+#### 7.배너 광고 Storyboard 샘플코드
+
+Storyboard(또는 XIB)에 `UIView` 를 배치하고 **Custom Class** 를 `AdWhaleMediationAdView` 로 지정한 뒤,\
+`@IBOutlet` 으로 연결해 코드에서 설정 · 로드합니다.
+
+{% tabs %}
+{% tab title="Swift" %}
+**Storyboard 설정**
+
+{% hint style="info" %}
+1. Storyboard 에 UIView 를 배치하고 위치 제약(예: 화면 하단 중앙)을 지정합니다.
+2. Identity Inspector → Custom Class → Class는 AdWhaleMediationAdView, Module은 AdWhaleSDK
+3. 크기 제약은 배너 사이즈에 맞춰 지정합니다. (예: 320 x 50)
+4. Assistant Editor 에서 @IBOutlet 으로 연결합니다.
+{% endhint %}
+
+**Swift 코드**
+
+```swift
+import UIKit
+import AdWhaleSDK
+
+final class StoryboardBannerViewController: UIViewController, AdWhaleMediationAdViewDelegate {
+
+    // Storyboard 의 Custom Class 뷰와 연결
+    @IBOutlet weak var bannerView: AdWhaleMediationAdView!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Storyboard 뷰는 이미 화면 계층에 붙어 있으므로 바로 설정 · 로드 가능
+        bannerView.placementUid = "발급받은 PLACEMENT_UID 값"
+        bannerView.bannerSize = .banner320x50
+        bannerView.delegate = self
+        bannerView.loadAd()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        bannerView.resume()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        bannerView.pause()
+    }
+
+    deinit {
+        bannerView?.destroy()
+    }
+
+    // MARK: - AdWhaleMediationAdViewDelegate
+
+    func adViewDidReceiveAd(_ adView: AdWhaleMediationAdView) {
+        print("배너 로드 성공 — 자동 노출됨")
+    }
+
+    func adView(_ adView: AdWhaleMediationAdView,
+                didFailToLoadWithError statusCode: Int, message: String) {
+        print("배너 로드 실패 (\(statusCode)): \(message)")
+    }
+}
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+**Storyboard 설정**
+
+{% hint style="info" %}
+1. Storyboard 에 UIView 를 배치하고 위치 · 크기 제약을 지정합니다.
+2. Identity Inspector → Custom Class → Class는 AdWhaleMediationAdView, Module은 AdWhaleSDK
+3. @property (IBOutlet) 으로 연결합니다.
+{% endhint %}
+
+**Objective-C 코드**
+
+```objective-c
+#import <AdWhaleSDK/AdWhaleSDK-Swift.h>
+
+@interface StoryboardBannerViewController () <AdWhaleMediationAdViewDelegate>
+@property (nonatomic, weak) IBOutlet AdWhaleMediationAdView *bannerView;
+@end
+
+@implementation StoryboardBannerViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.bannerView.placementUid = @"발급받은 PLACEMENT_UID 값";
+    self.bannerView.bannerSize = AdWhaleBannerSizeBanner320x50;
+    [self.bannerView setAdWhaleMediationAdViewDelegate:self];
+    [self.bannerView loadAd];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.bannerView resume];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.bannerView pause];
+}
+
+- (void)dealloc {
+    [self.bannerView destroy];
+}
+
+- (void)adViewDidReceiveAd:(AdWhaleMediationAdView *)adView {
+    NSLog(@"배너 로드 성공");
+}
+
+- (void)adView:(AdWhaleMediationAdView *)adView
+didFailToLoadWithError:(NSInteger)statusCode message:(NSString *)message {
+    NSLog(@"배너 로드 실패 (%ld): %@", (long)statusCode, message);
+}
+
+@end
+```
+{% endtab %}
+{% endtabs %}
+
+#### 8.주의사항
+
+**광고 로드 타이밍**
+
+* `loadAd()` 는 SDK 초기화 완료(`initialize` 완료 콜백) 이후에 호출하는 것을 권장합니다.
+* **`addSubview` → `loadAd()` 순서를 지키세요.** 화면 계층에 붙기 전에 로드하면 일부 네트워크가 조용히 실패합니다.
+
+**라이프사이클**
+
+* `viewWillAppear` / `viewWillDisappear` / `deinit` 에서 각각 `resume()` / `pause()` / `destroy()` 호출이 필요합니다. 미호출 시 동작에 불이익이 있을 수 있습니다.
+* `pause()` 후 `resume()` 을 호출하지 않으면 자동 갱신이 재개되지 않습니다.
+
+**재생성**
+
+* 배너 사이즈나 placement UID 를 바꿀 때는 뷰를 `destroy()` 한 뒤 새로 생성한 후 다시 설정 · 로드하세요.
+
+**에러 처리**
+
+* 로드 실패 콜백에서 적절한 에러 처리를 구현하세요.
+* 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+**로드 실패 후처리 가이드**
+
+* 로드 실패 콜백은 **워터폴이 모두 소진됐을 때 1회만** 발생합니다. 개별 광고 네트워크의 실패로는 발생하지 않습니다.
+* 기존에 노출 중인 광고가 있다면 그 광고 노출은 유지되지만, 자동 갱신은 멈춥니다. 광고 갱신을 재개하려면 `loadAd()` 를 다시 호출하세요.
+* **로드 실패 콜백에서 무조건 광고 영역을 숨기지 마세요.** 갱신 실패에서도 발생하며, 그때는 이전 광고가 그대로 노출 중입니다.
+
+**레이아웃**
+
+* 배너 뷰는 고유 크기(`intrinsicContentSize`)를 제공합니다. 위치 제약만 걸어도 크기가 잡히지만, 명시적으로 크기 제약을 주는 것을 권장합니다.
+
+**성능 최적화**
+
+* 배너 광고는 자동으로 갱신되므로, 불필요한 뷰 재생성을 방지하세요. (SwiftUI 는 `UIViewRepresentable` 의 `makeUIView` 가 다시 호출되지 않도록 상태를 관리하세요)
+
+**테스트**
+
+* 개발 환경에서는 테스트용 placement UID 를 사용하세요.
+
+{% hint style="danger" %}
+**`addSubview` → `loadAd()` 순서를 지키세요.** 반대로 호출하면 일부 네트워크가 조용히 실패합니다.
+{% endhint %}
+
+{% hint style="warning" %}
+`pause()` 후 `resume()` 을 호출하지 않으면 자동 갱신이 재개되지 않습니다.
+{% endhint %}
+
+{% hint style="info" %}
+배너 뷰는 고유 크기(`intrinsicContentSize`)를 제공합니다. 위치 제약만 걸어도 크기가 잡히지만,\
+명시적으로 크기 제약을 주는 것을 권장합니다.
+{% endhint %}
