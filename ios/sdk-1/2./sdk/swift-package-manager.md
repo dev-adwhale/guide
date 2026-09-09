@@ -38,6 +38,10 @@ targets: [
 파트너 SDK(GoogleMobileAds / CaulySDK / AdFitSDK / AdmizeSdk)는 XCFramework 빌드 시 바이너리에 정적 링크되어 있습니다. **앱에서 별도로 설치할 필요가 없습니다.**
 {% endhint %}
 
+{% hint style="warning" %}
+설치 후 [Project Setting](../project-setting.md) 의 `-ObjC` 링커 플래그 설정을 반드시 함께 적용하세요.
+{% endhint %}
+
 #### 애드몹 미디에이션 파트너 네트워크 추가 (선택)
 
 AdMob 미디에이션 파트너 어댑터는 SDK 에 포함되지 않습니다. **앱이 직접 추가**합니다.

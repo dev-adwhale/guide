@@ -78,6 +78,7 @@
     * [전면](ios/sdk-1/4./undefined-2.md)
     * [보상형](ios/sdk-1/4./undefined-3.md)
     * [네이티브](ios/sdk-1/4./undefined-4.md)
+    * [팝업](ios/sdk-1/4./undefined-5.md)
   * [5. Sample Project](ios/sdk-1/5.-sample-project.md)
   * [6. Changelog](ios/sdk-1/6.-changelog.md)
 

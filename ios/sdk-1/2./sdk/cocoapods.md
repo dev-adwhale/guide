@@ -1,4 +1,4 @@
-# CocoaPods
+# CocoaPods(보류)
 
 {% hint style="danger" %}
 CocoaPods 정책 변경에 따라,\
@@ -21,10 +21,6 @@ target 'YourApp' do
   pod 'AdWhaleSDK', :podspec => 'https://…/AdWhaleSDK.podspec'
 end
 ```
-
-{% hint style="warning" %}
-설치 후 [2-2. Project Setting](https://dillinger.io/02-02-project-setting.md) 의 `-ObjC` 링커 플래그 설정을 반드시 함께 적용하세요.
-{% endhint %}
 
 ### 2. **`$(inherited)`** 플래그 추가 안내
 
