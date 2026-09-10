@@ -1,11 +1,11 @@
 # 전면
 
 {% hint style="info" %}
-전면 광고는 앱 화면 전체를 덮는 형태로 표시되는 광고입니다. 화면 전환 시점 등 자연스러운 지점에 노출하여 높은 주목도를 제공합니다.\
+전면 광고는 앱 화면 전체를 덮는 형태로 표시되는 광고입니다. 화면 전환 시점 등 자연스러운 지점에 노출하여 높은 주목도를 제공합니다. \
 이 문서는 iOS 프로젝트에서 AdWhale Mediation SDK 를 사용하여 전면 광고를 연동하는 방법을 설명합니다.
 {% endhint %}
 
-#### 1. 주요 특징
+#### **1. 주요특징**
 
 * 화면 전체를 덮는 전면형 광고
 * 로드와 노출 시점을 앱이 직접 제어 (`loadAd()` → `show(from:)`)
@@ -14,12 +14,11 @@
 
 | 항목      | 내용                                         |
 | ------- | ------------------------------------------ |
-| 항목      | 내용                                         |
-| 클래스     | AdWhaleMediationInterstitialAd             |
-| 지원 네트워크 | AdMob, AdManager, Admize, Cauly, Levelplay |
-| 노출      | show(from:)                                |
+| 클래스     | `AdWhaleMediationInterstitialAd`           |
+| 지원 네트워크 | AdMob, AdManager, Admize, Cauly, LevelPlay |
+| 노출      | `show(from:)`                              |
 
-#### 2. 기본 구현 샘플코드
+#### **2. 기본 구현 샘플코드**
 
 `AdWhaleMediationInterstitialAd` 클래스를 사용하여 전면 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
 
@@ -170,7 +169,7 @@ struct InterstitialScreen: View {
 {% endtab %}
 
 {% tab title="Objective-C" %}
-```objective-c
+```objectivec
 @interface InterstitialViewController () <AdWhaleMediationInterstitialDelegate>
 // ★ 광고 인스턴스는 앱이 강하게 보유해야 합니다.
 @property (nonatomic, strong) AdWhaleMediationInterstitialAd *interstitialAd;
@@ -229,79 +228,121 @@ didFailToShowWithError:(NSInteger)statusCode message:(NSString *)message { }
 {% endtab %}
 {% endtabs %}
 
-#### 3. API 설명
+#### **3. API 설명**
 
 **AdWhaleMediationInterstitialAd 클래스 API 설명**
 
+{% tabs %}
+{% tab title="Swift" %}
 ```swift
-public init(placementUid: String)
+init(placementUid: String)
 ```
 
-| 파라미터 타입 | 파라미터 값                |
-| ------- | --------------------- |
-| 파라미터 타입 | 파라미터 값                |
-| String  | placementUid 값(발급 필요) |
+| 파라미터 타입  | 파라미터 값                |
+| -------- | --------------------- |
+| `String` | placementUid 값(발급 필요) |
 
 ```swift
-public weak var delegate: AdWhaleMediationInterstitialDelegate?   // 콜백 델리게이트 (Swift)
+weak var delegate: AdWhaleMediationInterstitialDelegate?
+func setAdWhaleMediationInterstitialDelegate(_ delegate: AdWhaleMediationInterstitialDelegate?)
 ```
 
-| 파라미터 타입                               | 파라미터 값                  |
-| ------------------------------------- | ----------------------- |
-| 파라미터 타입                               | 파라미터 값                  |
-| AdWhaleMediationInterstitialDelegate  | 전면 미디에이션 광고 호출 콜백 델리게이트 |
+| 파라미터 타입                                | 파라미터 값                  |
+| -------------------------------------- | ----------------------- |
+| `AdWhaleMediationInterstitialDelegate` | 전면 미디에이션 광고 호출 콜백 델리게이트 |
 
 ```swift
-public func loadAd()   // 미디에이션 전면 광고 로드
-```
-
-```swift
-public func show(from viewController: UIViewController)   // 광고 로드 후 노출할 때 호출
-```
-
-| 파라미터 타입          | 파라미터 값                                             |
-| ---------------- | -------------------------------------------------- |
-| UIViewController | 노출 기준 ViewController (`view.window != nil` 상태여야 함) |
-
-```swift
-public func cancelAd()   // 로드된 광고를 노출하지 않고 취소
+func loadAd()   // 미디에이션 전면 광고 로드
 ```
 
 ```swift
-public func destroy()   // deinit 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+func show(from viewController: UIViewController)   // 광고 로드 후 노출할 때 호출
 ```
+
+| 파라미터 타입            | 파라미터 값                                             |
+| ------------------ | -------------------------------------------------- |
+| `UIViewController` | 노출 기준 ViewController (`view.window != nil` 상태여야 함) |
+
+```swift
+func cancelAd()   // 로드된 광고를 노출하지 않고 취소
+```
+
+```swift
+func destroy()   // deinit 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objectivec
+- (instancetype)initWithPlacementUid:(NSString *)placementUid;
+```
+
+| 파라미터 타입      | 파라미터 값                |
+| ------------ | --------------------- |
+| `NSString *` | placementUid 값(발급 필요) |
+
+```objectivec
+@property (nonatomic, weak) id<AdWhaleMediationInterstitialDelegate> delegate;
+- (void)setAdWhaleMediationInterstitialDelegate:(id<AdWhaleMediationInterstitialDelegate>)delegate;
+```
+
+| 파라미터 타입                                    | 파라미터 값                  |
+| ------------------------------------------ | ----------------------- |
+| `id<AdWhaleMediationInterstitialDelegate>` | 전면 미디에이션 광고 호출 콜백 델리게이트 |
+
+```objectivec
+- (void)loadAd;   // 미디에이션 전면 광고 로드
+```
+
+```objectivec
+- (void)showFrom:(UIViewController *)viewController;   // 광고 로드 후 노출할 때 호출
+```
+
+| 파라미터 타입              | 파라미터 값                                             |
+| -------------------- | -------------------------------------------------- |
+| `UIViewController *` | 노출 기준 ViewController (`view.window != nil` 상태여야 함) |
+
+```objectivec
+- (void)cancelAd;   // 로드된 광고를 노출하지 않고 취소
+```
+
+```objectivec
+- (void)destroy;   // dealloc 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+```
+{% endtab %}
+{% endtabs %}
 
 **AdWhaleMediationInterstitialDelegate 프로토콜 API 설명**
 
-| 델리게이트 메서드                                        | 호출 시점 |
-| ------------------------------------------------ | ----- |
-| 델리게이트 메서드                                        | 호출 시점 |
-| interstitial(\_:didLoadWith:)                    | 로드 성공 |
-| interstitial(\_:didFailToLoadWithError:message:) | 로드 실패 |
-| interstitialDidShow(\_:)                         | 노출 성공 |
-| interstitial(\_:didFailToShowWithError:message:) | 노출 실패 |
-| interstitialDidClick(\_:)                        | 클릭    |
-| interstitialDidClose(\_:)                        | 닫힘    |
+| 델리게이트 메서드                                         | 호출 시점    |  필수 |
+| ------------------------------------------------- | -------- | :-: |
+| `interstitial(_:didLoadWith:)`                    | 광고 로드 성공 |  ●  |
+| `interstitial(_:didFailToLoadWithError:message:)` | 광고 로드 실패 |  ●  |
+| `interstitialDidShow(_:)`                         | 광고 노출 성공 |     |
+| `interstitial(_:didFailToShowWithError:message:)` | 광고 노출 실패 |     |
+| `interstitialDidClick(_:)`                        | 광고 클릭    |     |
+| `interstitialDidClose(_:)`                        | 광고 닫힘    |     |
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+func interstitial(_ ad: AdWhaleMediationInterstitialAd,
+                  didLoadWith responseInfo: AdWhaleMediationResponseInfo)   // 광고 요청 성공 시
+```
+
+| 파라미터 타입                        | 파라미터 값                                       |
+| ------------------------------ | -------------------------------------------- |
+| `AdWhaleMediationResponseInfo` | 낙찰된 광고의 응답 정보 (`adNetworkName`, `revenue` 등) |
 
 ```swift
 func interstitial(_ ad: AdWhaleMediationInterstitialAd,
-                  didLoadWith responseInfo: AdWhaleMediationResponseInfo)   // 광고요청 성공 시
+                  didFailToLoadWithError statusCode: Int, message: String)   // 광고 요청 실패 시
 ```
 
-| 파라미터 타입                       | 파라미터 값                                       |
-| ----------------------------- | -------------------------------------------- |
-| 파라미터 타입                       | 파라미터 값                                       |
-| AdWhaleMediationResponseInfo  | 낙찰된 광고의 응답 정보 (`adNetworkName`, `revenue` 등) |
-
-```swift
-func interstitial(_ ad: AdWhaleMediationInterstitialAd,
-                  didFailToLoadWithError statusCode: Int, message: String)   // 광고요청 실패 시
-```
-
-| 파라미터 타입  | 파라미터 값                                                                                                                                       |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Int`    | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                        |
-| `String` | <p><code>Internal error occurred...</code> = 연동 오류 메시지<br>또는<br><code>Mediation network error occurred...</code> = 광고를 채우지 못함(워터폴 모두 소진)</p> |
+| 파라미터 타입  | 파라미터 값                                                                                                                                                                                                                                                                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Int`    | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                                                                                                                                                                                |
+| `String` | <p><strong><code>200</code></strong> — <code>SDK not initialized.</code> / <br><code>placementUid is empty.</code> / <br><code>Failed to create config request.</code><br><strong><code>300</code></strong> — <code>All interstitial mediations failed</code> (워터폴 모두 소진) 또는 광고 네트워크가 전달한 오류 메시지</p> |
 
 ```swift
 @objc optional func interstitialDidShow(_ ad: AdWhaleMediationInterstitialAd)   // 광고 노출 후
@@ -312,10 +353,10 @@ func interstitial(_ ad: AdWhaleMediationInterstitialAd,
                                  didFailToShowWithError statusCode: Int, message: String)   // 광고 노출 실패 시
 ```
 
-| 파라미터 타입  | 파라미터 값                                                                                                                                                                     |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Int`    | `200` = 연동 오류 (로드 전 `show()` 호출, window 계층에 없는 ViewController 전달 등)                                                                                                        |
-| `String` | <p><code>Ad not loaded.</code> = 아직 로드되지 않은 상태에서 <code>show()</code> 호출<br>또는<br><code>ViewController is not in window hierarchy.</code> = dismiss 된 ViewController 전달</p> |
+| 파라미터 타입  | 파라미터 값                                                                                                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Int`    | `200` = 연동 오류 (로드 전 `show(from:)` 호출, window 계층에 없는 ViewController 전달 등)                                                                                                        |
+| `String` | <p><code>Ad not loaded.</code> = 아직 로드되지 않은 상태에서 <code>show(from:)</code> 호출<br>또는<br><code>ViewController is not in window hierarchy.</code> = dismiss 된 ViewController 전달</p> |
 
 ```swift
 @objc optional func interstitialDidClick(_ ad: AdWhaleMediationInterstitialAd)   // 광고 클릭 시
@@ -324,8 +365,61 @@ func interstitial(_ ad: AdWhaleMediationInterstitialAd,
 ```swift
 @objc optional func interstitialDidClose(_ ad: AdWhaleMediationInterstitialAd)   // 광고 닫기 시
 ```
+{% endtab %}
 
-#### 4. 옵션 설정
+{% tab title="Objective-C" %}
+```objectivec
+// 필수
+- (void)interstitial:(AdWhaleMediationInterstitialAd *)ad
+         didLoadWith:(AdWhaleMediationResponseInfo *)responseInfo;   // 광고 요청 성공 시
+```
+
+| 파라미터 타입                          | 파라미터 값                                       |
+| -------------------------------- | -------------------------------------------- |
+| `AdWhaleMediationResponseInfo *` | 낙찰된 광고의 응답 정보 (`adNetworkName`, `revenue` 등) |
+
+```objectivec
+// 필수
+- (void)interstitial:(AdWhaleMediationInterstitialAd *)ad
+    didFailToLoadWithError:(NSInteger)statusCode
+                   message:(NSString *)message;   // 광고 요청 실패 시
+```
+
+| 파라미터 타입      | 파라미터 값                                                                                                                                                                                                                                                                                               |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NSInteger`  | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                                                                                                                                                                                |
+| `NSString *` | <p><strong><code>200</code></strong> — <code>SDK not initialized.</code> / <br><code>placementUid is empty.</code> / <br><code>Failed to create config request.</code><br><strong><code>300</code></strong> — <code>All interstitial mediations failed</code> (워터폴 모두 소진) 또는 광고 네트워크가 전달한 오류 메시지</p> |
+
+```objectivec
+@optional
+- (void)interstitialDidShow:(AdWhaleMediationInterstitialAd *)ad;   // 광고 노출 후
+```
+
+```objectivec
+@optional
+- (void)interstitial:(AdWhaleMediationInterstitialAd *)ad
+    didFailToShowWithError:(NSInteger)statusCode
+                   message:(NSString *)message;   // 광고 노출 실패 시
+```
+
+| 파라미터 타입      | 파라미터 값                                                                                                                                                                        |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NSInteger`  | `200` = 연동 오류 (로드 전 `showFrom:` 호출, window 계층에 없는 ViewController 전달 등)                                                                                                        |
+| `NSString *` | <p><code>Ad not loaded.</code> = 아직 로드되지 않은 상태에서 <code>showFrom:</code> 호출<br>또는<br><code>ViewController is not in window hierarchy.</code> = dismiss 된 ViewController 전달</p> |
+
+```objectivec
+@optional
+- (void)interstitialDidClick:(AdWhaleMediationInterstitialAd *)ad;   // 광고 클릭 시
+```
+
+```objectivec
+@optional
+- (void)interstitialDidClose:(AdWhaleMediationInterstitialAd *)ad;   // 광고 닫기 시
+```
+{% endtab %}
+{% endtabs %}
+
+#### **4. 옵션 설정**
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -341,7 +435,7 @@ AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 �
 ```swift
 // 레벨플레이 placement name 연동 전용 API (옵션).
 // placementName 값은 LevelPlay 콘솔에서 설정한 이름
-interstitialAd.placementName = "app_open_main"
+interstitialAd.placementName = "interstitial_main"
 ```
 
 {% hint style="warning" %}
@@ -352,6 +446,7 @@ AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광
 
 {% tab title="SwiftUI" %}
 ```swift
+// 광고 인스턴스를 보유한 ObservableObject 안에서 동일하게 설정합니다.
 interstitialAd.region = "서울시 강남구"                                // 지역 타게팅 전용 API(옵션)
 interstitialAd.setGeocoder(latitude: 37.5665, longitude: 126.9780)   // 지역 타게팅 전용 API(옵션)
 ```
@@ -363,8 +458,12 @@ AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 �
 ```swift
 // 레벨플레이 placement name 연동 전용 API (옵션).
 // placementName 값은 LevelPlay 콘솔에서 설정한 이름
-interstitialAd.placementName = "app_open_main"
+interstitialAd.placementName = "interstitial_main"
 ```
+
+{% hint style="info" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.
+{% endhint %}
 
 {% hint style="warning" %}
 AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
@@ -373,20 +472,24 @@ AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광
 {% endtab %}
 
 {% tab title="Objective-C" %}
-```objective-c
-interstitialAd.region = @"서울시 강남구";                          // 지역 타게팅 전용 API(옵션)
-[interstitialAd setGeocoderWithLatitude:37.5665 longitude:126.9780];  // 지역 타게팅 전용 API(옵션)
+```objectivec
+interstitialAd.region = @"서울시 강남구";                                // 지역 타게팅 전용 API(옵션)
+[interstitialAd setGeocoderWithLatitude:37.5665 longitude:126.9780];   // 지역 타게팅 전용 API(옵션)
 ```
 
 {% hint style="info" %}
-AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
+AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoderWithLatitude:longitude:`)를 선택적으로 입력받고 있습니다.
 {% endhint %}
 
-```objective-c
+```objectivec
 // 레벨플레이 placement name 연동 전용 API (옵션).
 // placementName 값은 LevelPlay 콘솔에서 설정한 이름
-interstitialAd.placementName = @"app_open_main";                   // 레벨플레이 placement name (옵션)
+interstitialAd.placementName = @"interstitial_main";
 ```
+
+{% hint style="info" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.
+{% endhint %}
 
 {% hint style="warning" %}
 AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
@@ -395,7 +498,17 @@ AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광
 {% endtab %}
 {% endtabs %}
 
-5.전면 광고 샘플코드
+| 프로퍼티 / 메서드                         | 설명           | 적용 네트워크   |
+| ---------------------------------- | ------------ | --------- |
+| `region`                           | 지역 타게팅       | Cauly     |
+| `setGeocoder(latitude:longitude:)` | 좌표 타게팅       | Cauly     |
+| `placementName`                    | Placement 이름 | LevelPlay |
+
+{% hint style="info" %}
+옵션은 해당 네트워크가 낙찰됐을 때만 사용됩니다. 설정해 두어도 다른 네트워크의 광고에는 영향을 주지 않습니다.
+{% endhint %}
+
+#### **5. 전면 광고 샘플코드**
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -568,8 +681,9 @@ struct InterstitialScreen: View {
 {% endtab %}
 
 {% tab title="Objective-C" %}
-```objective-c
-#import <AdWhaleSDK/AdWhaleSDK-Swift.h>
+```objectivec
+#import "InterstitialViewController.h"
+@import AdWhaleSDK;
 
 @interface InterstitialViewController () <AdWhaleMediationInterstitialDelegate>
 @property (nonatomic, strong) AdWhaleMediationInterstitialAd *interstitialAd;
@@ -635,27 +749,37 @@ didFailToShowWithError:(NSInteger)statusCode message:(NSString *)message {
 {% endtab %}
 {% endtabs %}
 
-#### 6. 주의사항
+#### **6. 주의사항**
 
 **광고 로드 타이밍**
 
-* `loadAd()` 는 SDK 초기화 완료(`initialize` 완료 콜백) 이후에 호출하는 것을 권장합니다.
-* 광고는 로드가 완료된 후에만 노출할 수 있습니다. `interstitial(_:didLoadWith:)` 이후에만 `show(from:)` 을 호출하세요.
+* `loadAd()` 는 SDK 초기화 완료(`initialize` 완료 콜백) 이후에 호출하세요. \
+  초기화 전에 호출하면 `200`(`SDK not initialized.`)이 통지됩니다.
+* 광고는 로드가 완료된 후에만 노출할 수 있습니다. \
+  `interstitial(_:didLoadWith:)` 이후에만 `show(from:)` 을 호출하세요.
+* 광고 네트워크가 성공·실패 어느 콜백도 돌려주지 않으면, SDK 가 네트워크당 **10초**를 기다린 뒤 다음 순위 네트워크로 진행합니다. \
+  이 만료는 별도 콜백으로 통지되지 않으며, 워터폴이 모두 소진된 시점에 실패 콜백이 1회 옵니다.
 
 **광고 노출 조건**
 
-* 화면 전환, 스테이지 종료 등 자연스러운 시점에 노출하는 것을 권장합니다.
+* 화면 전환, 스테이지 종료 등 사용자 액션 이후 자연스러운 시점에 노출하는 것을 권장합니다.
 * 중복 노출: 이미 노출 중이거나 로드 중일 때 `show(from:)` 은 무시될 수 있으므로, 콜백 상태를 활용해 제어하세요.
-* `show(from:)` 에는 `view.window != nil` 상태의 ViewController 를 넘겨야 합니다.
 
 **1회성 광고**
 
 * 전면 광고는 **1회성**입니다. 한 번 노출한 뒤 다시 보여주려면 `loadAd()` 를 다시 호출해야 합니다.
 * `interstitialDidClose` 에서 다음 광고를 미리 로드하는 패턴을 권장합니다.
+* 로드해 둔 광고를 노출하지 않고 버릴 때는 `cancelAd()` 를 호출하세요. 이후 다시 노출하려면 `loadAd()` 부터 다시 호출해야 합니다.
+
+**델리게이트 등록**
+
+* 델리게이트를 설정하지 않으면 로드·노출 실패가 어디에도 전달되지 않아 **"광고도 안 나오고 콜백도 없는"** 상태가 됩니다.&#x20;
+* SDK 는 이 경우 `통지할 리스너가 없습니다` 경고 로그를 남깁니다.
 
 **인스턴스 보유**
 
-* SDK 는 델리게이트를 `weak` 로 참조합니다. 광고 인스턴스를 앱이 강하게 보유하지 않으면 콜백이 도착하기 전에 해제되어 “광고도 안 나오고 콜백도 없는” 상태가 됩니다.
+* SDK 는 델리게이트를 `weak` 로 참조합니다.&#x20;
+* 광고 인스턴스를 앱이 강하게 보유하지 않으면 콜백이 도착하기 전에 해제되어 “**광고도 안 나오고 콜백도 없는**” 상태가 됩니다.
 
 **리소스 해제**
 
@@ -663,25 +787,34 @@ didFailToShowWithError:(NSInteger)statusCode message:(NSString *)message {
 
 **에러 처리**
 
-* `didFailToLoadWithError` 와 `didFailToShowWithError` 이벤트에서 적절한 에러 처리를 구현하세요.
+* `didFailToLoadWithError` 와 `didFailToShowWithError` 에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+**노출 실패 후처리**
+
+*   노출할 광고가 준비되지 않은 상태에서 `show(from:)` 을 호출해도 `interstitial(_:didFailToShowWithError:message:)` 가 통지됩니다.
+
+    ```
+    statusCode : 200
+    message    : "Ad not loaded."
+    ```
+*   사용자가 버튼을 누른 직후 아무 반응이 없으면 "버튼이 먹지 않는" 것처럼 보이므로, 이 콜백에서 로딩 표시를 내리거나 다음 화면으로 넘기는 등의 후처리를 해 주세요.
+
+    ```swift
+    func interstitial(_ ad: AdWhaleMediationInterstitialAd,
+                      didFailToShowWithError statusCode: Int, message: String) {
+        hideLoading()
+        goToNextScreen()   // 광고 없이 진행
+    }
+    ```
 
 **테스트**
 
 * 개발 환경에서는 테스트용 placement UID 를 사용하세요.
 * 실제 배포 전에 다양한 시나리오에서 테스트하세요.
 
-{% hint style="danger" %}
-`show(from:)` 에는 `view.window != nil` 상태의 ViewController 를 넘기세요.\
-dismiss 된 ViewController 를 넘기면 **200 (`ViewController is not in window hierarchy.`)** 이 통지됩니다.
-{% endhint %}
-
 {% hint style="warning" %}
-로드되지 않은 상태에서 `show(from:)` 을 호출하면 **200 (`Ad not loaded.`)** 이 통지됩니다.\
-로드 성공 콜백을 받은 뒤 노출하세요.
-{% endhint %}
+`show(from:)` 에는 `view.window != nil` 상태의 ViewController 를 넘겨야 합니다.&#x20;
 
-{% hint style="info" %}
-전면 광고는 **1회성**입니다. 한 번 노출한 뒤 다시 보여주려면 `loadAd()` 를 다시 호출해야 합니다.\
-`interstitialDidClose` 에서 다음 광고를 미리 로드하는 패턴을 권장합니다.
+dismiss 된 ViewController 를 넘기면 `200`(`ViewController is not in window hierarchy.`)이 통지됩니다.
 {% endhint %}

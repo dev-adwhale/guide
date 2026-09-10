@@ -1,23 +1,25 @@
 # 앱 오프닝
 
+## 4-1. 앱오프닝
+
 {% hint style="info" %}
-* 앱오프닝 광고는 앱이 실행될 때 또는 백그라운드에서 포그라운드로 전환될 때 표시되는 전면 광고입니다. 이 문서는 iOS 프로젝트에서 AdWhale Mediation SDK를 사용하여 앱오프닝 광고를 연동하는 방법을 설명합니다.
+앱오프닝 광고는 앱이 실행될 때 또는 백그라운드에서 포그라운드로 전환될 때 표시되는 전면 광고입니다. \
+이 문서는 iOS 프로젝트에서 AdWhale Mediation SDK 를 사용하여 앱오프닝 광고를 연동하는 방법을 설명합니다.
 {% endhint %}
 
-#### 1. 주요특징
+#### **1. 주요특징**
 
 * 앱 실행 시 또는 포그라운드 전환 시 자동 표시 가능
 * 화면 전체를 덮는 전면형 광고
-* 로드, 표시, 닫힘 등 이벤트 기반 콜백 시스템으로 광고 상태 추적 가능
+* 로드 · 노출 · 클릭 · 닫힘 등 이벤트 기반 델리게이트 콜백 시스템으로 광고 상태 추적 가능
 
-| 항목      | 내용                        |
-| ------- | ------------------------- |
-| 항목      | 내용                        |
-| 클래스     | AdWhaleMediationAppOpenAd |
-| 지원 네트워크 | AdMob, AdManager          |
-| 노출      | show(from:)               |
+| 항목      | 내용                          |
+| ------- | --------------------------- |
+| 클래스     | `AdWhaleMediationAppOpenAd` |
+| 지원 네트워크 | AdMob, AdManager            |
+| 노출      | `show(from:)`               |
 
-#### 2. 기본 구현 샘플코드
+#### **2. 기본 구현 샘플코드**
 
 `AdWhaleMediationAppOpenAd` 클래스를 사용하여 앱 오프닝 광고를 로드하고 표시하는 기본적인 구현 방법입니다.
 
@@ -160,7 +162,7 @@ struct SplashView: View {
 {% endtab %}
 
 {% tab title="Objective-C" %}
-```objective-c
+```objectivec
 @interface SplashViewController () <AdWhaleMediationAppOpenAdDelegate>
 // ★ 광고 인스턴스는 앱이 강하게 보유해야 합니다.
 @property (nonatomic, strong) AdWhaleMediationAppOpenAd *appOpenAd;
@@ -219,56 +221,114 @@ didFailToShowWithError:(NSInteger)statusCode message:(NSString *)message { }
 {% endtab %}
 {% endtabs %}
 
-#### 3. API 설명
+#### **3. API 설명**
 
 **AdWhaleMediationAppOpenAd 클래스 API 설명**
 
+{% tabs %}
+{% tab title="Swift" %}
 ```swift
-public init(placementUid: String)
+init(placementUid: String)
 ```
 
-| 파라미터 타입 | 파라미터 값                |
-| ------- | --------------------- |
-| 파라미터 타입 | 파라미터 값                |
-| String  | placementUid 값(발급 필요) |
+| 파라미터 타입  | 파라미터 값                |
+| -------- | --------------------- |
+| `String` | placementUid 값(발급 필요) |
 
 ```swift
-public weak var delegate: AdWhaleMediationAppOpenAdDelegate?   // 콜백 델리게이트 (Swift)
+weak var delegate: AdWhaleMediationAppOpenAdDelegate?
+func setAdWhaleMediationAppOpenAdDelegate(_ delegate: AdWhaleMediationAppOpenAdDelegate?)
 ```
 
-| 파라미터 타입                           | 파라미터 값                     |
-| --------------------------------- | -------------------------- |
-| 파라미터 타입                           | 파라미터 값                     |
-| AdWhaleMediationAppOpenAdDelegate | 앱 오프닝 미디에이션 광고 호출 콜백 델리게이트 |
+| 파라미터 타입                             | 파라미터 값                     |
+| ----------------------------------- | -------------------------- |
+| `AdWhaleMediationAppOpenAdDelegate` | 앱 오프닝 미디에이션 광고 호출 콜백 델리게이트 |
 
 ```swift
-public func loadAd()   // 미디에이션 앱 오프닝 광고 로드
-```
-
-```swift
-public func show(from viewController: UIViewController)   // 광고 로드 후 노출할 때 호출
-```
-
-<table><thead><tr><th width="239.96484375">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>UIViewController</td><td>노출 기준 ViewController( view.window ≠ nil 상태여야 함)</td></tr></tbody></table>
-
-```swift
-public var isAdAvailable: Bool   // 노출 가능 여부 (로드 완료 여부 + 어댑터 유효 시간)
+func loadAd()   // 미디에이션 앱 오프닝 광고 로드
 ```
 
 ```swift
-public func destroy()   // deinit 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+func show(from viewController: UIViewController)   // 광고 로드 후 노출할 때 호출
 ```
+
+| 파라미터 타입            | 파라미터 값                                             |
+| ------------------ | -------------------------------------------------- |
+| `UIViewController` | 노출 기준 ViewController (`view.window != nil` 상태여야 함) |
+
+```swift
+var isAdAvailable: Bool   // 노출 가능 여부 (로드 완료 여부 + 어댑터 유효 시간)
+```
+
+```swift
+func destroy()   // deinit 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objectivec
+- (instancetype)initWithPlacementUid:(NSString *)placementUid;
+```
+
+| 파라미터 타입      | 파라미터 값                |
+| ------------ | --------------------- |
+| `NSString *` | placementUid 값(발급 필요) |
+
+```objectivec
+@property (nonatomic, weak) id<AdWhaleMediationAppOpenAdDelegate> delegate;
+- (void)setAdWhaleMediationAppOpenAdDelegate:(id<AdWhaleMediationAppOpenAdDelegate>)delegate;
+```
+
+| 파라미터 타입                                 | 파라미터 값                     |
+| --------------------------------------- | -------------------------- |
+| `id<AdWhaleMediationAppOpenAdDelegate>` | 앱 오프닝 미디에이션 광고 호출 콜백 델리게이트 |
+
+```objectivec
+- (void)loadAd;   // 미디에이션 앱 오프닝 광고 로드
+```
+
+```objectivec
+- (void)showFrom:(UIViewController *)viewController;   // 광고 로드 후 노출할 때 호출
+```
+
+| 파라미터 타입              | 파라미터 값                                             |
+| -------------------- | -------------------------------------------------- |
+| `UIViewController *` | 노출 기준 ViewController (`view.window != nil` 상태여야 함) |
+
+```objectivec
+@property (nonatomic, readonly) BOOL isAdAvailable;   // 노출 가능 여부 (로드 완료 여부 + 어댑터 유효 시간)
+```
+
+```objectivec
+- (void)destroy;   // dealloc 시 호출 혹은 더 이상 광고를 요청하지 않고 싶을 때 호출
+```
+{% endtab %}
+{% endtabs %}
 
 **AdWhaleMediationAppOpenAdDelegate 프로토콜 API 설명**
 
-<table><thead><tr><th width="412.59375">델리게이트 메서드</th><th>호출 시점</th></tr></thead><tbody><tr><td>appOpenAd(_:didLoadWith)</td><td>광고 로드 성공</td></tr><tr><td>appOpenAd(<em>:didFailToLoadWithError:message:</em>)</td><td>광고 로드 실패</td></tr><tr><td>appOpenAdDidShow(_:)</td><td>광고 노출 성공</td></tr><tr><td>appOpenAd(_:didFailToShowWithError:message:)</td><td>광고 노출 실패</td></tr><tr><td>appOpenAdDidClick(_:)</td><td>광고 클릭</td></tr><tr><td>appOpenAdDidDismiss(_:)</td><td>광고 닫힘</td></tr></tbody></table>
+<table><thead><tr><th width="428.2421875">델리게이트 메서드</th><th>호출 시점</th><th align="center">필수</th></tr></thead><tbody><tr><td><code>appOpenAd(_:didLoadWith:)</code></td><td>광고 로드 성공</td><td align="center">●</td></tr><tr><td><code>appOpenAd(_:didFailToLoadWithError:message:)</code></td><td>광고 로드 실패</td><td align="center">●</td></tr><tr><td><code>appOpenAdDidShow(_:)</code></td><td>광고 노출 성공</td><td align="center"></td></tr><tr><td><code>appOpenAd(_:didFailToShowWithError:message:)</code></td><td>광고 노출 실패</td><td align="center"></td></tr><tr><td><code>appOpenAdDidClick(_:)</code></td><td>광고 클릭</td><td align="center"></td></tr><tr><td><code>appOpenAdDidDismiss(_:)</code></td><td>광고 닫힘</td><td align="center"></td></tr></tbody></table>
+
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+func appOpenAd(_ ad: AdWhaleMediationAppOpenAd,
+               didLoadWith responseInfo: AdWhaleMediationResponseInfo)   // 광고 요청 성공 시
+```
+
+| 파라미터 타입                        | 파라미터 값                                       |
+| ------------------------------ | -------------------------------------------- |
+| `AdWhaleMediationResponseInfo` | 낙찰된 광고의 응답 정보 (`adNetworkName`, `revenue` 등) |
 
 ```swift
 func appOpenAd(_ ad: AdWhaleMediationAppOpenAd,
                didFailToLoadWithError statusCode: Int, message: String)   // 광고 요청 실패 시
 ```
 
-<table><thead><tr><th width="158.09765625">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><p><mark style="color:red;"><code>200</code></mark> = 연동 오류(placementUid 오설정 등)</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>Internal error occurred...</code></mark> = 연동 오류 메시지</p><p>또는</p><p><mark style="color:red;"><code>Mediation network error occurred...</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr></tbody></table>
+| 파라미터 타입  | 파라미터 값                                                                                                                                                                                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Int`    | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                                                                                                                                                                          |
+| `String` | <p><strong><code>200</code></strong> — <code>SDK not initialized.</code> /<br><code>placementUid is empty.</code> /<br><code>Failed to create config request.</code><br><strong><code>300</code></strong> — <code>All app open mediations failed</code> (워터폴 모두 소진) 또는 광고 네트워크가 전달한 오류 메시지</p> |
 
 ```swift
 @objc optional func appOpenAdDidShow(_ ad: AdWhaleMediationAppOpenAd)   // 광고 노출 후
@@ -279,7 +339,10 @@ func appOpenAd(_ ad: AdWhaleMediationAppOpenAd,
                               didFailToShowWithError statusCode: Int, message: String)   // 광고 노출 실패 시
 ```
 
-<table><thead><tr><th width="125.96484375">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>Int</td><td><mark style="color:red;"><code>200</code></mark> = 연동 오류(로드 전 show() 호출, window 계층에 없는 ViewController 전달 등)</td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>Ad not loaded.</code></mark> = 아직 로드되지 않은 상태에서 show() 호출</p><p>또는</p><p><mark style="color:red;"><code>ViewController is not in window hierarchy.</code></mark> = dismiss 된 ViewController전달</p></td></tr></tbody></table>
+| 파라미터 타입  | 파라미터 값                                                                                                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Int`    | `200` = 연동 오류 (로드 전 `show(from:)` 호출, window 계층에 없는 ViewController 전달 등)                                                                                                        |
+| `String` | <p><code>Ad not loaded.</code> = 아직 로드되지 않은 상태에서 <code>show(from:)</code> 호출<br>또는<br><code>ViewController is not in window hierarchy.</code> = dismiss 된 ViewController 전달</p> |
 
 ```swift
 @objc optional func appOpenAdDidClick(_ ad: AdWhaleMediationAppOpenAd)     // 광고 클릭 시
@@ -288,82 +351,61 @@ func appOpenAd(_ ad: AdWhaleMediationAppOpenAd,
 ```swift
 @objc optional func appOpenAdDidDismiss(_ ad: AdWhaleMediationAppOpenAd)   // 광고 닫기 시
 ```
-
-```
-// Some code
-```
-
-#### 4. 옵션 설정
-
-{% tabs %}
-{% tab title="Swift" %}
-```swift
-appOpenAd.region = "서울시 강남구"                                // 지역 타게팅 전용 API(옵션)
-appOpenAd.setGeocoder(latitude: 37.5665, longitude: 126.9780)   // 지역 타게팅 전용 API(옵션)
-```
-
-{% hint style="info" %}
-AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
-{% endhint %}
-
-```swift
-// 레벨플레이 placement name 연동 전용 API (옵션).
-// placementName 값은 LevelPlay 콘솔에서 설정한 이름
-appOpenAd.placementName = "app_open_main"
-```
-
-{% hint style="warning" %}
-AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
-설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
-{% endhint %}
-{% endtab %}
-
-{% tab title="SwiftUI" %}
-```swift
-appOpenAd.region = "서울시 강남구"                                // 지역 타게팅 전용 API(옵션)
-appOpenAd.setGeocoder(latitude: 37.5665, longitude: 126.9780)   // 지역 타게팅 전용 API(옵션)
-```
-
-{% hint style="info" %}
-AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
-{% endhint %}
-
-```swift
-// 레벨플레이 placement name 연동 전용 API (옵션).
-// placementName 값은 LevelPlay 콘솔에서 설정한 이름
-appOpenAd.placementName = "app_open_main"
-```
-
-{% hint style="warning" %}
-AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
-설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
-{% endhint %}
 {% endtab %}
 
 {% tab title="Objective-C" %}
-```objective-c
-appOpenAd.region = @"서울시 강남구";                          // 지역 타게팅 전용 API(옵션)
-[appOpenAd setGeocoderWithLatitude:37.5665 longitude:126.9780];  // 지역 타게팅 전용 API(옵션)
+```objectivec
+// 필수
+- (void)appOpenAd:(AdWhaleMediationAppOpenAd *)ad
+      didLoadWith:(AdWhaleMediationResponseInfo *)responseInfo;   // 광고 요청 성공 시
 ```
 
-{% hint style="info" %}
-AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
-{% endhint %}
+| 파라미터 타입                          | 파라미터 값                                       |
+| -------------------------------- | -------------------------------------------- |
+| `AdWhaleMediationResponseInfo *` | 낙찰된 광고의 응답 정보 (`adNetworkName`, `revenue` 등) |
 
-```objective-c
-// 레벨플레이 placement name 연동 전용 API (옵션).
-// placementName 값은 LevelPlay 콘솔에서 설정한 이름
-appOpenAd.placementName = @"app_open_main";                   // 레벨플레이 placement name (옵션)
+```objectivec
+// 필수
+- (void)appOpenAd:(AdWhaleMediationAppOpenAd *)ad
+    didFailToLoadWithError:(NSInteger)statusCode
+                   message:(NSString *)message;   // 광고 요청 실패 시
 ```
 
-{% hint style="warning" %}
-AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
-설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
-{% endhint %}
+| 파라미터 타입      | 파라미터 값                                                                                                                                                                                                                                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NSInteger`  | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                                                                                                                                                                                  |
+| `NSString *` | <p><strong><code>200</code></strong> — <code>SDK not initialized.</code> / </p><p><code>placementUid is empty.</code> / </p><p><code>Failed to create config request.</code><br><strong><code>300</code></strong> — <code>All app open mediations failed</code> (워터폴 모두 소진) 또는 광고 네트워크가 전달한 오류 메시지</p> |
+
+```objectivec
+@optional
+- (void)appOpenAdDidShow:(AdWhaleMediationAppOpenAd *)ad;   // 광고 노출 후
+```
+
+```objectivec
+@optional
+- (void)appOpenAd:(AdWhaleMediationAppOpenAd *)ad
+    didFailToShowWithError:(NSInteger)statusCode
+                   message:(NSString *)message;   // 광고 노출 실패 시
+```
+
+| 파라미터 타입      | 파라미터 값                                                                                                                                                                        |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NSInteger`  | `200` = 연동 오류 (로드 전 `showFrom:` 호출, window 계층에 없는 ViewController 전달 등)                                                                                                        |
+| `NSString *` | <p><code>Ad not loaded.</code> = 아직 로드되지 않은 상태에서 <code>showFrom:</code> 호출<br>또는<br><code>ViewController is not in window hierarchy.</code> = dismiss 된 ViewController 전달</p> |
+
+```objectivec
+@optional
+- (void)appOpenAdDidClick:(AdWhaleMediationAppOpenAd *)ad;     // 광고 클릭 시
+```
+
+```objectivec
+@optional
+- (void)appOpenAdDidDismiss:(AdWhaleMediationAppOpenAd *)ad;   // 광고 닫기 시
+```
 {% endtab %}
 {% endtabs %}
 
-#### 5. 앱 오프닝 광고 샘플코드
+#### **4. 앱 오프닝 광고 샘플코드**
 
 다음은 스플래시 화면에서 앱오프닝 광고를 구현하는 완전한 예시입니다.
 
@@ -383,16 +425,11 @@ final class SplashViewController: UIViewController, AdWhaleMediationAppOpenAdDel
         // 1. 인스턴스 생성 (placementUid)
         let ad = AdWhaleMediationAppOpenAd(placementUid: "발급받은 PLACEMENT_UID 값")
 
-        // 2. 옵션 설정 (선택)
-        ad.region = "서울시 강남구"
-        ad.setGeocoder(latitude: 37.5665, longitude: 126.9780)
-        ad.placementName = "app_open_main"
-
-        // 3. 델리게이트 등록
+        // 2. 델리게이트 등록
         ad.delegate = self
         appOpenAd = ad
 
-        // 4. 로드
+        // 3. 로드
         ad.loadAd()
     }
 
@@ -400,8 +437,8 @@ final class SplashViewController: UIViewController, AdWhaleMediationAppOpenAdDel
 
     func appOpenAd(_ ad: AdWhaleMediationAppOpenAd,
                    didLoadWith responseInfo: AdWhaleMediationResponseInfo) {
-        print("앱오프닝 로드 성공 — network=\(responseInfo.adNetworkName ?? "-")")
-        // 5. 노출 (로드 완료 후)
+        print("앱오프닝 로드 성공")
+        // 4. 노출 (로드 완료 후)
         if ad.isAdAvailable {
             ad.show(from: self)
         } else {
@@ -437,7 +474,7 @@ final class SplashViewController: UIViewController, AdWhaleMediationAppOpenAdDel
     private func goToMain() { /* 화면 전환 */ }
 
     deinit {
-        // 6. 폐기
+        // 5. 폐기
         appOpenAd?.destroy()
         appOpenAd = nil
     }
@@ -462,18 +499,15 @@ final class AppOpenAdController: NSObject, ObservableObject, AdWhaleMediationApp
         // 1. 인스턴스 생성 (placementUid)
         let ad = AdWhaleMediationAppOpenAd(placementUid: "발급받은 PLACEMENT_UID 값")
 
-        // 2. 옵션 설정 (선택)
-        ad.placementName = "app_open_main"
-
-        // 3. 델리게이트 등록
+        // 2. 델리게이트 등록
         ad.delegate = self
         appOpenAd = ad
 
-        // 4. 로드
+        // 3. 로드
         ad.loadAd()
     }
 
-    /// 5. 노출 (로드 완료 후)
+    /// 4. 노출 (로드 완료 후)
     func show() {
         guard let ad = appOpenAd, ad.isAdAvailable,
               let top = Self.topViewController() else {
@@ -483,7 +517,7 @@ final class AppOpenAdController: NSObject, ObservableObject, AdWhaleMediationApp
         ad.show(from: top)
     }
 
-    /// 6. 폐기
+    /// 5. 폐기
     func release() {
         appOpenAd?.destroy()
         appOpenAd = nil
@@ -540,8 +574,9 @@ struct RootView: View {
 {% endtab %}
 
 {% tab title="Objective-C" %}
-```objective-c
-#import <AdWhaleSDK/AdWhaleSDK-Swift.h>
+```objectivec
+#import "SplashViewController.h"
+@import AdWhaleSDK;
 
 @interface SplashViewController () <AdWhaleMediationAppOpenAdDelegate>
 @property (nonatomic, strong) AdWhaleMediationAppOpenAd *appOpenAd;
@@ -556,21 +591,16 @@ struct RootView: View {
     self.appOpenAd = [[AdWhaleMediationAppOpenAd alloc]
                       initWithPlacementUid:@"발급받은 PLACEMENT_UID 값"];
 
-    // 2. 옵션 설정 (선택)
-    self.appOpenAd.region = @"서울시 강남구";
-    [self.appOpenAd setGeocoderWithLatitude:37.5665 longitude:126.9780];
-    self.appOpenAd.placementName = @"app_open_main";
-
-    // 3. 델리게이트 등록
+    // 2. 델리게이트 등록
     [self.appOpenAd setAdWhaleMediationAppOpenAdDelegate:self];
 
-    // 4. 로드
+    // 3. 로드
     [self.appOpenAd loadAd];
 }
 
 - (void)appOpenAd:(AdWhaleMediationAppOpenAd *)ad
       didLoadWith:(AdWhaleMediationResponseInfo *)responseInfo {
-    // 5. 노출 (로드 완료 후)
+    // 4. 노출 (로드 완료 후)
     if (ad.isAdAvailable) {
         [ad showFrom:self];
     } else {
@@ -597,7 +627,7 @@ didFailToShowWithError:(NSInteger)statusCode message:(NSString *)message {
 - (void)goToMain { /* 화면 전환 */ }
 
 - (void)dealloc {
-    // 6. 폐기
+    // 5. 폐기
     [self.appOpenAd destroy];
     self.appOpenAd = nil;
 }
@@ -607,15 +637,13 @@ didFailToShowWithError:(NSInteger)statusCode message:(NSString *)message {
 {% endtab %}
 {% endtabs %}
 
-#### 6.포그라운드 진입 시 자동 표시 샘플코드
+#### **5. 포그라운드 진입 시 자동 표시 샘플코드**
 
-{% hint style="info" %}
-**다음 샘플코드는 앱 상태가 백그라운드에서 포그라운드로 변경될 때 광고를 노출합니다.**
+다음 샘플코드는 앱 상태가 백그라운드에서 포그라운드로 변경될 때 광고를 노출합니다.
 
 * 앱오프닝 광고를 요청하기 위해 `AdWhaleMediationAppOpenAd` 를 생성합니다.
 * iOS 는 `UIApplication.didBecomeActiveNotification` / `willResignActiveNotification` 으로 포그라운드 · 백그라운드 전환을 감지합니다. (Android 의 `ProcessLifecycleOwner` 에 해당)
 * 더 이상 광고를 요청하지 않으려면 `destroy()` 를 호출하고 옵저버를 해제합니다.
-{% endhint %}
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -801,7 +829,10 @@ final class AppOpenAdController: NSObject, ObservableObject, AdWhaleMediationApp
 {% endtab %}
 
 {% tab title="Objective-C" %}
-```objective-c
+```objectivec
+@import UIKit;
+@import AdWhaleSDK;
+
 @interface AppOpenLifecycleManager : NSObject <AdWhaleMediationAppOpenAdDelegate>
 @end
 
@@ -861,22 +892,31 @@ final class AppOpenAdController: NSObject, ObservableObject, AdWhaleMediationApp
 {% endtab %}
 {% endtabs %}
 
-#### 7.주의사항
+#### **6. 주의사항**
 
 **광고 로드 타이밍**
 
-* `loadAd()` 는 SDK 초기화 완료(`initialize` 완료 콜백) 이후에 호출하는 것을 권장합니다.
-* 광고는 로드가 완료된 후에만 노출할 수 있습니다. `appOpenAd(_:didLoadWith:)` 이후에만 `show(from:)` 을 호출하세요.
+* `loadAd()` 는 SDK 초기화 완료(`initialize` 완료 콜백) 이후에 호출하세요. \
+  초기화 전에 호출하면 `200`(`SDK not initialized.`)이 통지됩니다.
+* 광고는 로드가 완료된 후에만 노출할 수 있습니다. \
+  `appOpenAd(_:didLoadWith:)` 이후에만 `show(from:)` 을 호출하세요.
+* 광고 네트워크가 성공·실패 어느 콜백도 돌려주지 않으면, SDK 가 네트워크당 **10초**를 기다린 뒤 다음 순위 네트워크로 진행합니다. \
+  이 만료는 별도 콜백으로 통지되지 않으며, 워터폴이 모두 소진된 시점에 실패 콜백이 1회 옵니다.
 
 **광고 노출 조건**
 
 * 앱 콜드 스타트 직후 또는 포그라운드 복귀 시 등 자연스러운 시점에 노출하는 것을 권장합니다.
 * 중복 노출: 이미 노출 중이거나 로드 중일 때 `show(from:)` 은 무시될 수 있으므로, 콜백 상태를 활용해 제어하세요.
-* `show(from:)` 에는 `view.window != nil` 상태의 ViewController 를 넘겨야 합니다.
+
+**델리게이트 등록**
+
+* 델리게이트를 설정하지 않으면 로드·노출 실패가 어디에도 전달되지 않아 **"광고도 안 나오고 콜백도 없는"** 상태가 됩니다. \
+  SDK 는 이 경우 `통지할 리스너가 없습니다` 경고 로그를 남깁니다.
 
 **인스턴스 보유**
 
-* SDK 는 델리게이트를 `weak` 로 참조합니다. 광고 인스턴스를 앱이 강하게 보유하지 않으면 콜백이 도착하기 전에 해제되어 “광고도 안 나오고 콜백도 없는” 상태가 됩니다.
+* SDK 는 델리게이트를 `weak` 로 참조합니다.&#x20;
+* 광고 인스턴스를 앱이 강하게 보유하지 않으면 콜백이 도착하기 전에 해제되어 “**광고도 안 나오고 콜백도 없는**” 상태가 됩니다.
 
 **리소스 해제**
 
@@ -885,7 +925,7 @@ final class AppOpenAdController: NSObject, ObservableObject, AdWhaleMediationApp
 
 **에러 처리**
 
-* `didFailToLoadWithError` 와 `didFailToShowWithError` 이벤트에서 적절한 에러 처리를 구현하세요.
+* `didFailToLoadWithError` 와 `didFailToShowWithError` 에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
 
 **테스트**
@@ -894,17 +934,19 @@ final class AppOpenAdController: NSObject, ObservableObject, AdWhaleMediationApp
 * 실제 배포 전에 다양한 시나리오에서 테스트하세요.
 
 {% hint style="danger" %}
-**스플래시에서 무한 대기하지 않도록 실패 · 닫힘 경로를 모두 처리하세요.**\
-`didFailToLoadWithError` · `didFailToShowWithError` · `appOpenAdDidDismiss` 중\
-어느 하나라도 처리하지 않으면 그 경로에서 화면이 멈춥니다.
+**스플래시에서 무한 대기하지 않도록 실패 · 닫힘 경로를 모두 처리하세요.**&#x20;
+
+`didFailToLoadWithError` · `didFailToShowWithError` · `appOpenAdDidDismiss` 중 어느 하나라도 처리하지 않으면 그 경로에서 화면이 멈춥니다.
 {% endhint %}
 
 {% hint style="warning" %}
-`show(from:)` 에는 `view.window != nil` 상태의 ViewController 를 넘겨야 합니다.\
-dismiss 된 ViewController 를 넘기면 노출 실패(200)가 통지됩니다.
+`show(from:)` 에는 `view.window != nil` 상태의 ViewController 를 넘겨야 합니다.&#x20;
+
+dismiss 된 ViewController 를 넘기면 `200`(`ViewController is not in window hierarchy.`)이 통지됩니다.
 {% endhint %}
 
 {% hint style="info" %}
-`isAdAvailable` 은 로드 완료 여부와 어댑터의 유효 시간을 함께 확인합니다.\
-노출 직전에 확인하면 만료된 광고로 `show()` 를 호출하는 것을 막을 수 있습니다.
+`isAdAvailable` 은 로드 완료 여부와 어댑터의 유효 시간을 함께 확인합니다.&#x20;
+
+노출 직전에 확인하면 만료된 광고로 `show(from:)` 을 호출하는 것을 막을 수 있습니다.
 {% endhint %}

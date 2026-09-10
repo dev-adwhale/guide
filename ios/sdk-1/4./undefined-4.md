@@ -1,17 +1,17 @@
 # 네이티브
 
 {% hint style="info" %}
-네이티브 광고는 앱의 UI 와 어울리는 형태로 노출되는 광고입니다. 광고 구성 요소(아이콘, 제목, 본문, 미디어, 버튼)를 앱 디자인에 맞춰 배치할 수 있어 자연스러운 사용자 경험을 제공합니다. AdWhale Mediation iOS SDK 의 네이티브 광고는 **템플릿 방식**과 **커스텀 바인딩 방식** 2가지 형태의 구현과 사용이 가능합니다.
+네이티브 광고는 앱의 콘텐츠와 자연스럽게 어우러지는 형태로 표시되는 광고입니다.\
+광고 구성 요소(아이콘, 제목, 본문, 미디어, 버튼)를 앱 디자인에 맞춰 배치할 수 있어 자연스러운 사용자 경험을 제공합니다. \
+이 문서는 iOS 프로젝트에서 AdWhale Mediation SDK 를 사용하여 네이티브 광고를 연동하는 방법을 설명합니다.
 {% endhint %}
 
-**1. 주요특징**
+#### **1. 주요특징**
 
 * 앱 UI 와 어울리는 형태로 노출
-* 템플릿(SMALL / MEDIUM / FULLSCREEN) 3종 지원
-* 템플릿 색 · 폰트 커스터마이즈 지원 (`templateStyle`)
-* 커스텀 바인딩으로 앱이 만든 뷰에 광고 요소 직접 배치 가능
-* 자동 갱신 기능
-* 이벤트 기반 델리게이트 콜백으로 광고 상태 추적
+* **커스텀 바인딩**과 **고정 템플릿** 두 가지 방식 지원
+* 템플릿 타입: SMALL, MEDIUM, FULLSCREEN
+* 스타일(색상·폰트·크기 등) 커스터마이징 가능
 
 | 항목      | 내용                                 |
 | ------- | ---------------------------------- |
@@ -19,28 +19,55 @@
 | 지원 네트워크 | AdMob, AdManager, Cauly, LevelPlay |
 | 노출      | `show()`                           |
 
-**2. 네이티브 광고 타입**
+#### **2. 네이티브 광고 타입**
 
-| 방식           | 메서드                 | 설명                                 |
-| ------------ | ------------------- | ---------------------------------- |
-| 템플릿 (고정 템플릿) | `loadAd(template:)` | SDK 가 제공하는 레이아웃 사용. 색 · 폰트만 커스터마이즈 |
-| 커스텀 바인딩      | `loadAd(binder:)`   | 앱이 만든 뷰에 광고 요소를 바인딩                |
-
-**템플릿 종류**
-
-| `AdWhaleNativeTemplate` | 값                                  | 설명           |
-| ----------------------- | ---------------------------------- | ------------ |
-| `.small`                | `AdWhaleNativeTemplate.small`      | 소형 (리스트 셀 등) |
-| `.medium`               | `AdWhaleNativeTemplate.medium`     | 중형 (미디어 포함)  |
-| `.fullscreen`           | `AdWhaleNativeTemplate.fullscreen` | 전체 화면        |
+네이티브 광고는 두 가지 방식으로 구현할 수 있습니다.
 
 {% hint style="info" %}
-템플릿과 커스텀 바인딩 중 **한 번 선택한 방식이 자동 갱신에도 그대로 적용**됩니다. 방식을 바꾸려면 `loadAd(template:)` 또는 `loadAd(binder:)` 를 다시 호출하세요.
+**템플릿 네이티브 광고**
+
+```swift
+// SMALL 네이티브 템플릿 적용 예시코드
+let nativeAdView = AdWhaleMediationNativeAdView()
+nativeAdView.placementUid = "발급받은 PLACEMENT_UID 값"
+nativeAdView.loadAd(template: .small)
+```
+
+* SDK 에서 제공하는 템플릿 사용
+* `.small`, `.medium`, `.fullscreen` 타입 지원
+* 스타일 커스터마이징 가능
 {% endhint %}
 
-**3. 템플릿 네이티브 광고**
+{% hint style="info" %}
+**커스텀 바인딩 네이티브 광고**
 
-`AdWhaleMediationNativeAdView` 와 `loadAd(template:)` 을 사용하여 SDK 가 제공하는 레이아웃으로 네이티브 광고를 노출합니다.
+```swift
+// 커스텀 바인딩 네이티브 적용 예시코드
+let nativeAdView = AdWhaleMediationNativeAdView()
+nativeAdView.placementUid = "발급받은 PLACEMENT_UID 값"
+
+let binder = AdWhaleMediationNativeAdBindingHelper.Builder()
+    .setIconView(iconImageView)
+    .setTitleView(titleLabel)
+    .setBodyView(bodyLabel)
+    .setCallToActionView(ctaButton)
+    .setMediaView(mediaContainerView)
+    .build()
+
+nativeAdView.loadAd(binder: binder)
+```
+
+* 앱이 만든 레이아웃 사용
+* 완전한 디자인 제어
+* `AdWhaleMediationNativeAdBindingHelper` 로 광고 요소 뷰를 바인딩
+{% endhint %}
+
+#### **3. 템플릿 네이티브 광고**
+
+AdWhaleMediationNativeAdView 와 `loadAd(template:)` 을 사용하여 SDK 가 제공하는 레이아웃으로 네이티브 광고를 노출합니다. \
+템플릿 네이티브 광고는 다음 세 가지 타입을 지원합니다.
+
+<table><thead><tr><th width="172.89453125">타입</th><th width="300.60546875">값</th><th>설명</th></tr></thead><tbody><tr><td>SMALL</td><td><code>AdWhaleNativeTemplate.small</code></td><td>작은 크기의 네이티브 광고</td></tr><tr><td>MEDIUM</td><td><code>AdWhaleNativeTemplate.medium</code></td><td>중간 크기의 네이티브 광고</td></tr><tr><td>FULLSCREEN</td><td><code>AdWhaleNativeTemplate.fullscreen</code></td><td>전체 화면 네이티브 광고</td></tr></tbody></table>
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -96,11 +123,6 @@ final class NativeViewController: UIViewController, AdWhaleMediationNativeAdDele
         nativeAdView.pause()    // 자동 갱신 일시정지
     }
 
-    deinit {
-        // 8. 폐기
-        nativeAdView.destroy()
-    }
-
     // MARK: - AdWhaleMediationNativeAdDelegate
 
     func nativeAd(_ adView: AdWhaleMediationNativeAdView,
@@ -128,6 +150,11 @@ final class NativeViewController: UIViewController, AdWhaleMediationNativeAdDele
 
     func nativeAdDidClose(_ adView: AdWhaleMediationNativeAdView) {
         print("네이티브 닫힘")
+    }
+
+    deinit {
+        // 8. 폐기
+        nativeAdView.destroy()
     }
 }
 ```
@@ -182,11 +209,6 @@ struct TemplateNativeRepresentable: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIView, context: Context) { }
 
-    // 7. 폐기
-    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
-        coordinator.native?.destroy()
-    }
-
     final class Coordinator: NSObject, AdWhaleMediationNativeAdDelegate {
         var native: AdWhaleMediationNativeAdView?
 
@@ -209,6 +231,11 @@ struct TemplateNativeRepresentable: UIViewRepresentable {
         func nativeAdDidClick(_ adView: AdWhaleMediationNativeAdView) { }
         func nativeAdDidClose(_ adView: AdWhaleMediationNativeAdView) { }
     }
+
+    // 7. 폐기
+    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
+        coordinator.native?.destroy()
+    }
 }
 
 struct NativeScreen: View {
@@ -227,7 +254,8 @@ struct NativeScreen: View {
 
 {% tab title="Objective-C" %}
 ```objectivec
-#import <AdWhaleSDK/AdWhaleSDK-Swift.h>
+#import "NativeViewController.h"
+@import AdWhaleSDK;
 
 @interface NativeViewController () <AdWhaleMediationNativeAdDelegate>
 @property (nonatomic, strong) AdWhaleMediationNativeAdView *nativeAdView;
@@ -279,11 +307,6 @@ struct NativeScreen: View {
     [self.nativeAdView pause];
 }
 
-- (void)dealloc {
-    // 8. 폐기
-    [self.nativeAdView destroy];
-}
-
 // 로드 성공
 - (void)nativeAd:(AdWhaleMediationNativeAdView *)adView
      didLoadWith:(AdWhaleMediationResponseInfo *)responseInfo {
@@ -310,25 +333,101 @@ didFailToShowWithError:(NSInteger)statusCode message:(NSString *)message {
 - (void)nativeAdDidClick:(AdWhaleMediationNativeAdView *)adView { }
 - (void)nativeAdDidClose:(AdWhaleMediationNativeAdView *)adView { }
 
+- (void)dealloc {
+    // 8. 폐기
+    [self.nativeAdView destroy];
+}
+
 @end
 ```
 {% endtab %}
 {% endtabs %}
 
-**템플릿 스타일 설정**
+**템플릿 스타일 옵션 샘플코드(Builder 전체)**
 
-`AdWhaleMediationNativeTemplateStyle.Builder` 로 템플릿의 색과 폰트를 커스터마이즈할 수 있습니다.
+{% tabs %}
+{% tab title="Swift" %}
+```swift
+let style = AdWhaleMediationNativeTemplateStyle.Builder()
+    .setMainBackgroundColor(UIColor(white: 0.96, alpha: 1))
 
-| Builder 메서드                                                                                           | 설명                                       |
-| ----------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `setMainBackgroundColor(_:)`                                                                          | 광고 전체 배경색                                |
-| `setPrimaryTextFont(_:)` / `setPrimaryTextColor(_:)` / `setPrimaryTextBackgroundColor(_:)`            | 제목 텍스트                                   |
-| `setSecondaryTextFont(_:)` / `setSecondaryTextColor(_:)` / `setSecondaryTextBackgroundColor(_:)`      | 본문 텍스트                                   |
-| `setTertiaryTextFont(_:)` / `setTertiaryTextColor(_:)` / `setTertiaryTextBackgroundColor(_:)`         | 부가 텍스트                                   |
-| `setCallToActionTextFont(_:)` / `setCallToActionTextColor(_:)` / `setCallToActionBackgroundColor(_:)` | CTA 버튼                                   |
-| `build()`                                                                                             | `AdWhaleMediationNativeTemplateStyle` 생성 |
+    .setPrimaryTextColor(UIColor(white: 0.10, alpha: 1))
+    .setPrimaryTextFont(.boldSystemFont(ofSize: 20))
+    .setPrimaryTextBackgroundColor(UIColor(red: 0.91, green: 0.96, blue: 0.91, alpha: 1))
 
-**4. 커스텀 네이티브 광고**
+    .setSecondaryTextColor(UIColor(red: 0.18, green: 0.49, blue: 0.20, alpha: 1))
+    .setSecondaryTextFont(.systemFont(ofSize: 16))
+    .setSecondaryTextBackgroundColor(UIColor(red: 0.95, green: 0.97, blue: 0.91, alpha: 1))
+
+    .setTertiaryTextColor(UIColor(white: 0.26, alpha: 1))
+    .setTertiaryTextFont(.systemFont(ofSize: 14))
+    .setTertiaryTextBackgroundColor(UIColor(white: 0.98, alpha: 1))
+
+    .setCallToActionTextColor(.white)
+    .setCallToActionTextFont(.boldSystemFont(ofSize: 18))
+    .setCallToActionBackgroundColor(UIColor(red: 1.00, green: 0.42, blue: 0.21, alpha: 1))
+    .build()
+
+nativeAdView.templateStyle = style
+```
+{% endtab %}
+
+{% tab title="SwiftUI" %}
+```swift
+// UIViewRepresentable 의 makeUIView 안에서 동일하게 설정합니다.
+let style = AdWhaleMediationNativeTemplateStyle.Builder()
+    .setMainBackgroundColor(UIColor(white: 0.96, alpha: 1))
+
+    .setPrimaryTextColor(UIColor(white: 0.10, alpha: 1))
+    .setPrimaryTextFont(.boldSystemFont(ofSize: 20))
+    .setPrimaryTextBackgroundColor(UIColor(red: 0.91, green: 0.96, blue: 0.91, alpha: 1))
+
+    .setSecondaryTextColor(UIColor(red: 0.18, green: 0.49, blue: 0.20, alpha: 1))
+    .setSecondaryTextFont(.systemFont(ofSize: 16))
+    .setSecondaryTextBackgroundColor(UIColor(red: 0.95, green: 0.97, blue: 0.91, alpha: 1))
+
+    .setTertiaryTextColor(UIColor(white: 0.26, alpha: 1))
+    .setTertiaryTextFont(.systemFont(ofSize: 14))
+    .setTertiaryTextBackgroundColor(UIColor(white: 0.98, alpha: 1))
+
+    .setCallToActionTextColor(.white)
+    .setCallToActionTextFont(.boldSystemFont(ofSize: 18))
+    .setCallToActionBackgroundColor(UIColor(red: 1.00, green: 0.42, blue: 0.21, alpha: 1))
+    .build()
+
+native.templateStyle = style
+```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objectivec
+AdWhaleMediationNativeTemplateStyleBuilder *builder =
+    [[AdWhaleMediationNativeTemplateStyleBuilder alloc] init];
+
+[builder setMainBackgroundColor:[UIColor colorWithWhite:0.96 alpha:1]];
+
+[builder setPrimaryTextColor:[UIColor colorWithWhite:0.10 alpha:1]];
+[builder setPrimaryTextFont:[UIFont boldSystemFontOfSize:20]];
+[builder setPrimaryTextBackgroundColor:[UIColor colorWithRed:0.91 green:0.96 blue:0.91 alpha:1]];
+
+[builder setSecondaryTextColor:[UIColor colorWithRed:0.18 green:0.49 blue:0.20 alpha:1]];
+[builder setSecondaryTextFont:[UIFont systemFontOfSize:16]];
+[builder setSecondaryTextBackgroundColor:[UIColor colorWithRed:0.95 green:0.97 blue:0.91 alpha:1]];
+
+[builder setTertiaryTextColor:[UIColor colorWithWhite:0.26 alpha:1]];
+[builder setTertiaryTextFont:[UIFont systemFontOfSize:14]];
+[builder setTertiaryTextBackgroundColor:[UIColor colorWithWhite:0.98 alpha:1]];
+
+[builder setCallToActionTextColor:UIColor.whiteColor];
+[builder setCallToActionTextFont:[UIFont boldSystemFontOfSize:18]];
+[builder setCallToActionBackgroundColor:[UIColor colorWithRed:1.00 green:0.42 blue:0.21 alpha:1]];
+
+self.nativeAdView.templateStyle = [builder build];
+```
+{% endtab %}
+{% endtabs %}
+
+#### **4. 커스텀 네이티브 광고**
 
 앱이 만든 뷰를 `AdWhaleMediationNativeAdBindingHelper` 로 전달해 광고 요소를 직접 배치합니다.
 
@@ -341,7 +440,7 @@ final class CustomNativeViewController: UIViewController, AdWhaleMediationNative
 
     // 앱이 만든 광고 요소 뷰
     private let icon = UIImageView()
-    private let title = UILabel()
+    private let adTitle = UILabel()
     private let body = UILabel()
     private let cta = UIButton(type: .system)
     private let media = UIView()
@@ -362,7 +461,7 @@ final class CustomNativeViewController: UIViewController, AdWhaleMediationNative
         // 4. 바인더 생성
         let binder = AdWhaleMediationNativeAdBindingHelper.Builder()
             .setIconView(icon)
-            .setTitleView(title)
+            .setTitleView(adTitle)
             .setBodyView(body)
             .setCallToActionView(cta)
             .setMediaView(media)
@@ -374,9 +473,14 @@ final class CustomNativeViewController: UIViewController, AdWhaleMediationNative
 
     private func layoutAdElements() { /* 앱 레이아웃 구성 */ }
 
-    deinit {
-        // 7. 폐기
-        nativeAdView.destroy()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        nativeAdView.resume()   // 자동 갱신 재개
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        nativeAdView.pause()    // 자동 갱신 일시정지
     }
 
     // MARK: - AdWhaleMediationNativeAdDelegate
@@ -389,6 +493,11 @@ final class CustomNativeViewController: UIViewController, AdWhaleMediationNative
     func nativeAd(_ adView: AdWhaleMediationNativeAdView,
                   didFailToLoadWithError statusCode: Int, message: String) {
         print("네이티브 로드 실패 (\(statusCode)): \(message)")
+    }
+
+    deinit {
+        // 7. 폐기
+        nativeAdView.destroy()
     }
 }
 ```
@@ -407,12 +516,12 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
 
         // 1. 광고 요소 뷰를 앱 레이아웃에 배치 (★ 크기가 0 이면 광고가 보이지 않음)
         let icon = UIImageView()
-        let title = UILabel()
+        let adTitle = UILabel()
         let body = UILabel()
         let cta = UIButton(type: .system)
         let media = UIView()
 
-        let stack = UIStackView(arrangedSubviews: [icon, title, body, media, cta])
+        let stack = UIStackView(arrangedSubviews: [icon, adTitle, body, media, cta])
         stack.axis = .vertical
         stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -442,7 +551,7 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
         // 3. 바인더 생성
         let binder = AdWhaleMediationNativeAdBindingHelper.Builder()
             .setIconView(icon)
-            .setTitleView(title)
+            .setTitleView(adTitle)
             .setBodyView(body)
             .setCallToActionView(cta)
             .setMediaView(media)
@@ -455,16 +564,12 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIView, context: Context) { }
 
-    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
-        coordinator.native?.destroy()
-    }
-
     final class Coordinator: NSObject, AdWhaleMediationNativeAdDelegate {
         var native: AdWhaleMediationNativeAdView?
 
         func nativeAd(_ adView: AdWhaleMediationNativeAdView,
                       didLoadWith responseInfo: AdWhaleMediationResponseInfo) {
-            adView.show()
+            adView.show()   // 5. 노출 (로드 완료 후)
         }
 
         func nativeAd(_ adView: AdWhaleMediationNativeAdView,
@@ -472,12 +577,33 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
             print("네이티브 로드 실패 (\(statusCode)): \(message)")
         }
     }
+
+    // 6. 폐기
+    static func dismantleUIView(_ uiView: UIView, coordinator: Coordinator) {
+        coordinator.native?.destroy()
+    }
 }
 ```
 {% endtab %}
 
 {% tab title="Objective-C" %}
 ```objectivec
+#import "CustomNativeViewController.h"
+@import AdWhaleSDK;
+
+@interface CustomNativeViewController () <AdWhaleMediationNativeAdDelegate>
+@property (nonatomic, strong) AdWhaleMediationNativeAdView *nativeAdView;
+
+// 앱이 만든 광고 요소 뷰
+@property (nonatomic, strong) UIImageView *icon;
+@property (nonatomic, strong) UILabel *adTitle;
+@property (nonatomic, strong) UILabel *body;
+@property (nonatomic, strong) UIButton *cta;
+@property (nonatomic, strong) UIView *media;
+@end
+
+@implementation CustomNativeViewController
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -485,7 +611,7 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
     self.nativeAdView = [[AdWhaleMediationNativeAdView alloc] init];
     [self.view addSubview:self.nativeAdView];
 
-    // 2. 광고 요소 뷰를 앱 레이아웃에 배치
+    // 2. 광고 요소 뷰를 앱 레이아웃에 배치 (★ 크기가 0 이면 광고가 보이지 않음)
     [self layoutAdElements];
 
     // 3. 지면 등록 / 델리게이트 등록
@@ -496,7 +622,7 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
     AdWhaleMediationNativeAdBindingHelperBuilder *builder =
         [[AdWhaleMediationNativeAdBindingHelperBuilder alloc] init];
     [builder setIconView:self.icon];
-    [builder setTitleView:self.title];
+    [builder setTitleView:self.adTitle];
     [builder setBodyView:self.body];
     [builder setCallToActionView:self.cta];
     [builder setMediaView:self.media];
@@ -505,16 +631,38 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
     [self.nativeAdView loadAdWithBinder:[builder build]];
 }
 
-// 로드 성공 → 6. 노출
+- (void)layoutAdElements {
+    // 앱 레이아웃 구성
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.nativeAdView resume];   // 자동 갱신 재개
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.nativeAdView pause];    // 자동 갱신 일시정지
+}
+
+// 로드 성공
 - (void)nativeAd:(AdWhaleMediationNativeAdView *)adView
      didLoadWith:(AdWhaleMediationResponseInfo *)responseInfo {
-    [adView show];
+    [adView show];   // 6. 노출
+}
+
+// 로드 실패
+- (void)nativeAd:(AdWhaleMediationNativeAdView *)adView
+didFailToLoadWithError:(NSInteger)statusCode message:(NSString *)message {
+    NSLog(@"네이티브 로드 실패 (%ld): %@", (long)statusCode, message);
 }
 
 - (void)dealloc {
     // 7. 폐기
     [self.nativeAdView destroy];
 }
+
+@end
 ```
 {% endtab %}
 {% endtabs %}
@@ -531,19 +679,22 @@ struct CustomBindingNativeRepresentable: UIViewRepresentable {
 | `build()`                 | —             | `AdWhaleMediationNativeAdBindingHelper` 생성 |
 
 {% hint style="warning" %}
-바인딩할 뷰는 **미리 앱 레이아웃에 배치**해 두어야 합니다. 크기가 0 인 뷰를 넘기면 광고가 보이지 않습니다.
+바인딩할 뷰는 **미리 앱 레이아웃에 배치**해 두어야 합니다.\
+크기가 0 인 뷰를 넘기면 광고가 보이지 않습니다.
 {% endhint %}
 
-**5. API 설명**
+#### **5. API 설명**
 
 **AdWhaleMediationNativeAdView 클래스 API 설명**
 
+{% tabs %}
+{% tab title="Swift" %}
 ```swift
-public init()   // UIView 기본 이니셜라이저
+init()   // UIView 기본 이니셜라이저
 ```
 
 ```swift
-public var placementUid: String   // 지면 등록
+var placementUid: String   // 지면 등록
 ```
 
 | 파라미터 타입  | 파라미터 값                |
@@ -551,8 +702,8 @@ public var placementUid: String   // 지면 등록
 | `String` | placementUid 값(발급 필요) |
 
 ```swift
-public weak var delegate: AdWhaleMediationNativeAdDelegate?   // 콜백 델리게이트 (Swift)
-public func setAdWhaleMediationNativeAdDelegate(_ delegate: AdWhaleMediationNativeAdDelegate?)   // Objective-C
+weak var delegate: AdWhaleMediationNativeAdDelegate?
+func setAdWhaleMediationNativeAdDelegate(_ delegate: AdWhaleMediationNativeAdDelegate?)
 ```
 
 | 파라미터 타입                            | 파라미터 값                    |
@@ -560,7 +711,7 @@ public func setAdWhaleMediationNativeAdDelegate(_ delegate: AdWhaleMediationNati
 | `AdWhaleMediationNativeAdDelegate` | 네이티브 미디에이션 광고 호출 콜백 델리게이트 |
 
 ```swift
-public var templateStyle: AdWhaleMediationNativeTemplateStyle?   // 고정 템플릿의 색 · 폰트 커스터마이즈
+var templateStyle: AdWhaleMediationNativeTemplateStyle?   // 고정 템플릿의 색 · 폰트 커스터마이즈
 ```
 
 | 파라미터 타입                               | 파라미터 값                       |
@@ -568,7 +719,7 @@ public var templateStyle: AdWhaleMediationNativeTemplateStyle?   // 고정 템�
 | `AdWhaleMediationNativeTemplateStyle` | `Builder` 로 생성한 템플릿 스타일 (옵션) |
 
 ```swift
-public func loadAd(template: AdWhaleNativeTemplate)   // 템플릿 방식으로 네이티브 광고 로드
+func loadAd(template: AdWhaleNativeTemplate)   // 템플릿 방식으로 네이티브 광고 로드
 ```
 
 | 파라미터 타입                 | 파라미터 값                                      |
@@ -576,7 +727,7 @@ public func loadAd(template: AdWhaleNativeTemplate)   // 템플릿 방식으로 
 | `AdWhaleNativeTemplate` | 템플릿 종류 (`.small`, `.medium`, `.fullscreen`) |
 
 ```swift
-public func loadAd(binder: AdWhaleMediationNativeAdBindingHelper)   // 커스텀 바인딩 방식으로 네이티브 광고 로드
+func loadAd(binder: AdWhaleMediationNativeAdBindingHelper)   // 커스텀 바인딩 방식으로 네이티브 광고 로드
 ```
 
 | 파라미터 타입                                 | 파라미터 값                     |
@@ -584,38 +735,109 @@ public func loadAd(binder: AdWhaleMediationNativeAdBindingHelper)   // 커스텀
 | `AdWhaleMediationNativeAdBindingHelper` | `Builder` 로 생성한 앱 뷰 바인딩 정보 |
 
 ```swift
-public func show()      // 광고 로드 후 노출할 때 호출
+func show()      // 광고 로드 후 노출할 때 호출
 ```
 
 ```swift
-public func resume()    // 화면 복귀(viewWillAppear 등) 시 호출 필요 — 자동 갱신 재개
+func resume()    // 화면 복귀(viewWillAppear 등) 시 호출 필요 — 자동 갱신 재개
 ```
 
 ```swift
-public func pause()     // 화면 이탈(viewWillDisappear 등) 시 호출 필요 — 자동 갱신 일시정지
+func pause()     // 화면 이탈(viewWillDisappear 등) 시 호출 필요 — 자동 갱신 일시정지
 ```
 
 ```swift
-public func stop()      // 갱신을 완전히 멈출 때 호출 (재개는 loadAd())
+func stop()      // 갱신을 완전히 멈출 때 호출 (재개는 loadAd(template:) 또는 loadAd(binder:))
 ```
 
 ```swift
-public func destroy()   // deinit 시 호출 필요 — 리소스 해제
+func destroy()   // deinit 시 호출 필요 — 리소스 해제
 ```
+{% endtab %}
+
+{% tab title="Objective-C" %}
+```objectivec
+- (instancetype)initWithFrame:(CGRect)frame;   // UIView 기본 이니셜라이저
+```
+
+```objectivec
+@property (nonatomic, copy) NSString *placementUid;   // 지면 등록
+```
+
+| 파라미터 타입      | 파라미터 값                |
+| ------------ | --------------------- |
+| `NSString *` | placementUid 값(발급 필요) |
+
+```objectivec
+@property (nonatomic, weak) id<AdWhaleMediationNativeAdDelegate> delegate;
+- (void)setAdWhaleMediationNativeAdDelegate:(id<AdWhaleMediationNativeAdDelegate>)delegate;
+```
+
+| 파라미터 타입                                | 파라미터 값                    |
+| -------------------------------------- | ------------------------- |
+| `id<AdWhaleMediationNativeAdDelegate>` | 네이티브 미디에이션 광고 호출 콜백 델리게이트 |
+
+```objectivec
+@property (nonatomic, strong) AdWhaleMediationNativeTemplateStyle *templateStyle;   // 고정 템플릿의 색 · 폰트 커스터마이즈
+```
+
+| 파라미터 타입                                 | 파라미터 값                       |
+| --------------------------------------- | ---------------------------- |
+| `AdWhaleMediationNativeTemplateStyle *` | `Builder` 로 생성한 템플릿 스타일 (옵션) |
+
+```objectivec
+- (void)loadAdWithTemplate:(enum AdWhaleNativeTemplate)template;   // 템플릿 방식으로 네이티브 광고 로드
+```
+
+| 파라미터 타입                 | 파라미터 값                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- |
+| `AdWhaleNativeTemplate` | 템플릿 종류 (`AdWhaleNativeTemplateSmall`, `AdWhaleNativeTemplateMedium`, `AdWhaleNativeTemplateFullscreen`) |
+
+```objectivec
+- (void)loadAdWithBinder:(AdWhaleMediationNativeAdBindingHelper *)binder;   // 커스텀 바인딩 방식으로 네이티브 광고 로드
+```
+
+| 파라미터 타입                                   | 파라미터 값                     |
+| ----------------------------------------- | -------------------------- |
+| `AdWhaleMediationNativeAdBindingHelper *` | `Builder` 로 생성한 앱 뷰 바인딩 정보 |
+
+```objectivec
+- (void)show;      // 광고 로드 후 노출할 때 호출
+```
+
+```objectivec
+- (void)resume;    // 화면 복귀(viewWillAppear 등) 시 호출 필요 — 자동 갱신 재개
+```
+
+```objectivec
+- (void)pause;     // 화면 이탈(viewWillDisappear 등) 시 호출 필요 — 자동 갱신 일시정지
+```
+
+```objectivec
+- (void)stop;      // 갱신을 완전히 멈출 때 호출 (재개는 loadAdWithTemplate: 또는 loadAdWithBinder:)
+```
+
+```objectivec
+- (void)destroy;   // dealloc 시 호출 필요 — 리소스 해제
+```
+{% endtab %}
+{% endtabs %}
 
 **AdWhaleMediationNativeAdDelegate 프로토콜 API 설명**
 
-| 델리게이트 메서드                                     | 호출 시점            |
-| --------------------------------------------- | ---------------- |
-| `nativeAd(_:didLoadWith:)`                    | 로드 성공            |
-| `nativeAd(_:didFailToLoadWithError:message:)` | 로드 실패            |
-| `nativeAd(_:didFailToShowWithError:message:)` | 노출 실패 (optional) |
-| `nativeAdDidClick(_:)`                        | 클릭 (optional)    |
-| `nativeAdDidClose(_:)`                        | 닫힘 (optional)    |
+| 델리게이트 메서드                                     | 호출 시점    |  필수 |
+| --------------------------------------------- | -------- | :-: |
+| `nativeAd(_:didLoadWith:)`                    | 광고 로드 성공 |  ●  |
+| `nativeAd(_:didFailToLoadWithError:message:)` | 광고 로드 실패 |  ●  |
+| `nativeAd(_:didFailToShowWithError:message:)` | 광고 노출 실패 |     |
+| `nativeAdDidClick(_:)`                        | 광고 클릭    |     |
+| `nativeAdDidClose(_:)`                        | 광고 닫힘    |     |
 
+{% tabs %}
+{% tab title="Swift" %}
 ```swift
 func nativeAd(_ adView: AdWhaleMediationNativeAdView,
-              didLoadWith responseInfo: AdWhaleMediationResponseInfo)   // 광고요청 성공 시
+              didLoadWith responseInfo: AdWhaleMediationResponseInfo)   // 광고 요청 성공 시
 ```
 
 | 파라미터 타입                        | 파라미터 값                                       |
@@ -624,30 +846,74 @@ func nativeAd(_ adView: AdWhaleMediationNativeAdView,
 
 ```swift
 func nativeAd(_ adView: AdWhaleMediationNativeAdView,
-              didFailToLoadWithError statusCode: Int, message: String)   // 광고요청 실패 시
+              didFailToLoadWithError statusCode: Int, message: String)   // 광고 요청 실패 시
 ```
 
-| 파라미터 타입  | 파라미터 값                                                                                                                                                                                                                                                     |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Int`    | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                                                                                                                                      |
-| `String` | <p><code>Internal error occurred...</code> = 연동 오류 메시지<br>또는<br><code>Mediation network error occurred...</code> = 최초 로드에서 광고를 채우지 못함<br>또는<br><code>Mediation network error occurred...Previous ad is still showing.</code> = 갱신 중 실패(이전 광고는 계속 노출 중)</p> |
+| 파라미터 타입  | 파라미터 값                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Int`    | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                                                                                                                                                                                                                                                                                                                                                                  |
+| `String` | <p><strong><code>200</code></strong> — <code>SDK not initialized.</code> / <br><code>placementUid is empty.</code> / <br><code>Failed to create config request.</code> / <br><code>Native load mode is not set. Call loadAd(template:) or loadAd(binder:) first.</code><br><strong><code>300</code></strong> — <code>All native mediations failed</code> (워터폴 모두 소진) 또는 광고 네트워크가 전달한 오류 메시지<br>갱신 실패이고 이전 광고가 계속 노출 중이면 메시지 끝에 <code>Previous ad is still showing.</code> 이 덧붙습니다.</p> |
 
 ```swift
 @objc optional func nativeAd(_ adView: AdWhaleMediationNativeAdView,
                              didFailToShowWithError statusCode: Int, message: String)   // 광고 노출 실패 시
 ```
 
-| 파라미터 타입  | 파라미터 값                             |
-| -------- | ---------------------------------- |
-| `Int`    | `200` = 연동 오류 (로드 전 `show()` 호출 등) |
-| `String` | 노출 실패 메시지                          |
+| 파라미터 타입  | 파라미터 값                                         |
+| -------- | ---------------------------------------------- |
+| `Int`    | `200` = 연동 오류 (로드 전 `show()` 호출 등)             |
+| `String` | `Ad not loaded.` = 아직 로드되지 않은 상태에서 `show()` 호출 |
 
 ```swift
 @objc optional func nativeAdDidClick(_ adView: AdWhaleMediationNativeAdView)   // 광고 클릭 시
 @objc optional func nativeAdDidClose(_ adView: AdWhaleMediationNativeAdView)   // 광고 닫기 시
 ```
+{% endtab %}
 
-**6. 옵션 설정**
+{% tab title="Objective-C" %}
+```objectivec
+// 필수
+- (void)nativeAd:(AdWhaleMediationNativeAdView *)adView
+     didLoadWith:(AdWhaleMediationResponseInfo *)responseInfo;   // 광고 요청 성공 시
+```
+
+| 파라미터 타입                          | 파라미터 값                                       |
+| -------------------------------- | -------------------------------------------- |
+| `AdWhaleMediationResponseInfo *` | 낙찰된 광고의 응답 정보 (`adNetworkName`, `revenue` 등) |
+
+```objectivec
+// 필수
+- (void)nativeAd:(AdWhaleMediationNativeAdView *)adView
+    didFailToLoadWithError:(NSInteger)statusCode
+                   message:(NSString *)message;   // 광고 요청 실패 시
+```
+
+| 파라미터 타입      | 파라미터 값                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NSInteger`  | <p><code>200</code> = 연동 오류(placementUid 오설정 등)<br>또는<br><code>300</code> = 광고를 채우지 못함(워터폴 모두 소진)</p>                                                                                                                                                                                                                                                                                                                                                                                  |
+| `NSString *` | <p><strong><code>200</code></strong> — <code>SDK not initialized.</code> / <br><code>placementUid is empty.</code> / <br><code>Failed to create config request.</code> / <br><code>Native load mode is not set. Call loadAd(template:) or loadAd(binder:) first.</code><br><strong><code>300</code></strong> — <code>All native mediations failed</code> (워터폴 모두 소진) 또는 광고 네트워크가 전달한 오류 메시지<br>갱신 실패이고 이전 광고가 계속 노출 중이면 메시지 끝에 <code>Previous ad is still showing.</code> 이 덧붙습니다.</p> |
+
+```objectivec
+@optional
+- (void)nativeAd:(AdWhaleMediationNativeAdView *)adView
+    didFailToShowWithError:(NSInteger)statusCode
+                   message:(NSString *)message;   // 광고 노출 실패 시
+```
+
+| 파라미터 타입      | 파라미터 값                                       |
+| ------------ | -------------------------------------------- |
+| `NSInteger`  | `200` = 연동 오류 (로드 전 `show` 호출 등)             |
+| `NSString *` | `Ad not loaded.` = 아직 로드되지 않은 상태에서 `show` 호출 |
+
+```objectivec
+@optional
+- (void)nativeAdDidClick:(AdWhaleMediationNativeAdView *)adView;   // 광고 클릭 시
+- (void)nativeAdDidClose:(AdWhaleMediationNativeAdView *)adView;   // 광고 닫기 시
+```
+{% endtab %}
+{% endtabs %}
+
+#### **6. 옵션 설정**
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -661,8 +927,37 @@ AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 �
 {% endhint %}
 
 ```swift
-nativeAdView.placementName = "native_main"   // 레벨플레이 placement name 연동 전용 API (옵션)
+// 레벨플레이 placement name 연동 전용 API (옵션).
+// placementName 값은 LevelPlay 콘솔에서 설정한 이름
+nativeAdView.placementName = "native_main"
 ```
+
+{% hint style="warning" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.\
+설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+{% endhint %}
+{% endtab %}
+
+{% tab title="SwiftUI" %}
+```swift
+// UIViewRepresentable 의 makeUIView 안에서 동일하게 설정합니다.
+native.region = "서울시 강남구"                                // 지역 타게팅 전용 API(옵션)
+native.setGeocoder(latitude: 37.5665, longitude: 126.9780)   // 지역 타게팅 전용 API(옵션)
+```
+
+{% hint style="info" %}
+AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoder`)를 선택적으로 입력받고 있습니다.
+{% endhint %}
+
+```swift
+// 레벨플레이 placement name 연동 전용 API (옵션).
+// placementName 값은 LevelPlay 콘솔에서 설정한 이름
+native.placementName = "native_main"
+```
+
+{% hint style="info" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.
+{% endhint %}
 
 {% hint style="warning" %}
 LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement 에 설정된 설정이 적용된 광고가 노출됩니다. 설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
@@ -673,43 +968,76 @@ LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placem
 {% endhint %}
 {% endtab %}
 
-{% tab title="SwiftUI" %}
-```swift
-// UIViewRepresentable 의 makeUIView 안에서 동일하게 설정합니다.
-native.region = "서울시 강남구"                                // 지역 타게팅 전용 API(옵션)
-native.setGeocoder(latitude: 37.5665, longitude: 126.9780)   // 지역 타게팅 전용 API(옵션)
-native.placementName = "native_main"                         // 레벨플레이 placement name (옵션)
-native.templateStyle = style                                 // 템플릿 스타일 (옵션)
-```
-{% endtab %}
-
 {% tab title="Objective-C" %}
 ```objectivec
-nativeAdView.region = @"서울시 강남구";                              // 지역 타게팅 전용 API(옵션)
+nativeAdView.region = @"서울시 강남구";                                // 지역 타게팅 전용 API(옵션)
 [nativeAdView setGeocoderWithLatitude:37.5665 longitude:126.9780];   // 지역 타게팅 전용 API(옵션)
-nativeAdView.placementName = @"native_main";                         // 레벨플레이 placement name (옵션)
 ```
+
+{% hint style="info" %}
+AdWhale SDK 는 Cauly 네트워크를 지원하며, 광고 지역 타게팅을 위해 지역정보(`region`, `setGeocoderWithLatitude:longitude:`)를 선택적으로 입력받고 있습니다.
+{% endhint %}
+
+```objectivec
+// 레벨플레이 placement name 연동 전용 API (옵션).
+// placementName 값은 LevelPlay 콘솔에서 설정한 이름
+nativeAdView.placementName = @"native_main";
+```
+
+{% hint style="info" %}
+AdWhale SDK 는 LevelPlay 네트워크를 지원하며, 각 Placement 별로 광고 노출을 구분하고자 할 때 `placementName` 으로 설정할 수 있습니다.
+{% endhint %}
+
+{% hint style="warning" %}
+LevelPlay 콘솔에서 설정한 Placement 이름을 지정하면, 해당 Placement 에 설정된 설정이 적용된 광고가 노출됩니다. 설정하지 않으면 기본 Placement(Default Placement)가 사용됩니다.
+
+***
+
+네이티브 광고에는 **보상 조건, 제한 조건 등의 설정이 적용되지 않으며**, Placement 는 **광고 위치 구분 및 분석 용도**로만 사용됩니다.
+{% endhint %}
 {% endtab %}
 {% endtabs %}
 
-| 프로퍼티 / 메서드                                      | 설명                                    |
-| ----------------------------------------------- | ------------------------------------- |
-| `templateStyle`                                 | 고정 템플릿의 색 · 폰트 커스터마이즈                 |
-| `region`                                        | 지역 타겟팅 (Cauly 전용)                     |
-| `placementName`                                 | LevelPlay placement 이름 (LevelPlay 전용) |
-| `setGeocoder(latitude:longitude:)`              | 좌표 타겟팅 (Cauly 전용)                     |
-| `resume()` / `pause()` / `stop()` / `destroy()` | 생명주기 제어                               |
+| 프로퍼티 / 메서드                         | 설명           | 적용 네트워크   |
+| ---------------------------------- | ------------ | --------- |
+| `region`                           | 지역 타게팅       | Cauly     |
+| `setGeocoder(latitude:longitude:)` | 좌표 타게팅       | Cauly     |
+| `placementName`                    | Placement 이름 | LevelPlay |
 
-**7. 주의사항**
+{% hint style="info" %}
+옵션은 해당 네트워크가 낙찰됐을 때만 사용됩니다. 설정해 두어도 다른 네트워크의 광고에는 영향을 주지 않습니다.
+{% endhint %}
+
+#### **7. 주의사항**
 
 **광고 로드 타이밍**
 
-* `loadAd(...)` 는 SDK 초기화 완료(`initialize` 완료 콜백) 이후에 호출하는 것을 권장합니다.
-* **`addSubview` → `loadAd(...)` 순서를 지키세요.** Cauly 는 responder chain 으로 부모 `UIViewController` 를 찾습니다.
+* `loadAd(template:)` / `loadAd(binder:)` 는 SDK 초기화 완료(`initialize` 완료 콜백) 이후에 호출하세요. \
+  초기화 전에 호출하면 `200`(`SDK not initialized.`)이 통지됩니다.
+* **`addSubview` → `loadAd(...)` 순서를 지키세요.** \
+  Cauly 는 responder chain 으로 부모 `UIViewController` 를 찾습니다.
+* 광고 네트워크가 성공·실패 어느 콜백도 돌려주지 않으면, SDK 가 네트워크당 **10초**를 기다린 뒤 다음 순위 네트워크로 진행합니다. \
+  이 만료는 별도 콜백으로 통지되지 않으며, 워터폴이 모두 소진된 시점에 실패 콜백이 1회 옵니다.
 
-**노출**
+**광고 노출 조건**
 
 * 네이티브 광고는 로드 완료 후 `show()` 를 호출해야 노출됩니다. `nativeAd(_:didLoadWith:)` 에서 호출하세요.
+* 로드되기 전에 `show()` 를 호출하면 노출되지 않고 `200`(`Ad not loaded.`)이 통지됩니다.
+
+**FULLSCREEN 템플릿**
+
+* FULLSCREEN 템플릿은 모달이나 별도 화면에서 사용하는 것을 권장합니다.
+* 일반 뷰에 배치하면 레이아웃 문제가 발생할 수 있습니다.
+
+**스타일 커스터마이징**
+
+* `templateStyle` 은 **광고 로드 전에** 설정해야 합니다.
+* 스타일을 바꾸려면 `templateStyle` 을 다시 설정하고 `loadAd(template:)` 를 다시 호출하세요.
+
+**델리게이트 등록**
+
+* 델리게이트를 설정하지 않으면 로드·노출 실패가 어디에도 전달되지 않아 **"광고도 안 나오고 콜백도 없는"** 상태가 됩니다.&#x20;
+* SDK 는 이 경우 `통지할 리스너가 없습니다` 경고 로그를 남깁니다.
 
 **바인딩 뷰**
 
@@ -719,6 +1047,7 @@ nativeAdView.placementName = @"native_main";                         // 레벨�
 
 * `viewWillAppear` / `viewWillDisappear` / `deinit` 에서 각각 `resume()` / `pause()` / `destroy()` 호출이 필요합니다.
 * `pause()` 후 `resume()` 을 호출하지 않으면 자동 갱신이 재개되지 않습니다.
+* `stop()` 은 모든 주기 동작을 중단합니다. 재개는 `loadAd(template:)` 또는 `loadAd(binder:)` 로만 가능합니다.
 
 **방식 변경**
 
@@ -727,20 +1056,22 @@ nativeAdView.placementName = @"native_main";                         // 레벨�
 **에러 처리**
 
 * 로드 실패 콜백에서 적절한 에러 처리를 구현하세요.
-* 갱신 실패 메시지에 `Previous ad is still showing.` 이 붙어 있으면 광고는 계속 노출 중이므로 광고 영역을 숨기지 마세요.
+* 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
+
+**로드 실패 후처리**
+
+* 로드 실패 콜백은 **워터폴이 모두 소진됐을 때 1회만** 발생합니다. 개별 광고 네트워크의 실패로는 발생하지 않습니다.
+* 기존에 노출 중인 광고가 있다면 그 광고 노출은 유지되지만, 자동 갱신은 멈춥니다. \
+  갱신을 재개하려면 커스텀 바인딩은 `loadAd(binder:)`, 템플릿은 `loadAd(template:)` 를 다시 호출하세요. **`show()` 만 다시 호출해도 재개되지 않습니다.**
+* **로드 실패 콜백에서 무조건 광고 영역을 숨기지 마세요.** \
+  이 콜백은 갱신 실패에서도 발생하며, 그때는 이전 광고가 그대로 노출 중입니다. 메시지 끝에 `Previous ad is still showing.` 이 붙어 있으면 광고 영역을 숨겨 **노출 중인 광고를 스스로 가리는** 셈이 됩니다.
+
+**노출 실패 후처리**
+
+* `nativeAd(_:didFailToShowWithError:message:)` 는 로깅 · 지표 수집 용도로만 사용하시길 권장합니다.
+* `show()` 를 호출했으나 노출할 광고가 준비되지 않은 경우에도 통지됩니다.
 
 **테스트**
 
 * 개발 환경에서는 테스트용 placement UID 를 사용하세요.
-
-{% hint style="danger" %}
-**`addSubview` → `loadAd(...)` 순서를 지키세요.** Cauly 는 responder chain 으로 부모 `UIViewController` 를 찾습니다.
-{% endhint %}
-
-{% hint style="warning" %}
-네이티브도 배너와 같이 `ad_reload_sec` 주기로 자동 갱신됩니다. 갱신 실패 메시지에 `Previous ad is still showing.` 이 붙어 있으면 광고는 계속 노출 중입니다.
-{% endhint %}
-
-{% hint style="info" %}
-템플릿과 커스텀 바인딩 중 **한 번 선택한 방식이 자동 갱신에도 그대로 적용**됩니다. 방식을 바꾸려면 `loadAd(template:)` 또는 `loadAd(binder:)` 를 다시 호출하세요.
-{% endhint %}
+* 다양한 템플릿 타입과 스타일을 테스트하세요.
