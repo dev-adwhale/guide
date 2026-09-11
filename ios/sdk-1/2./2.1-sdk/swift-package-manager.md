@@ -2,7 +2,7 @@
 
 프로젝트에 [패키지 종속 항목을 추가](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app#Add-a-package-dependency)하려면 다음 단계를 진행합니다.
 
-#### Xcode 에서 추가
+### Xcode 에서 추가
 
 {% hint style="info" %}
 1. Xcode에서 **File(파일) > Add Package Dependencies(패키지 종속 항목 추가)...**&#xB85C; 이동하여 Cauly Swift 패키지를 설치합니다.
@@ -16,7 +16,7 @@
 4. 사용할 AdWhale Swift 패키지의 버전을 선택합니다. (최신 SDK 버전: 1.0.8)
 {% endhint %}
 
-#### Package.swift 로 추가
+### Package.swift 로 추가
 
 ```swift
 dependencies: [
@@ -42,7 +42,7 @@ targets: [
 설치 후 [Project Setting](../2.2-project-setting.md) 의 `-ObjC` 링커 플래그 설정을 반드시 함께 적용하세요.
 {% endhint %}
 
-#### 애드몹 미디에이션 파트너 네트워크 추가 (선택)
+### 애드몹 미디에이션 파트너 네트워크 추가 (선택)
 
 AdMob 미디에이션 파트너 어댑터는 SDK 에 포함되지 않습니다. **앱이 직접 추가**합니다.
 

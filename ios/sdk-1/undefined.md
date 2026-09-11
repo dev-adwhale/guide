@@ -124,11 +124,17 @@
 #### 초기화 대응
 
 {% hint style="info" %}
-기존에는 애드몹 앱 ID를 초기화 파라미터로 넘겼습니다. 이제는 애드웨일 PublisherUID 를 넘기고, 애드몹 앱 ID는 Info.plist에 둡니다. 그리고 사용할 어댑터를 register()로 등록해야 해당 어댑터 광고 네트워크를 사용할 수 있습니다.
+기존에는 애드몹 앱 ID를 초기화 파라미터로 넘겼습니다.&#x20;
+
+이제는 애드웨일 PublisherUID 를 넘기고, 애드몹 앱 ID는 Info.plist에 둡니다. \
+그리고 사용할 어댑터를 register()로 등록해야 해당 어댑터 광고 네트워크를 사용할 수 있습니다.
 {% endhint %}
 
 {% hint style="warning" %}
-**`register()` 를 호출하지 않으면 해당 네트워크의 광고 노출은 조용히 건너뛰어집니다.** 크래시나 에러 없이 광고만 나오지 않으므로 알아채기 어렵습니다. 로그에 `No banner adapter registered for network: …` 가 보이면 이 경우입니다.
+**`register()` 를 호출하지 않으면 해당 네트워크의 광고 노출은 조용히 건너뛰어집니다.**&#x20;
+
+크래시나 에러 없이 광고만 나오지 않으므로 알아채기 어렵습니다. \
+로그에 `No banner adapter registered for network: …` 가 보이면 이 경우입니다.
 {% endhint %}
 
 {% tabs %}
@@ -155,7 +161,8 @@ import AdWhaleSDK
 import AdWhaleAdMobAdapter      // 사용할 어댑터만 import
 import AdWhaleCaulyAdapter
 
-AdWhaleAdMobAdapter.register()  // ★ 초기화 전에 등록
+// ★ 초기화 전에 등록
+AdWhaleAdMobAdapter.register()
 AdWhaleCaulyAdapter.register()
 
 AdWhaleMediationAds.initialize(publisherUid: "발급받은 애드웨일 PUBLISHER_UID") { statusCode, message in
@@ -164,7 +171,7 @@ AdWhaleMediationAds.initialize(publisherUid: "발급받은 애드웨일 PUBLISHE
 ```
 
 {% hint style="info" %}
-Publisher UID 는 `Info.plist` 에 넣어 파라미터를 생략할 수도 있습니다. 자세한 내용은 [2-3. SDK 연동 키 설정](https://dillinger.io/02-03-integration-keys.md) 을 참고하세요.
+Publisher UID 는 `Info.plist` 에 넣어 파라미터를 생략할 수도 있습니다. 자세한 내용은 [SDK 연동 키 설정](2./2.3-sdk.md) 을 참고하세요.
 {% endhint %}
 {% endtab %}
 
@@ -187,24 +194,23 @@ Publisher UID 는 `Info.plist` 에 넣어 파라미터를 생략할 수도 있�
 @import AdWhaleSDK;
 @import AdWhaleAdMobAdapter;      // 사용할 어댑터만 import
 
-[AdWhaleAdMobAdapter register];   // ★ 초기화 전에 등록
+// ★ 초기화 전에 등록
+[AdWhaleAdMobAdapter register]; 
+[AdWhaleCaulyAdapter register];
 
 [AdWhaleMediationAds initializeWithPublisherUid:@"발급받은 애드웨일 PUBLISHER_UID"
                                      completion:^(NSInteger statusCode, NSString *message) { }];
 ```
+
+{% hint style="info" %}
+Publisher UID 는 `Info.plist` 에 넣어 파라미터를 생략할 수도 있습니다. 자세한 내용은 [SDK 연동 키 설정](2./2.3-sdk.md) 을 참고하세요.
+{% endhint %}
 {% endtab %}
 {% endtabs %}
 
 #### 배너 대응
 
-| 기존 AdWhaleBannerDelegate                    | 현재 AdWhaleMediationAdViewDelegate          |
-| ------------------------------------------- | ------------------------------------------ |
-| bannerViewDidReceiveAd(\_:)                 | adViewDidReceiveAd(\_:)                    |
-| bannerView(\_:didFailToReceiveAdWithError:) | adView(\_:didFailToLoadWithError:message:) |
-| bannerViewDidRecordClick(\_:)               | adViewDidClick(\_:) **(optional)**         |
-| bannerViewDidRecordImpression(\_:)          | 제거                                         |
-| bannerViewWillPresentScreen(\_:)            | bannerDidShowLandingScreen(\_:)            |
-| bannerViewDidDismissScreen(\_:)             | bannerDidCloseLandingScreen(\_:)           |
+<table data-search="false"><thead><tr><th>기존 AdWhaleBannerDelegate</th><th>현재 AdWhaleMediationAdViewDelegate</th></tr></thead><tbody><tr><td>bannerViewDidReceiveAd(_:)</td><td>adViewDidReceiveAd(_:)</td></tr><tr><td>bannerView(_:didFailToReceiveAdWithError:)</td><td>adView(_:didFailToLoadWithError:message:)</td></tr><tr><td>bannerViewDidRecordClick(_:)</td><td>adViewDidClick(_:)</td></tr><tr><td>bannerViewDidRecordImpression(_:)</td><td>제거</td></tr><tr><td>bannerViewWillPresentScreen(_:)</td><td>제거</td></tr><tr><td>bannerViewDidDismissScreen(_:)</td><td>제거</td></tr></tbody></table>
 
 #### 전면 대응
 
@@ -219,24 +225,21 @@ Publisher UID 는 `Info.plist` 에 넣어 파라미터를 생략할 수도 있�
 
 #### 보상형 대응
 
-기존에는 Delegate 하나가 로드, 노출, 보상을 모두 받았습니다. 이제 3개의 콜백으로 분리되었습니다.
+기존에는 Delegate 하나가 로드, 노출, 보상을 모두 받았습니다. 이제 3개의 Delegate로 분리되었습니다.
 
-<table><thead><tr><th width="345.14453125">기존 AdWhaleRewardDelegate</th><th>현재</th></tr></thead><tbody><tr><td>adDidReceiveRewardAd(_:)</td><td>AdWhaleMediationRewardAdLoadDelegate.rewardedAd(_:didLoadWith:)</td></tr><tr><td>adDidFailToReceiveRewardAdWithError(_:)</td><td>AdWhaleMediationRewardAdLoadDelegate.rewardedAd(_:didFailToLoadWithError:message:)</td></tr><tr><td>adWillPresentRewardAd(_:)</td><td>AdWhaleRewardedFullScreenDelegate</td></tr><tr><td>adDidEarnReward(_:)</td><td>AdWhaleUserEarnedRewardDelegate.userDidEarnReward(_:)</td></tr></tbody></table>
+<table data-search="false"><thead><tr><th>기존 AdWhaleRewardDelegate</th><th>현재</th></tr></thead><tbody><tr><td>adDidReceiveRewardAd(_:)</td><td>AdWhaleMediationRewardAdLoadDelegate.rewardedAd(_:didLoadWith:)</td></tr><tr><td>adDidFailToReceiveRewardAdWithError(_:)</td><td>AdWhaleMediationRewardAdLoadDelegate.rewardedAd(_:didFailToLoadWithError:message:)</td></tr><tr><td>adWillPresentRewardAd(_:)</td><td>AdWhaleRewardedFullScreenDelegate.rewardedAdDidShow(_:)</td></tr><tr><td>ad(_:didFailToPresentRewardAdWithError:)</td><td>AdWhaleRewardedFullScreenDelegate.rewardedAd(_:didFailToShowWithError:message:)</td></tr><tr><td>adDidDismissRewardAd(_:)</td><td>AdWhaleRewardedFullScreenDelegate.rewardedAdDidDismiss(_:)</td></tr><tr><td>adDidEarnReward(_:)</td><td>AdWhaleUserEarnedRewardDelegate.userDidEarnReward(_:)</td></tr><tr><td>X</td><td>AdWhaleRewardedFullScreenDelegate.rewardedAdDidClick(_:) <strong>(신규)</strong></td></tr></tbody></table>
 
 #### 네이티브 대응
 
-| 기존 AdWhaleNativeAdLoaderDelegate            | 현재 AdWhaleMediationNativeAdDelegate          |
-| ------------------------------------------- | -------------------------------------------- |
-| nativeAdLoaderDidReceiveAd(\_:)             | nativeAd(\_:didLoadWith:)                    |
-| nativeAdLoaderDidFailToReceiveAd(\_:error:) | nativeAd(\_:didFailToLoadWithError:message:) |
+<table data-search="false"><thead><tr><th>기존 AdWhaleNativeAdLoaderDelegate</th><th>현재 AdWhaleMediationNativeAdDelegate</th></tr></thead><tbody><tr><td>nativeAdLoaderDidReceiveAd(_:)</td><td>nativeAd(_:didLoadWith:)</td></tr><tr><td>nativeAdLoaderDidFailToReceiveAd(_:error:)</td><td>nativeAd(_:didFailToLoadWithError:message:)</td></tr><tr><td>X</td><td>nativeAdDidClick(_:) <strong>(신규)</strong></td></tr><tr><td>X</td><td>nativeAdDidClose(_:) <strong>(신규)</strong></td></tr><tr><td>X</td><td>nativeAd(_:didFailToShowWithError:message:) <strong>(신규)</strong></td></tr></tbody></table>
 
 {% hint style="info" %}
-기존에는 `AdWhaleNativeAdLoader` 로 로드한 뒤 `bind()` 로 직접 뷰를 구성해야 했습니다. 이제 **고정 템플릿**을 쓰면 뷰 구성이 필요 없습니다. 기존처럼 직접 바인딩하려면 커스텀 바인딩을 사용하세요. ([4-5. 네이티브](https://dillinger.io/04-05-native.md))&#x20;
+기존에는 `AdWhaleNativeAdLoader` 로 로드한 뒤 `bind()` 로 직접 뷰를 구성해야 했습니다. 이제 **고정 템플릿**을 쓰면 뷰 구성이 필요 없습니다. 기존처럼 직접 바인딩하려면 커스텀 바인딩을 사용하세요. ([네이티브](4./4.5.md#id-4))&#x20;
 {% endhint %}
 
 #### 앱오프닝 대응
 
-<table><thead><tr><th width="334.0546875">기존 AdWhaleAppOpenAdDelegate</th><th>현재 AdWhaleMediationAppOpenAdDelegate</th></tr></thead><tbody><tr><td>adDidReceiveAppOpenAd(_:)</td><td>appOpenAd(_:didLoadWith:)</td></tr><tr><td>adDidFailToReceiveAppOpenAd(error:)</td><td>appOpenAd(_:didFailToLoadWithError:message:)</td></tr><tr><td>adWillPresentAppOpenAd()</td><td>appOpenAdDidShow(_:)</td></tr><tr><td>adDidFailToPresentAppOpenAd(error:)</td><td>appOpenAd(_:didFailToShowWithError:message:)</td></tr><tr><td>adDidDismissAppOpenAd()</td><td>appOpenAdDidDismiss(_:)</td></tr></tbody></table>
+<table><thead><tr><th width="334.0546875">기존 AdWhaleAppOpenAdDelegate</th><th>현재 AdWhaleMediationAppOpenAdDelegate</th></tr></thead><tbody><tr><td>adDidReceiveAppOpenAd(_:)</td><td>appOpenAd(_:didLoadWith:)</td></tr><tr><td>adDidFailToReceiveAppOpenAd(error:)</td><td>appOpenAd(_:didFailToLoadWithError:message:)</td></tr><tr><td>adWillPresentAppOpenAd()</td><td>appOpenAdDidShow(_:)</td></tr><tr><td>adDidFailToPresentAppOpenAd(error:)</td><td>appOpenAd(_:didFailToShowWithError:message:)</td></tr><tr><td>adDidDismissAppOpenAd()</td><td>appOpenAdDidDismiss(_:)</td></tr><tr><td>X</td><td>appOpenAdDidClick(_:) <strong>(신규)</strong></td></tr></tbody></table>
 
 ***
 
@@ -245,20 +248,26 @@ Publisher UID 는 `Info.plist` 에 넣어 파라미터를 생략할 수도 있�
 ***
 
 * [ ] **애드웨일 전용 지면 ID 발급** - 애드웨일 담당자에게 지면별 ID 를 요청하세요. 이게 없으면 광고가 나오지 않습니다.&#x20;
-* [ ] **기존 SDK 제거** - `Podfile`  에서 `pod 'AdWhaleSDK'` 및 관련 `source` 제거 → `pod install`
-* [ ] **새 SDK 설치** - SPM 으로 `AdWhaleSDK` + **사용할 어댑터만** 추가 ([2-1-1](https://dillinger.io/02-01-01-spm.md))
-* [ ] **애드웨일 전용 지면 ID로 교체** - `Info.plist` 에 Publisher UID · `GADApplicationIdentifier` 설정 ([2-3](https://dillinger.io/02-03-integration-keys.md))
+* [ ] **기존 SDK 제거**&#x20;
+
+- CocoaPods: `Podfile` 에서 `pod 'AdWhaleSDK'` 및 관련 `source` 제거 → `pod install`
+- SPM: Package Dependencies 에서 기존 패키지 제거
+
+* [ ] **새 SDK 설치** - SPM 으로 `AdWhaleSDK` + **사용할 어댑터만** 추가 ([Swift Package Manager](2./2.1-sdk/swift-package-manager.md))
+* [ ] **SDK 연동 키 설정** - `Info.plist` 에 Publisher UID · `GADApplicationIdentifier` 설정 ([SDK 연동 키 설정](2./2.3-sdk.md))
 * [ ] **애드웨일 전용 지면 ID로 교체** - `adUnitId` → **`placementUid`** 로 교체
-* [ ] **프로젝트 설정** - 앱 타겟 **Other Linker Flags** 에 `-ObjC` 추가 ([2-2](https://dillinger.io/02-02-project-setting.md))
-* [ ] **프로젝트 설정** - SKAdNetwork ID 목록 갱신 ([2-5](https://dillinger.io/02-05-skadnetwork.md))
+* [ ] **프로젝트 설정** - 앱 타겟 **Other Linker Flags** 에 `-ObjC` 추가 ([Project Setting](2./2.2-project-setting.md))
+* [ ] **프로젝트 설정** - SKAdNetwork ID 목록 갱신 ([SKAdNetwork ID List](2./2.5-skadnetwork-id-list.md))
 * [ ] **초기화 코드 수정** - 초기화 전에 어댑터 **`register()`** 호출
 * [ ] **광고 코드 수정** - 실패 콜백을 `Error` → `(statusCode, message)` 로 변경
-* [ ] **광고 코드 수정** - `rootViewController` 전달 코드 제거
+* [ ] **광고 코드 수정** - 초기화에 넘기던 `rootViewController` 제거 (노출 시 `show(from:)` 은 그대로 필요)
 * [ ] **광고 코드 수정** - (보상형 사용시) 보상형 델리게이트 3개 분리 반영
 * [ ] **실기기 확인** - 실기기에서 포맷별 노출 · 콜백 확인
 
 {% hint style="info" %}
-`placementUid` 는 기존 `adUnitId` 와 **다른 값**입니다. 기존 애드몹 광고단위 ID 를 그대로 넣으면 서버가 설정을 찾지 못해 `statusCode 200` 으로 실패합니다. 애드웨일 담당자에게 지면별 Placement UID 를 발급받으세요.
+`placementUid` 는 기존 `adUnitId` 와 **다른 값**입니다. \
+기존 애드몹 광고단위 ID 를 그대로 넣으면 서버가 지면 설정을 찾지 못해 로드에 실패합니다.\
+애드웨일 담당자에게 지면별 Placement UID 를 발급받으세요.
 {% endhint %}
 
 ***
@@ -269,21 +278,29 @@ Publisher UID 는 `Info.plist` 에 넣어 파라미터를 생략할 수도 있�
 
 #### 기존 광고단위 ID 를 지면 ID 자리에 넣으면 안 됩니다
 
-두 값은 완전히 다릅니다. 기존에 쓰던 애드몹 광고단위 ID 를 그대로 넣으면 서버가 해당 지면 설정을 찾지 못해 **연동 오류로 실패**합니다. 애드웨일 담당자에게 발급받은 지면 ID 를 사용하세요.
+두 값은 완전히 다릅니다. \
+기존에 쓰던 애드몹 광고단위 ID 를 그대로 넣으면 서버가 해당 지면 설정을 찾지 못해 **로드에 실패**합니다.\
+애드웨일 담당자에게 발급받은 지면 ID 를 사용하세요.
 
 #### 네트워크 등록을 빼먹으면 조용히 실패합니다 <a href="#id-107" id="id-107"></a>
 
-SDK 에 네트워크를 추가했더라도 코드에서 등록하지 않으면 그 네트워크는 **건너뛰어집니다.** 오류도 크래시도 없이 광고만 나오지 않으므로 알아채기 어렵습니다.
+SDK 에 네트워크를 추가했더라도 코드에서 등록하지 않으면 그 네트워크는 **건너뛰어집니다.** \
+오류도 크래시도 없이 광고만 나오지 않으므로 알아채기 어렵습니다.
 
-광고가 전혀 나오지 않는데 실패 콜백도 오지 않는다면 이 경우를 먼저 확인하세요. 등록 방법은 [3. SDK 초기화](https://dillinger.io/03-initialize.md) 에 있습니다.
+광고가 전혀 나오지 않는데 실패 콜백도 오지 않는다면 이 경우를 먼저 확인하세요. \
+등록 방법은 [SDK 초기화](3.-sdk/) 에 있습니다.
 
 #### 광고가 나오지 않는 것이 항상 오류는 아닙니다 <a href="#id-113" id="id-113"></a>
 
-광고 재고가 없어 채워지지 않는 것은 정상 동작입니다. 실패 코드가 “광고 미충족” 이면 연동은 정상이므로 코드를 고칠 필요가 없습니다.
+광고 재고가 없어 채워지지 않는 것은 정상 동작입니다. 워터폴의 모든 네트워크가 광고를 주지 못하면 실패 콜백이 1회 오는데, 이때 **재고 부족과 설정 문제가 같은 코드로 옵니다.** `message` 로 구분하세요.
+
+`All ... mediations failed` 는 워터폴을 끝까지 시도했지만 채우지 못한 경우입니다. 연동은 정상이므로 코드를 고칠 필요가 없습니다. \
+그 외의 메시지가 오면 지면 ID · 지면 설정 · 네트워크 상태를 확인하세요.
 
 #### 지면 설정을 바꿨는데 반영이 안 됩니다 <a href="#id-117" id="id-117"></a>
 
-설정은 앱이 광고를 요청할 때 서버에서 받아옵니다. 앱을 완전히 종료한 뒤 다시 실행해 보세요.
+설정은 앱이 광고를 요청할 때 서버에서 받아옵니다. \
+앱을 완전히 종료한 뒤 다시 실행해 보세요.
 
 ***
 

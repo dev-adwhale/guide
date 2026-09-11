@@ -1,4 +1,4 @@
-# 3. SDK 초기화(주현)
+# 3. SDK 초기화
 
 {% hint style="info" %}
 * `AdWhaleSDK`를 프로젝트에 추가해야 합니다.
@@ -20,7 +20,7 @@
 * 완료 콜백 전에 광고를 로드하면 `200`(`SDK not initialized.`)이 통지됩니다.
 {% endhint %}
 
-#### 1. 어댑터 등록
+### 1. 어댑터 등록
 
 사용할 광고 네트워크의 어댑터를 코드에서 등록합니다.
 
@@ -63,7 +63,7 @@ AdWhaleCaulyAdapter.register()
 로그에 `No banner adapter registered for network: …` 가 보이면 이 경우입니다.
 {% endhint %}
 
-#### 2. Initialize
+### 2. Initialize
 
 **`AdWhaleMediationAds` 클래스 API**
 
@@ -120,7 +120,7 @@ func onInitComplete(statusCode: Int, message: String)
 
 ***
 
-#### 3. 초기화 결과
+### 3. 초기화 결과
 
 | statusCode | message                                          | 설명                                                   |
 | :--------: | ------------------------------------------------ | ---------------------------------------------------- |
@@ -131,7 +131,7 @@ func onInitComplete(statusCode: Int, message: String)
 
 ***
 
-#### 4. 초기화 여부 확인
+### 4. 초기화 여부 확인
 
 {% tabs %}
 {% tab title="Swift" %}
@@ -151,7 +151,7 @@ if ([AdWhaleMediationAds initialized]) {
 {% endtab %}
 {% endtabs %}
 
-#### **5. 초기화 샘플코드**
+### **5. 초기화 샘플코드**
 
 {% tabs %}
 {% tab title="Swift" %}
