@@ -40,10 +40,10 @@ AdWhaleMediationAds.initialize(publisherUid: "발급받은 애드웨일 PUBLISHE
 {% endtab %}
 {% endtabs %}
 
-| 초기화 API                                                                            | Publisher UID 출처      |
-| ---------------------------------------------------------------------------------- | --------------------- |
-| initialize(completion:) / initialize(delegate:)                                    | Info.plist            |
-| <p>initialize(publisherUid:completion:) <br>initialize(publisherUid:delegate:)</p> | 파라미터(공백이면 Info.plist) |
+| 초기화 API                                                                                                     | Publisher UID 출처      |
+| ----------------------------------------------------------------------------------------------------------- | --------------------- |
+| <p><code>initialize(completion:)</code> / <br><code>initialize(delegate:)</code></p>                        | Info.plist            |
+| <p><code>initialize(publisherUid:completion:)</code><br><code>initialize(publisherUid:delegate:)</code></p> | 파라미터(공백이면 Info.plist) |
 
 {% hint style="info" %}
 빌드 구성별로 다른 UID 를 쓰거나 원격 설정에서 주입할 때 파라미터 방식이 유용합니다.
