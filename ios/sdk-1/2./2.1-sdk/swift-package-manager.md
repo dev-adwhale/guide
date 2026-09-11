@@ -39,7 +39,7 @@ targets: [
 {% endhint %}
 
 {% hint style="warning" %}
-설치 후 [Project Setting](../project-setting.md) 의 `-ObjC` 링커 플래그 설정을 반드시 함께 적용하세요.
+설치 후 [Project Setting](../2.2-project-setting.md) 의 `-ObjC` 링커 플래그 설정을 반드시 함께 적용하세요.
 {% endhint %}
 
 #### 애드몹 미디에이션 파트너 네트워크 추가 (선택)
