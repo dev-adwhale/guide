@@ -1126,6 +1126,22 @@ private fun RewardScreen(
 * `onAdFailedToLoad`와 `onFailedToShow` 이벤트에서 적절한 에러 처리를 구현하세요.
 * 에러 코드와 메시지를 로깅하여 문제를 추적할 수 있습니다.
 
+**프리로드 사용 시 캐시 수명 관리**
+
+* 응답된 광고는 무기한 유효하지 않습니다. \
+  광고 소재에는 만료 시간이 있으며, **로드 후 1시간이 지난 광고는 만료된 것으로 처리해야 합니다.** \
+  만료된 광고로 표시를 시도하면 실패합니다.
+* 로드 성공 시각을 앱에서 보관하고 표시 직전에 경과 시간을 확인하여, \
+  만료 시간 1시간에서 로드 소요 시간만큼 여유를 둔 **50분**을 기준으로 재로드하는 것을 권장합니다.
+* 광고 표시에 실패한 경우(`onFailedToShow`) 보관 중이던 **준비 상태를 해제**하세요. \
+  해제하지 않으면 만료 시간이 남아 있는 동안 준비된 것으로 잘못 판단하게 됩니다.
+
+**프리로드 실패 시 재시도**
+
+* 프리로드가 실패한 상태로 두면 다음 표시 요청 시점까지 캐시가 빈 상태로 유지됩니다.
+* `onAdFailedToLoad`에서 지수 백오프 형태의 재시도 정책을 두는 것을 권장합니다. \
+  재시도 간격과 횟수는 서비스 정책에 맞게 설정하세요.
+
 **onFailedToShow  후처리 가이드**
 
 * 광고 표시 실패 시 onFailedToShow가 콜백됩니다. **`showAd()` 를 호출했으나 표시할 광고가 준비되지 않은 경우에도 발생합니다.**
@@ -1137,20 +1153,24 @@ private fun RewardScreen(
     ```
 
     보상형은 사용자가 **"광고 보고 보상 받기"** 를 누른 직후이므로, 아무 반응이 없으면 보상이 지급되지 않은 것으로 오해합니다. 이 콜백에서 반드시 안내를 노출하세요.
+* 표시에 실패한 광고는 다시 표시할 수 없습니다. \
+  같은 지면에 광고를 다시 노출하려면 `loadAd()`부터 다시 진행해야 하며, 재요청이 필요한 경우 **`onFailedToShow`** 에서 재요청을 진행합니다.
 
-    ```java
-    rewardAd.setAdWhaleMediationFullScreenContentCallback(
-        new AdWhaleMediationFullScreenContentCallback() {
-            @Override
-            public void onFailedToShow(int statusCode, String message) {
-                hideLoading();
-                showToast("잠시 후 다시 시도해 주세요.");
-            }
-            // ...
-        });
-    ```
+```java
+rewardAd.setAdWhaleMediationFullScreenContentCallback(
+    new AdWhaleMediationFullScreenContentCallback() {
+        @Override
+        public void onFailedToShow(int statusCode, String message) {
+            hideLoading();
+            showToast("잠시 후 다시 시도해 주세요.");
+            
+            // loadAd();    // 재요청 여부는 서비스 정책에 따라 결정
+        }
+        // ...
+    });
+```
 
-    `onFailedToShow` 가 발생한 경우 **보상은 지급되지 않습니다.** `onUserRewarded` 만을 보상 지급의 기준으로 사용하세요.
+`onFailedToShow` 가 발생한 경우 **보상은 지급되지 않습니다.** `onUserRewarded` 만을 보상 지급의 기준으로 사용하세요.
 
 **테스트**
 
