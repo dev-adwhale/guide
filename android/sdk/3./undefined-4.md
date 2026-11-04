@@ -323,7 +323,7 @@ public void onAdLoaded(AdWhaleMediationRewardAd ad, String message) // 미디에
 public void onAdFailedToLoad(int statusCode, String message) // 미디에이션 보상형 광고요청 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="123.40234375">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 연동 오류(placementUid 오설정 등)</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>Internal error occurred...</code></mark> = 연동 오류 메시지</p><p>또는</p><p><mark style="color:red;"><code>Mediation network error occurred...</code></mark> = 최초 로드에서 광고를 채우지 못함(워터폴 모두 소진)<br>또는 <br><mark style="color:red;"><code>Mediation network error occurred...Previous ad is still showing</code></mark> = 갱신 중 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="123.40234375">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p><mark style="color:red;"><code>200</code></mark> = 연동 오류(placementUid 오설정 등)</p><p>또는</p><p><mark style="color:red;"><code>300</code></mark> = 광고를 채우지 못함(워터폴 모두 소진)</p></td></tr><tr><td>String</td><td><p><mark style="color:red;"><code>placementUid is required.</code></mark> = 연동 오류 메시지</p><p>또는</p><p><mark style="color:red;"><code>No ad mediation network found.</code></mark> = 광고를 채우지 못함(워터폴 모두 소진). SDK 2.7.10부터 메시지 뒤에 실패한 네트워크별 원인이 붙습니다(예: [admob: timeout 10s] [levelplay: code=509, message=No ads to show]). 결과 판단은 메시지가 아니라 코드(300)로 해 주세요.</p></td></tr></tbody></table>
 
 **AdWhaleMediationFullScreenContentCallback 클래스 API 설명**
 
@@ -426,7 +426,7 @@ fun onAdLoaded(ad : AdWhaleMediationRewardAd, message : String) : Unit // 미디
 fun onAdFailedToLoad(statusCode : Int, message : String) : Unit // 미디에이션 보상형 광고요청 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>광고로드 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 **AdWhaleMediationFullScreenContentCallback 클래스 API 설명**
 
@@ -438,7 +438,7 @@ fun onAdShowed() : Unit // 미디에이션 보상형 광고표시 후
 fun onFailedToShow(statusCode : Unit, message : String) : Unit // 미디에이션 보상형 광고표시 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>광고표시 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```kotlin
 fun onAdDismissed() : Unit // 미디에이션 보상형 광고닫기 시
@@ -501,7 +501,7 @@ fun onAdLoaded(ad : AdWhaleMediationRewardAd, message : String) : Unit // 미디
 fun onAdFailedToLoad(statusCode : Int, message : String) : Unit // 미디에이션 보상형 광고요청 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고로드 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>광고로드 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 **AdWhaleMediationFullScreenContentCallback 클래스 API 설명**
 
@@ -513,7 +513,7 @@ fun onAdShowed() : Unit // 미디에이션 보상형 광고표시 후
 fun onFailedToShow(statusCode : Unit, message : String) : Unit // 미디에이션 보상형 광고표시 실패 시
 ```
 
-<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>초기화 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
+<table data-header-hidden><thead><tr><th width="348">파라미터 타입</th><th>파라미터 값</th></tr></thead><tbody><tr><td>파라미터 타입</td><td>파라미터 값</td></tr><tr><td>int</td><td><p>광고표시 결과 코드</p><p>(<mark style="color:red;">200 또는 300</mark>)</p></td></tr><tr><td>String</td><td><p>광고표시 결과 메시지</p><p>(<mark style="color:red;">"Internal error occurred..." 또는 "Mediation network error occurred..."</mark>)</p></td></tr></tbody></table>
 
 ```kotlin
 fun onAdDismissed() : Unit // 미디에이션 보상형 광고닫기 시

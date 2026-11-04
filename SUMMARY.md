@@ -3,12 +3,14 @@
 ## Android
 
 * [SDK 연동 가이드](README.md)
+  * [주요공지 및 안내사항](android/sdk/undefined.md)
   * [1. 프로젝트 설정](android/sdk/1./README.md)
     * [1.1 빌드 환경 자동 설정 가이드](android/sdk/1./1.1.md)
     * [1.2 요구사항 및 사용권한](android/sdk/1./1.2.md)
     * [1.3 프로젝트 빌드 설정(build.gradle)](android/sdk/1./1.3-build.gradle.md)
     * [1.4 난독화(proguard) 설정](android/sdk/1./1.4-proguard.md)
     * [1.5 SDK 연동 키 설정](android/sdk/1./1.5-sdk.md)
+    * [1.6 리소스 축소(shrinkResources) 설정](android/sdk/1./1.6-shrinkresources.md)
   * [2. SDK 초기화](android/sdk/2.-sdk/README.md)
     * [2.1 로거설정](android/sdk/2.-sdk/2.1.md)
     * [2.2 GDPR 사전 동의 설정](android/sdk/2.-sdk/2.2-gdpr.md)
