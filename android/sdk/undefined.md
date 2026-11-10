@@ -5,11 +5,31 @@
 * **ADwhale Mediation SDK 최신 버전 사용을 권장합니다.** 하위 버전의 기술 지원은 별도로 문의해 주세요.
 * ADwhale Mediation SDK는 Android API Level 24 이상에서 동작합니다.
 * 광고 형식별 가이드에 안내된 `resume()` / `destroy()` 등 생명주기 API를 Activity·Fragment 생명주기에 맞춰 호출해 주세요. 호출하지 않으면 광고 노출과 수익에 불이익이 생길 수 있습니다.
-* SDK를 업데이트할 때는 미디에이션·코어·어댑터 모듈을 모두 같은 배포 버전으로 함께 올려 주세요. 버전별 조합은 [Changelog](7.-changelog.md)와 [버전 설정 가이드](https://cdn.fsn.co.kr/guide/sdk/adwhale/adwhale-mediation-guide\(ko\).html)를 참고하세요.
+* SDK를 업데이트할 때는 미디에이션·코어·어댑터 모듈을 모두 같은 배포 버전으로 함께 올려 주세요. 버전별 조합은 [Changelog](7.-changelog.md)와 [버전 설정 가이드](1./1.1.md)를 참고하세요.
 
 ***
 
 ### 공지사항 (필독)
+
+#### 2026/11/10
+
+**SDK 2.7.11 업데이트: Google Mobile Ads SDK 25.4.0 적용 및 안정성 개선**
+
+AdWhale Android SDK 2.7.11에서 AdMob 어댑터의 Google Mobile Ads SDK(GMA)를 25.4.0으로 올렸습니다. 업데이트할 때 아래 내용을 확인해 주세요.
+
+* AdMob 미디에이션 어댑터를 쓰는 경우, 어댑터도 GMA 25.4.0 기준 버전으로 함께 올려 주세요. 버전은 [버전 설정 가이드](1./1.1.md)(2.7.11)에서 확인할 수 있습니다.
+  * InMobi는 11.4.1.2로 올려 주세요. 이전 버전은 배너가 교체될 때 이전 배너가 메모리에서 해제되지 않습니다.
+  * AppLovin은 13.6.4.2로 올려 주세요. 13.3.1.1 이하는 GMA 25에서 입찰에 참여하지 못합니다.
+  * ironSource 어댑터는 8.x를 유지해 주세요. 9.x는 AdWhale LevelPlay 어댑터와 충돌해 앱이 종료됩니다.
+  * Unity 어댑터는 Unity Ads SDK를 별도로 추가해야 합니다.
+  * 각 어댑터의 최신 버전은 GMA 25.5.0을 요구하므로 사용하지 마세요.
+* AdMob 미디에이션 어댑터를 쓰는 Kotlin 앱은 Kotlin Gradle 플러그인 2.2.0 이상이 필요합니다(Google Mobile Ads SDK 25.4.0 요구 사항). 버전별 빌드 결과는 [1.2 요구사항 및 사용권한](1./1.2.md)에서 확인할 수 있습니다.
+* Android Gradle Plugin 9.5 이상에서 Pangle 어댑터 8.3.0.3.0을 쓰면 R8 릴리스 빌드가 실패할 수 있습니다. [1.4 난독화(proguard) 설정](1./1.4-proguard.md)의 Pangle 항목을 추가해 주세요.
+* 매체 코드 변경은 필요 없습니다. 요구 사항(Android API Level 24 이상)도 그대로입니다.
+
+**개선 사항**
+
+* 배너 갱신·Activity 재생성 후 사용이 끝난 광고 객체가 메모리에서 해제되지 않던 문제를 수정했습니다. 한 화면에서 배너를 오래 노출하거나 화면 회전 등으로 Activity가 자주 다시 만들어지는 앱에서 사용 시간이 길어질수록 메모리 사용량이 늘어날 수 있었습니다. 2.7.11로 업데이트하면 적용되며, 코드 변경은 필요 없습니다.
 
 #### 2026/11/03
 
@@ -31,11 +51,11 @@ AdWhale Android SDK 2.7.10부터 광고 로드 오류의 원인을 분석하기 
 AGP 9 이상에서 릴리스 빌드에 `shrinkResources true`를 사용하면, 일부 광고 네트워크 SDK가 이름으로 찾는 리소스가 빌드 과정에서 제거될 수 있습니다. \
 앱 모듈의 `app/src/main/res/raw/keep.xml`에 해당 리소스를 유지하도록 설정해 주세요. 설정 방법은 [리소스 축소(shrinkResources) 설정](1./1.6-shrinkresources.md) 페이지를 참고하세요.
 
-| 네트워크            | 증상                                      | 안내 위치                                                                                                                     |
-| --------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Pangle          | SDK 초기화 실패 (`resources not found`)      | [버전 설정 가이드](https://cdn.fsn.co.kr/guide/sdk/adwhale/adwhale-mediation-guide\(ko\).html)에서 Pangle 선택 시 표시되는 keep.xml 블록    |
-| Mintegral       | 광고 노출 실패 (`3900 no mbridge_... layout`) | [버전 설정 가이드](https://cdn.fsn.co.kr/guide/sdk/adwhale/adwhale-mediation-guide\(ko\).html)에서 Mintegral 선택 시 표시되는 keep.xml 블록 |
-| Cauly (앱 종료 광고) | 종료 팝업 버튼이 배경 없이 글자만 표시                  | [리소스 축소(shrinkResources) 설정](1./1.6-shrinkresources.md)                                                                   |
+| 네트워크            | 증상                                      | 안내 위치                                                    |
+| --------------- | --------------------------------------- | -------------------------------------------------------- |
+| Pangle          | SDK 초기화 실패 (`resources not found`)      | [버전 설정 가이드](1./1.1.md)에서 Pangle 선택 시 표시되는 keep.xml 블록    |
+| Mintegral       | 광고 노출 실패 (`3900 no mbridge_... layout`) | [버전 설정 가이드](1./1.1.md)에서 Mintegral 선택 시 표시되는 keep.xml 블록 |
+| Cauly (앱 종료 광고) | 종료 팝업 버튼이 배경 없이 글자만 표시                  | [리소스 축소(shrinkResources) 설정](1./1.6-shrinkresources.md)  |
 
 ***
 
