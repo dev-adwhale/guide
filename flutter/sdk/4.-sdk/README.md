@@ -18,7 +18,7 @@ Future<AdWhaleInitResult> initialize() async
 import 'package:adwhale_sdk_flutter/adwhale_sdk_flutter.dart';
 
 // 앱 시작 시 SDK 초기화
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final result = await AdWhaleMediationAds.instance.initialize();
   debugPrint('AdWhale SDK 초기화 결과: $result');
