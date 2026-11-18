@@ -17,7 +17,7 @@
 
 신규 SDK(ADwhale Mediation iOS SDK)는 기존 애드웨일 iOS SDK 1.0.x와 모듈 이름은 같지만 **다른 제품**입니다.
 
-* 기존 1.0.x는 계속 동작하므로 서둘러 전환하지 않아도 됩니다. 기존 SDK 가이드는 [SDK 연동 가이드](../sdk/)에서 계속 제공합니다.
+* 기존 1.0.x는 계속 동작하므로 서둘러 전환하지 않아도 됩니다. 기존 SDK 가이드는 [SDK 연동 가이드](../sdk-legacy/)에서 계속 제공합니다.
 * 전환하려면 앱 코드를 고쳐야 합니다. 광고단위 ID 대신 애드웨일 지면 ID(`placementUid`)를 쓰고, 클래스도 모두 바뀌었습니다. 두 SDK는 함께 넣을 수 없습니다. 자세한 내용은 [들어가기 전에](migration.md)를 참고하세요.
 * 신규 광고 형식(팝업)과 신규 네트워크(LevelPlay · Cauly · AdFit · Admize · AdManager)는 신규 SDK에서만 제공합니다.
 * Flutter · React Native 플러그인을 쓰는 앱은 아직 전환하지 마세요. 플러그인이 기존 SDK를 사용합니다.
