@@ -119,7 +119,7 @@ const AppOpenAdExample: React.FC = () => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
       .then(result => {
-        if (result.isSuccess) {
+        if (result.statusCode === 100) {
           console.log('SDK 초기화 성공:', result.message);
         } else {
           console.log('SDK 초기화 실패:', result.statusCode, result.message);
@@ -223,7 +223,7 @@ const App: React.FC = () => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
       .then(result => {
-        if (!result.isSuccess) {
+        if (result.statusCode !== 100) {
           console.error('SDK 초기화 실패:', result.message);
           return;
         }

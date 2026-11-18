@@ -230,7 +230,7 @@ const RewardAdExample: React.FC = () => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
       .then(result => {
-        if (result.isSuccess) {
+        if (result.statusCode === 100) {
           console.log('SDK 초기화 성공:', result.message);
         } else {
           console.log('SDK 초기화 실패:', result.statusCode, result.message);
@@ -268,7 +268,7 @@ const RewardAdExample: React.FC = () => {
         console.log('보상 지급:', event.type, event.amount);
         // 코인 지급
         if (event.type === 'coin') {
-          setCoins(prev => prev + event.amount);
+          setCoins(prev => prev + (event.amount ?? 0));
         }
       },
     });

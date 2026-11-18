@@ -669,7 +669,7 @@ const TemplateNativeAdExample: React.FC = () => {
   useEffect(() => {
     AdWhaleMediationAds.initialize()
       .then(result => {
-        if (!result.isSuccess) {
+        if (result.statusCode !== 100) {
           console.error('SDK 초기화 실패:', result.message);
         }
       });

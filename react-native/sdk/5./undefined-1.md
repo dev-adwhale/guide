@@ -185,7 +185,7 @@ const BannerAdScreen: React.FC = () => {
     // SDK 초기화
     AdWhaleMediationAds.initialize()
       .then(result => {
-        if (result.isSuccess) {
+        if (result.statusCode === 100) {
           console.log('SDK 초기화 성공:', result.message);
           // SDK 초기화 후 광고 로드 시작
           setLoadAd(true);
