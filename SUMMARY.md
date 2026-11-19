@@ -134,6 +134,7 @@
     * [3.2 SDK 연동 키 설정](react-native/sdk/3./3.2-sdk.md)
     * [3.3 파트너 네트워크 연동 (선택사항)](react-native/sdk/3./3.3.md)
     * [3.4 기타 설정](react-native/sdk/3./3.4.md)
+    * [3.5 Expo 설정](react-native/sdk/3./3.5-expo.md)
   * [4. SDK 초기화](react-native/sdk/4.-sdk/README.md)
     * [4.1 로거설정](react-native/sdk/4.-sdk/4.1.md)
     * [4.2 GDPR 사전 동의 설정](react-native/sdk/4.-sdk/4.2-gdpr.md)
